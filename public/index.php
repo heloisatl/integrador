@@ -52,5 +52,6 @@ $router->get("/projetos/mvc-creator", "ProjetoController@mvcCreator");
 $router->get("/projetos/pagemaker", "ProjetoController@pageMaker");
 $router->get("/projetos/historico", "ProjetoController@historico");
 $router->get("/projetos/saida", "ProjetoController@saida");
+$router->get("/projetos/phpmeuamigo", "ProjetoController@phpmeuamigo");
 
 $router->run();

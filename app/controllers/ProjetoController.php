@@ -157,6 +157,10 @@ class ProjetoController extends Controller{
         $this->view('projetos/saida');
     }
 
+     public function phpmeuamigo(): void {
+        $this->view('projetos/phpmeuamigo');
+    }
+
     public function cadastrar(): void {
         $this->view("projetos/projeto_create");
     }

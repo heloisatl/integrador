@@ -94,6 +94,9 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
         <a href="<?= URL_BASE ?>/projetos/saida" class="topbar-item <?php echo verificarAtivo('saida', $paginaAtual); ?>">
             Saída </a>
 
+        <a href="<?= URL_BASE ?>/projetos/saida" class="topbar-item <?php echo verificarAtivo('phpmeuamigo', $paginaAtual); ?>">
+            PHPMeuAmigo </a>
+
         <?php if (defined('URL_BASE') && usuarioEhAdmin()): ?>
             <a href="<?= URL_BASE ?>/usuarios" class="topbar-item <?php echo $paginaAtual === 'usuarios' ? 'active' : ''; ?>">
                 Usuários
@@ -179,7 +182,7 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
         <div id="sb-titulo-PageMaker" class="sb-section">
             <div class="sb-label">Page Maker</div>
 
-            
+
 
             <a href="<?= URL_BASE ?>/projetos/pagemaker?section=cabecalho" class="sb-item <?php echo verificarAtivo('pagemaker', $paginaAtual, 'section', 'cabecalho'); ?>"> <span class="sb-icon"></span> Cabeçalho
             </a>
