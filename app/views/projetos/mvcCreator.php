@@ -23,22 +23,24 @@
 
                 echo '<div class="mvc-grade-formulario">';
 
-
                 echo '<div class="mvc-campo">';
-                echo '<label>Nome do Projeto</label>';
+                echo '<label for="nomeProjeto">Nome do Projeto</label>';
                 echo '<input type="text" name="nomeProjeto" id="nomeProjeto" placeholder="Insira aqui o nome do seu projeto">';
                 echo '</div>';
 
-                echo '<div class="mvc-campo mvc-campo-completo">';
-                echo '<label>Banco de Dados</label>';
+                echo '<div class="mvc-campo">';
+                echo '<label for="banco">Banco de Dados</label>';
                 echo '<div class="mvc-linha-banco">';
-                echo '<select name="banco" id="banco"><option value="">— preencha a senha para carregar —</option></select>';
+                echo '<select disabled name="banco" id="banco"><option value="">Preencha o nome do projeto para carregar os bancos</option></select>';
                 echo '<div class="mvc-botoes-banco">';
-                echo '<button type="button" onclick="" class="mvc-etapa-botao mvc-etapa-botao-azul">Criar novo banco</button>';
-                echo '<button type="button" onclick="carregarBanco();" class="mvc-etapa-botao mvc-etapa-botao-secundario mvc-btn-icon"><span class="material-symbols-outlined">refresh</span></button>';
+                echo '<button type="button" onclick="carregarBanco();" disabled class="mvc-etapa-botao mvc-etapa-botao-secundario mvc-btn-icon" title="Atualizar"><span class="material-symbols-outlined">refresh</span></button>';
+                echo '<button type="button" onclick="" class="mvc-etapa-botao">Criar novo banco</button>';
                 echo '</div>';
                 echo '</div>';
                 echo '</div>';
+
+                echo '</div>'; // fecha mvc-grade-formulario
+                echo '</div>'; // fecha mvc-etapa
             }
         ],
         'tabelas' => [
@@ -138,6 +140,7 @@
 
     </main>
     <script src="<?= URL_BASE ?>/assets/js/mvcLoad.js"></script>
+    <script src="<?= URL_BASE ?>/assets/js/desabilitado.js"></script>
 </div>
 </div>
 </body>
