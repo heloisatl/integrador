@@ -23,7 +23,7 @@ include_once(__DIR__ . "/../include/navbar.php");
                     </tr>
                 </thead>
                 <tbody>
-                    <!--  -->
+                   
                 </tbody>
             </table>
             <div class="mt-4 text-center">  
