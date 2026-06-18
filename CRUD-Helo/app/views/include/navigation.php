@@ -28,6 +28,7 @@ function verificarAtivo($nomeArquivo, $paginaAtual, $queryKey = null, $queryValu
     if ($queryKey === null) {
         return 'active';
     }
+    
 
     global $currentSection, $currentTab, $currentStep;
 
