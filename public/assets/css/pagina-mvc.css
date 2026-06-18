@@ -187,6 +187,9 @@
 .mvc-linha-banco .mvc-etapa-botao {
     margin-top: 0;
     white-space: nowrap;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
 }
 
 .mvc-acoes {

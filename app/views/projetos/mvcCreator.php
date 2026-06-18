@@ -7,6 +7,8 @@
 
     <link rel="stylesheet" href="<?= URL_BASE_CSS ?>/pagina-mvc.css">
 
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+
     <?php
     $step = $_GET['step'] ?? 'configurar';
 
@@ -17,44 +19,25 @@
             'content' => function () {
                 echo '<div class="mvc-etapa">';
 
-                echo '<div class="mvc-aviso-info">💡 <span>As credenciais foram pré-carregadas das <strong>Configurações Globais</strong>. Informe o nome do projeto e selecione o banco de dados.</span></div>';
+                echo '<div class="mvc-aviso-info"><span>As credenciais foram pré-carregadas das <strong>Configurações Globais</strong>. Informe o nome do projeto e selecione o banco de dados.</span></div>';
 
                 echo '<div class="mvc-grade-formulario">';
 
-                echo '<div class="mvc-campo">';
-                echo '<label>Nome do Projeto <span class="etiqueta">Sem espaços</span></label>';
-                echo '<input type="text" name="nomeProjeto" id="nomeProjeto" value="sistema_oficina" placeholder="Nome do Projeto">';
-                echo '</div>';
 
                 echo '<div class="mvc-campo">';
-                echo '<label>Servidor <span class="etiqueta">Da config global</span></label>';
-                echo '<input type="text" name="servidor" id="servidor" value="localhost" placeholder="localhost">';
-                echo '</div>';
-
-                echo '<div class="mvc-campo">';
-                echo '<label>Usuário</label>';
-                echo '<input type="text" name="usuario" id="usuario" value="root" placeholder="root">';
-                echo '</div>';
-
-                echo '<div class="mvc-campo">';
-                echo '<label>Senha</label>';
-                echo '<input type="password" onblur="carregarBanco();" name="senha" id="senha" value="" placeholder="*********">';
+                echo '<label>Nome do Projeto</label>';
+                echo '<input type="text" name="nomeProjeto" id="nomeProjeto" placeholder="Insira aqui o nome do seu projeto">';
                 echo '</div>';
 
                 echo '<div class="mvc-campo mvc-campo-completo">';
                 echo '<label>Banco de Dados</label>';
                 echo '<div class="mvc-linha-banco">';
                 echo '<select name="banco" id="banco"><option value="">— preencha a senha para carregar —</option></select>';
-                echo '<button type="button" onclick="carregarBanco();" class="mvc-etapa-botao mvc-etapa-botao-secundario">Recarregar bancos</button>';
+                echo '<div class="mvc-botoes-banco">';
+                echo '<button type="button" onclick="" class="mvc-etapa-botao mvc-etapa-botao-azul">Criar novo banco</button>';
+                echo '<button type="button" onclick="carregarBanco();" class="mvc-etapa-botao mvc-etapa-botao-secundario mvc-btn-icon"><span class="material-symbols-outlined">refresh</span></button>';
                 echo '</div>';
                 echo '</div>';
-
-                echo '</div>';
-
-                echo '<div class="mvc-acoes">';
-                echo '<button type="button" onclick="carregarTabelas();" class="mvc-etapa-botao">Conectar e Detectar Tabelas →</button>';
-                echo '</div>';
-
                 echo '</div>';
             }
         ],
