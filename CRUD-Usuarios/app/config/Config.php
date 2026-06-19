@@ -15,7 +15,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
 // Configuração do sistema
 define('APP_NAME', 'DevStudio');
-define('URL_BASE', 'http://localhost');
+define('URL_BASE', 'http://localhost/integrador/CRUD-Usuarios');
 
 define('URL_BASE_CSS', URL_BASE . '/assets/css');
 

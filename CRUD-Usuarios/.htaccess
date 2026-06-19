@@ -1,0 +1,10 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /integrador/CRUD-Usuarios/
+    
+    # Se não for arquivo ou pasta E não estiver em /public/, redireciona para /public/
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} !^/integrador/CRUD-Usuarios/public/
+    RewriteRule ^(.*)$ /integrador/CRUD-Usuarios/public/$1 [R=301,L]
+</IfModule>

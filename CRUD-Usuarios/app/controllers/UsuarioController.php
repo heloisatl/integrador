@@ -39,14 +39,63 @@ class UsuarioController extends Controller {
     }
 
     public function salvar(): void {
-        $this->redirect(URL_BASE . '/usuarios');
+        $this->adminRequired();
+
+        $dados = [
+            'nome' => $_POST['nome'] ?? '',
+            'email' => $_POST['email'] ?? '',
+            'senha' => $_POST['senha'] ?? '',
+            'usuario_banco' => $_POST['usuario_banco'] ?? '',
+            'servidor' => $_POST['servidor'] ?? '',
+            'tipo_perfil' => $_POST['tipo_perfil'] ?? '',
+        ];
+
+        if ($this->service->createUsuario($dados)) {
+            $this->redirect(URL_BASE . '/usuarios');
+        } else {
+            $this->redirect(URL_BASE . '/usuarios/cadastrar');
+        }
     }
 
     public function editar(): void {
-        $this->redirect(URL_BASE . '/usuarios');
+        $this->adminRequired();
+
+        if (!isset($_GET['id'])) {
+            $this->redirect(URL_BASE . '/usuarios');
+        }
+
+        $id = (int) $_GET['id'];
+        $data['usuario'] = $this->service->getUsuarioById($id);
+
+        if (!$data['usuario']) {
+            $this->redirect(URL_BASE . '/usuarios');
+        }
+
+        $this->view('usuarios/usuario_edit', $data);
     }
 
     public function atualizar(): void {
-        $this->redirect(URL_BASE . '/usuarios');
+        $this->adminRequired();
+
+        if (!isset($_POST['id'])) {
+            $this->redirect(URL_BASE . '/usuarios');
+        }
+
+        $id = (int) $_POST['id'];
+
+        $dados = [
+            'nome' => $_POST['nome'] ?? '',
+            'email' => $_POST['email'] ?? '',
+            'senha' => $_POST['senha'] ?? '',
+            'usuario_banco' => $_POST['usuario_banco'] ?? '',
+            'servidor' => $_POST['servidor'] ?? '',
+            'tipo_perfil' => $_POST['tipo_perfil'] ?? '',
+        ];
+
+        if ($this->service->updateUsuario($id, $dados)) {
+            $this->redirect(URL_BASE . '/usuarios');
+        } else {
+            $this->redirect(URL_BASE . '/usuarios/editar?id=' . $id);
+        }
     }
 }

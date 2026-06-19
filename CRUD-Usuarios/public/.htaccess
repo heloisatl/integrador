@@ -1,0 +1,11 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /integrador/CRUD-Usuarios/public/
+    
+    # Redireciona todos os requests para arquivos/pastas existentes
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    
+    # Redireciona tudo para index.php
+    RewriteRule ^(.*)$ index.php [QSA,L]
+</IfModule>

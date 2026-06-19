@@ -161,6 +161,9 @@ function verificarAtivo($nomeArquivo, $paginaAtual, $queryKey = null, $queryValu
             <a href="<?= URL_BASE ?>/usuarios" class="sb-item <?php echo $paginaAtual === 'usuario_list.php' ? 'active' : ''; ?>">
                 <span class="sb-icon">👤</span> Listar Usuários
             </a>
+            <a href="<?= URL_BASE ?>/usuarios/cadastrar" class="sb-item <?php echo $paginaAtual === 'usuario_create.php' ? 'active' : ''; ?>">
+                <span class="sb-icon">➕</span> Criar Usuário
+            </a>
         </div>
         <?php endif; ?>
 

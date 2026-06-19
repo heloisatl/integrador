@@ -29,4 +29,20 @@ class UsuarioService {
 
         return $this->repository->deleteUsuario($id);
     }
+
+    public function createUsuario(array $dados): bool {
+        if (empty($dados['nome']) || empty($dados['email']) || empty($dados['senha'])) {
+            return false;
+        }
+
+        return $this->repository->createUsuario($dados);
+    }
+
+    public function updateUsuario(int $id, array $dados): bool {
+        if (empty($dados['nome']) || empty($dados['email'])) {
+            return false;
+        }
+
+        return $this->repository->updateUsuario($id, $dados);
+    }
 }
