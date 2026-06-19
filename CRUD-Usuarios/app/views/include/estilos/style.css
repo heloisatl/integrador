@@ -1,0 +1,12 @@
+/* Esconde todas as seções de sidebar por padrão */
+.sb-section { display: none; }
+
+/* Mostra apenas o que deve aparecer em cada página */
+#home #sb-principal { display: block; }
+#config-global #sb-principal { display: block; }
+#guia #sb-principal { display: block; }
+#mvcCreator #sb-titulo-MVC { display: block; }
+#pageMaker #sb-titulo-PageMaker { display: block; }
+#historico #sb-titulo-historico { display: block; }
+#saida #sb-titulo-saida { display: block; }
+#usuarios #sb-titulo-usuarios { display: block; }
