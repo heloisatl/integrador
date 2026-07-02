@@ -28,7 +28,7 @@ function verificarAtivo($nomeArquivo, $paginaAtual, $queryKey = null, $queryValu
     if ($queryKey === null) {
         return 'active';
     }
-    
+
 
     global $currentSection, $currentTab, $currentStep;
 
@@ -50,8 +50,10 @@ function verificarAtivo($nomeArquivo, $paginaAtual, $queryKey = null, $queryValu
 
 <header class="topbar">
     <div class="topbar-logo">
-        <span class="logo">⚡</span>
-        <h1 class="title">DevStudio <span class="versao">v2</span></h1>
+        <a href="home.php" class="logo-link">
+            <span class="logo">⚡</span>
+            <h1 class="title"> DevStudio <span class="versao">v2</span></h1>
+        </a>
     </div>
 
     <a href="home.php" class="topbar-item <?php echo verificarAtivo('home.php', $paginaAtual); ?>">

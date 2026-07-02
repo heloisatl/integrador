@@ -66,6 +66,13 @@
             gap: 10px;
         }
 
+        .logo-link{
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: var(--text);
+        }
+
         .topbar-item {
             display: flex;
             align-items: center;
