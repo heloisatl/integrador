@@ -10,3 +10,266 @@
 #historico #sb-titulo-historico { display: block; }
 #saida #sb-titulo-saida { display: block; }
 #usuarios #sb-titulo-usuarios { display: block; }
+
+.mvc-etapa-wrapper {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.mvc-etapa-cabecalho {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.mvc-etapa-cabecalho h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--text);
+    margin: 0;
+}
+
+.mvc-etapa-selo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.mvc-etapa-selo-novo {
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: #fff;
+    background: var(--accent);
+    padding: 3px 8px;
+    border-radius: 5px;
+}
+
+.mvc-etapa-cartao {
+    padding: 24px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--panel);
+}
+
+.mvc-etapa-cartao h3 {
+    margin-top: 0;
+    margin-bottom: 12px;
+    color: var(--text);
+}
+
+.mvc-subtitulo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 16px;
+}
+
+/* Banner informativo, ex: credenciais pré-carregadas */
+.mvc-aviso-info {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+    color: var(--accent);
+    font-size: 13px;
+    line-height: 1.5;
+    padding: 12px 14px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.mvc-aviso-info strong {
+    color: var(--text);
+}
+
+/* Grid de campos em duas colunas */
+.mvc-grade-formulario {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px 20px;
+    margin-bottom: 16px;
+}
+
+.mvc-campo {
+    display: flex;
+    flex-direction: column;
+}
+
+.mvc-campo-completo {
+    grid-column: 1 / -1;
+}
+
+.mvc-campo label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--muted);
+    margin-bottom: 8px;
+}
+
+.mvc-etiqueta {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--muted);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 2px 7px;
+    border-radius: 5px;
+}
+
+.mvc-etiqueta-discreta {
+    margin-left: auto;
+}
+
+.mvc-etapa-cartao input,
+.mvc-etapa-cartao select {
+    width: 100%;
+    padding: 11px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface);
+    color: var(--text);
+    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+    transition: border-color 0.15s ease;
+}
+
+.mvc-etapa-cartao input::placeholder {
+    color: var(--muted);
+}
+
+.mvc-etapa-cartao input:focus,
+.mvc-etapa-cartao select:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.mvc-etapa-cartao label {
+    display: block;
+    margin-bottom: 8px;
+}
+
+.mvc-linha-banco {
+    display: flex;
+    gap: 10px;
+}
+
+.mvc-linha-banco select {
+    flex: 1;
+}
+
+.mvc-linha-banco .mvc-etapa-botao {
+    margin-top: 0;
+    white-space: nowrap;
+}
+
+.mvc-acoes {
+    display: flex;
+    gap: 10px;
+    margin-top: 6px;
+}
+
+.mvc-etapa-botao {
+    margin-top: 10px;
+    padding: 11px 18px;
+    border: none;
+    border-radius: 8px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.15s ease;
+}
+
+.mvc-etapa-botao:hover {
+    background: var(--accent-h);
+}
+
+.mvc-etapa-botao-secundario {
+    margin-left: 0;
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+}
+
+.mvc-etapa-botao-secundario:hover {
+    background: var(--panel);
+    border-color: var(--muted);
+}
+
+.mvc-formulario-opcoes label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 4px;
+    color: var(--text);
+    font-size: 14px;
+    border-bottom: 1px solid var(--border);
+}
+
+.mvc-formulario-opcoes label:last-child {
+    border-bottom: none;
+}
+
+.mvc-formulario-opcoes input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--accent);
+}
+
+.mvc-arvore {
+    padding: 16px 18px;
+    margin: 12px 0 20px;
+    background: var(--surface);
+    border-left: 3px solid var(--accent);
+    border-radius: 8px;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    line-height: 1.9;
+    color: var(--text);
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+.mvc-arvore-pasta {
+    color: #f0b429;
+}
+
+.mvc-arvore-arquivo {
+    color: #6ea8fe;
+}
+
+.mvc-arvore-comentario {
+    color: var(--muted);
+    font-style: italic;
+}

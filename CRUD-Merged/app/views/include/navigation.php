@@ -28,7 +28,7 @@ function verificarAtivo($nomeArquivo, $paginaAtual, $queryKey = null, $queryValu
     if ($queryKey === null) {
         return 'active';
     }
-    
+
 
     global $currentSection, $currentTab, $currentStep;
 
@@ -50,8 +50,8 @@ function verificarAtivo($nomeArquivo, $paginaAtual, $queryKey = null, $queryValu
 
 <header class="topbar">
     <div class="topbar-logo">
-        <span class="logo">⚡</span>
-        <h1 class="title">DevStudio <span class="versao">v2</span></h1>
+        <span class="logo"></span>
+        <h1 class="title">DevStudio </h1>
     </div>
 
     <a href="home.php" class="topbar-item <?php echo verificarAtivo('home.php', $paginaAtual); ?>">
@@ -61,7 +61,7 @@ function verificarAtivo($nomeArquivo, $paginaAtual, $queryKey = null, $queryValu
     <a href="configGlobal.php" class="topbar-item <?php echo verificarAtivo('configGlobal.php', $paginaAtual); ?>">
         <span class="sb-icon">⚙</span> Config. Global
     </a>
-    <a href="mvcCreator.php" class="topbar-item <?php echo verificarAtivo('mvcCreator.php', $paginaAtual); ?>">
+    <a href="../projeto/mvcCreator.php" class="topbar-item <?php echo verificarAtivo('mvcCreator.php', $paginaAtual); ?>">
         <span class="sb-icon">⚡</span> MVC Creator
     </a>
     <a href="pageMaker.php" class="topbar-item <?php echo verificarAtivo('pageMaker.php', $paginaAtual); ?>">
@@ -74,9 +74,9 @@ function verificarAtivo($nomeArquivo, $paginaAtual, $queryKey = null, $queryValu
         <span class="sb-icon">📃 </span> Saída </a>
 
     <?php if (defined('URL_BASE')): ?>
-    <a href="<?= URL_BASE ?>/usuarios" class="topbar-item <?php echo $paginaAtual === 'usuario_list.php' ? 'active' : ''; ?>">
-        <span class="sb-icon">👤</span> Usuários
-    </a>
+        <a href="<?= URL_BASE ?>/usuarios" class="topbar-item <?php echo $paginaAtual === 'usuario_list.php' ? 'active' : ''; ?>">
+            <span class="sb-icon">👤</span> Usuários
+        </a>
     <?php endif; ?>
 
     <div class="topbar-actions">
@@ -114,19 +114,19 @@ function verificarAtivo($nomeArquivo, $paginaAtual, $queryKey = null, $queryValu
             <div class="sb-label">MVC Creator</div>
 
             <!-- Agora cada item usa a mesma página mvcCreator.php com parâmetro de etapa -->
-            <a href="mvcCreator.php?step=configurar" class="sb-item <?php echo verificarAtivo('mvcCreator.php', $paginaAtual, 'step', 'configurar'); ?>"> 1 - Configurar Projeto
+            <a href="../projeto/mvcCreator.php?step=configurar" class="sb-item <?php echo verificarAtivo('mvcCreator.php', $paginaAtual, 'step', 'configurar'); ?>"> 1 - Configurar Projeto
             </a>
 
-            <a href="mvcCreator.php?step=tabelas" class="sb-item <?php echo verificarAtivo('mvcCreator.php', $paginaAtual, 'step', 'tabelas'); ?>"> 2 - Tabelas Detectadas
+            <a href="../projeto/mvcCreator.php?step=tabelas" class="sb-item <?php echo verificarAtivo('mvcCreator.php', $paginaAtual, 'step', 'tabelas'); ?>"> 2 - Tabelas Detectadas
             </a>
 
-            <a href="mvcCreator.php?step=opcoes" class="sb-item <?php echo verificarAtivo('mvcCreator.php', $paginaAtual, 'step', 'opcoes'); ?>"> 3 - Opções de Geração
+            <a href="../projeto/mvcCreator.php?step=opcoes" class="sb-item <?php echo verificarAtivo('mvcCreator.php', $paginaAtual, 'step', 'opcoes'); ?>"> 3 - Opções de Geração
             </a>
 
-            <a href="mvcCreator.php?step=estrutura" class="sb-item <?php echo verificarAtivo('mvcCreator.php', $paginaAtual, 'step', 'estrutura'); ?>"> 4 - Estrutura de Arquivos
+            <a href="../projeto/mvcCreator.php?step=estrutura" class="sb-item <?php echo verificarAtivo('mvcCreator.php', $paginaAtual, 'step', 'estrutura'); ?>"> 4 - Estrutura de Arquivos
             </a>
 
-            <a href="mvcCreator.php?step=gerar" class="sb-item <?php echo verificarAtivo('mvcCreator.php', $paginaAtual, 'step', 'gerar'); ?>"> 5 - Gerar e Baixar
+            <a href="../projeto/mvcCreator.php?step=gerar" class="sb-item <?php echo verificarAtivo('mvcCreator.php', $paginaAtual, 'step', 'gerar'); ?>"> 5 - Gerar e Baixar
             </a>
         </div>
 
@@ -156,29 +156,29 @@ function verificarAtivo($nomeArquivo, $paginaAtual, $queryKey = null, $queryValu
 
         <!-- Usuários -->
         <?php if (defined('URL_BASE')): ?>
-        <div id="sb-titulo-usuarios" class="sb-section">
-            <div class="sb-label">Usuários</div>
-            <a href="<?= URL_BASE ?>/usuarios" class="sb-item <?php echo $paginaAtual === 'usuario_list.php' ? 'active' : ''; ?>">
-                <span class="sb-icon">👤</span> Listar Usuários
-            </a>
-            <a href="<?= URL_BASE ?>/usuarios/cadastrar" class="sb-item <?php echo $paginaAtual === 'usuario_create.php' ? 'active' : ''; ?>">
-                <span class="sb-icon">➕</span> Criar Usuário
-            </a>
-        </div>
+            <div id="sb-titulo-usuarios" class="sb-section">
+                <div class="sb-label">Usuários</div>
+                <a href="<?= URL_BASE ?>/usuarios" class="sb-item <?php echo $paginaAtual === 'usuario_list.php' ? 'active' : ''; ?>">
+                    <span class="sb-icon">👤</span> Listar Usuários
+                </a>
+                <a href="<?= URL_BASE ?>/usuarios/cadastrar" class="sb-item <?php echo $paginaAtual === 'usuario_create.php' ? 'active' : ''; ?>">
+                    <span class="sb-icon">➕</span> Criar Usuário
+                </a>
+            </div>
         <?php endif; ?>
 
 
         <!-- Usuários -->
         <?php if (defined('URL_BASE')): ?>
-        <div id="sb-titulo-usuarios" class="sb-section">
-            <div class="sb-label">Projetos</div>
-            <a href="<?= URL_BASE ?>/projetos" class="sb-item <?php echo $paginaAtual === 'usuario_list.php' ? 'active' : ''; ?>">
-                <span class="sb-icon">📝</span> Listar Projetos
-            </a>
-            <a href="<?= URL_BASE ?>/projetos/cadastrar" class="sb-item <?php echo $paginaAtual === 'usuario_create.php' ? 'active' : ''; ?>">
-                <span class="sb-icon">➕</span> Criar Projeto
-            </a>
-        </div>
+            <div id="sb-titulo-usuarios" class="sb-section">
+                <div class="sb-label">Projetos</div>
+                <a href="<?= URL_BASE ?>/projetos" class="sb-item <?php echo $paginaAtual === 'usuario_list.php' ? 'active' : ''; ?>">
+                    <span class="sb-icon">📝</span> Listar Projetos
+                </a>
+                <a href="<?= URL_BASE ?>/projetos/cadastrar" class="sb-item <?php echo $paginaAtual === 'usuario_create.php' ? 'active' : ''; ?>">
+                    <span class="sb-icon">➕</span> Criar Projeto
+                </a>
+            </div>
         <?php endif; ?>
 
         <!-- Historico -->
