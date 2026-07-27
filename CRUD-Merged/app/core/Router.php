@@ -27,13 +27,13 @@ class Router {
         $uri    = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         $method = strtoupper($_SERVER['REQUEST_METHOD']);
         
-        // Remove o path base da URI
-        $basePath = '/integrador/CRUD-Usuarios/public';
+        // Remove o path base da URI 
+        $basePath = '/integrador/CRUD-Merged/public';
         if (strpos($uri, $basePath) === 0) {
             $uri = substr($uri, strlen($basePath));
-            if (empty($uri)) {
-                $uri = '/';
-            }
+        }
+        if (empty($uri)) {
+            $uri = '/';
         }
 
         foreach ($this->routes as $route) {
