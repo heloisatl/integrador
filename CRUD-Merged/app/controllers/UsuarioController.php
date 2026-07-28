@@ -53,7 +53,8 @@ class UsuarioController extends Controller {
         if ($this->service->createUsuario($dados)) {
             $this->redirect(URL_BASE . '/usuarios');
         } else {
-            $this->redirect(URL_BASE . '/usuarios/cadastrar');
+            $dados['erro'] = 'Não foi possível cadastrar o usuário. Verifique os dados informados.';
+            $this->view('usuarios/usuario_create', $dados);
         }
     }
 

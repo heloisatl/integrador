@@ -6,8 +6,8 @@
     }
 
     .auth-card {
-        max-width: 460px;
-        margin: 70px auto;
+        max-width: 500px;
+        margin: 80px auto;
         padding: 32px;
         border-radius: 20px;
         background: rgba(255,255,255,0.08);
@@ -80,23 +80,11 @@
         border: 1px solid rgba(34,197,94,0.24);
         margin-bottom: 16px;
     }
-
-    .links {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 16px;
-        font-size: 14px;
-    }
-
-    .links a {
-        color: #c7d2fe;
-        text-decoration: none;
-    }
 </style>
 
 <div class="auth-card">
-    <h1 class="auth-title">Entrar no sistema</h1>
-    <p class="auth-subtitle">Informe seu e-mail e senha para acessar o painel.</p>
+    <h1 class="auth-title">Recuperar senha</h1>
+    <p class="auth-subtitle">Informe o e-mail cadastrado para receber o link de redefinição.</p>
 
     <?php if (!empty($sucesso)) : ?>
         <div class="success"><?= htmlspecialchars($sucesso) ?></div>
@@ -106,26 +94,14 @@
         <div class="alert"><?= htmlspecialchars($erro) ?></div>
     <?php endif; ?>
 
-    <form method="POST" action="<?= URL_BASE ?>/logar">
+    <form method="POST" action="<?= URL_BASE ?>/recuperar-senha">
         <div class="form-group">
             <label for="email">E-mail</label>
             <input type="email" id="email" name="email" required>
         </div>
 
-        <div class="form-group">
-            <label for="senha">Senha</label>
-            <input type="password" id="senha" name="senha" required>
-        </div>
-
-        <button type="submit" class="btn">Entrar</button>
+        <button type="submit" class="btn">Enviar instruções</button>
     </form>
 
-    <div class="links">
-        <a href="<?= URL_BASE ?>/recuperar-senha">Esqueceu a senha?</a>
-        <a href="<?= URL_BASE ?>/projetos">Continuar sem login</a>
-    </div>
-
-    <div class="links" style="justify-content:center; margin-top:10px;">
-        <a href="<?= URL_BASE ?>/cadastro">Se cadastrar</a>
-    </div>
+    <p style="margin-top:16px;color:#cbd5e1;">Se o e-mail existir em nosso sistema, você verá o link de recuperação na próxima tela.</p>
 </div>

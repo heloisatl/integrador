@@ -5,6 +5,10 @@ $currentSection = $_GET['section'] ?? '';
 $currentTab = $_GET['tab'] ?? '';
 $currentStep = $_GET['step'] ?? '';
 
+function usuarioEhAdmin(): bool {
+    return isset($_SESSION['usuario_logado']) && strtolower($_SESSION['usuario_logado']->getTipoPerfil()) === 'admin';
+}
+
 if ($paginaAtual === 'PageMaker.php' && $currentSection === '') {
     $currentSection = 'cabecalho';
 }
@@ -73,7 +77,7 @@ function verificarAtivo($nomeArquivo, $paginaAtual, $queryKey = null, $queryValu
     <a href="saida.php" class="topbar-item <?php echo verificarAtivo('saida.php', $paginaAtual); ?>">
         <span class="sb-icon">📃 </span> Saída </a>
 
-    <?php if (defined('URL_BASE')): ?>
+    <?php if (defined('URL_BASE') && usuarioEhAdmin()): ?>
         <a href="<?= URL_BASE ?>/usuarios" class="topbar-item <?php echo $paginaAtual === 'usuario_list.php' ? 'active' : ''; ?>">
             <span class="sb-icon">👤</span> Usuários
         </a>
@@ -83,6 +87,11 @@ function verificarAtivo($nomeArquivo, $paginaAtual, $queryKey = null, $queryValu
         <button class="trocar-tema" onclick="toggleGlobalTheme()">
             🌓 Alternar Tema
         </button>
+        <?php if (isset($_SESSION['usuario_logado'])): ?>
+            <a href="<?= URL_BASE ?>/logout" class="trocar-tema">Sair</a>
+        <?php else: ?>
+            <a href="<?= URL_BASE ?>/login" class="trocar-tema">Entrar</a>
+        <?php endif; ?>
     </div>
 </header>
 
@@ -155,7 +164,7 @@ function verificarAtivo($nomeArquivo, $paginaAtual, $queryKey = null, $queryValu
         </div>
 
         <!-- Usuários -->
-        <?php if (defined('URL_BASE')): ?>
+        <?php if (defined('URL_BASE') && usuarioEhAdmin()): ?>
             <div id="sb-titulo-usuarios" class="sb-section">
                 <div class="sb-label">Usuários</div>
                 <a href="<?= URL_BASE ?>/usuarios" class="sb-item <?php echo $paginaAtual === 'usuario_list.php' ? 'active' : ''; ?>">

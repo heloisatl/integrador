@@ -121,6 +121,12 @@
 </div>
 
 <div class="form-container">
+    <?php if (!empty($erro)) : ?>
+        <div class="alert" style="margin-bottom: 16px; padding: 12px; border-radius: 8px; background: rgba(240, 68, 68, 0.12); color: #b42318; border: 1px solid rgba(240, 68, 68, 0.2);">
+            <?= htmlspecialchars($erro) ?>
+        </div>
+    <?php endif; ?>
+
     <form method="POST" action="<?= URL_BASE ?>/usuarios/salvar">
         <div class="form-group">
             <label for="nome">Nome Completo *</label>

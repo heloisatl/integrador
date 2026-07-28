@@ -6,8 +6,8 @@
     }
 
     .auth-card {
-        max-width: 460px;
-        margin: 70px auto;
+        max-width: 480px;
+        margin: 60px auto;
         padding: 32px;
         border-radius: 20px;
         background: rgba(255,255,255,0.08);
@@ -63,6 +63,18 @@
         margin-top: 8px;
     }
 
+    .link-row {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 16px;
+        font-size: 14px;
+    }
+
+    .link-row a {
+        color: #c7d2fe;
+        text-decoration: none;
+    }
+
     .alert {
         padding: 12px;
         border-radius: 10px;
@@ -71,42 +83,22 @@
         border: 1px solid rgba(248,113,113,0.24);
         margin-bottom: 16px;
     }
-
-    .success {
-        padding: 12px;
-        border-radius: 10px;
-        background: rgba(34,197,94,0.16);
-        color: #dcfce7;
-        border: 1px solid rgba(34,197,94,0.24);
-        margin-bottom: 16px;
-    }
-
-    .links {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 16px;
-        font-size: 14px;
-    }
-
-    .links a {
-        color: #c7d2fe;
-        text-decoration: none;
-    }
 </style>
 
 <div class="auth-card">
-    <h1 class="auth-title">Entrar no sistema</h1>
-    <p class="auth-subtitle">Informe seu e-mail e senha para acessar o painel.</p>
-
-    <?php if (!empty($sucesso)) : ?>
-        <div class="success"><?= htmlspecialchars($sucesso) ?></div>
-    <?php endif; ?>
+    <h1 class="auth-title">Criar conta</h1>
+    <p class="auth-subtitle">Cadastre-se para acessar o painel.</p>
 
     <?php if (!empty($erro)) : ?>
         <div class="alert"><?= htmlspecialchars($erro) ?></div>
     <?php endif; ?>
 
-    <form method="POST" action="<?= URL_BASE ?>/logar">
+    <form method="POST" action="<?= URL_BASE ?>/cadastro/salvar">
+        <div class="form-group">
+            <label for="nome">Nome</label>
+            <input type="text" id="nome" name="nome" required>
+        </div>
+
         <div class="form-group">
             <label for="email">E-mail</label>
             <input type="email" id="email" name="email" required>
@@ -117,15 +109,11 @@
             <input type="password" id="senha" name="senha" required>
         </div>
 
-        <button type="submit" class="btn">Entrar</button>
+        <button type="submit" class="btn">Cadastrar</button>
     </form>
 
-    <div class="links">
-        <a href="<?= URL_BASE ?>/recuperar-senha">Esqueceu a senha?</a>
-        <a href="<?= URL_BASE ?>/projetos">Continuar sem login</a>
-    </div>
-
-    <div class="links" style="justify-content:center; margin-top:10px;">
-        <a href="<?= URL_BASE ?>/cadastro">Se cadastrar</a>
+    <div class="link-row">
+        <a href="<?= URL_BASE ?>/login">Já tenho conta</a>
+        <a href="<?= URL_BASE ?>/explorar">Continuar sem login</a>
     </div>
 </div>

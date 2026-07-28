@@ -22,12 +22,15 @@ class ProjetoController extends Controller{
     }
 
 
-    public function cadastrar(){
+    public function index(): void {
+        $this->view('projetos/home');
+    }
 
+    public function cadastrar(): void {
         $this->view("projetos/projeto_create");
     }
 
-    public function editar(){
+    public function editar(): void {
         
         $data = [];
         $id_projeto = $_POST['id_projeto'];

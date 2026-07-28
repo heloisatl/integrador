@@ -12,6 +12,11 @@ class AutenticacaoService {
     }
 
     public function logar(string $email, string $senha): bool {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        $email = trim($email);
         $usuario = $this->usuarioRepository->getUsuarioByEmail($email);
 
         if ($usuario && password_verify($senha, $usuario->getSenhaUsuario())) {
@@ -23,6 +28,11 @@ class AutenticacaoService {
     }
 
     public function logout(): void {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        unset($_SESSION['usuario_logado']);
         session_destroy();
     }
 }

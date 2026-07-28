@@ -53,6 +53,25 @@ class UsuarioRepository {
         return $stmt->execute();
     }
 
+    public function emailExiste(string $email, ?int $idExcluido = null): bool {
+        $sql = 'SELECT id_usuario FROM usuario WHERE LOWER(email) = LOWER(:email)';
+
+        if ($idExcluido !== null) {
+            $sql .= ' AND id_usuario != :id';
+        }
+
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindValue(':email', $email);
+
+        if ($idExcluido !== null) {
+            $stmt->bindValue(':id', $idExcluido, PDO::PARAM_INT);
+        }
+
+        $stmt->execute();
+
+        return (bool) $stmt->fetchColumn();
+    }
+
     public function createUsuario(array $dados): bool {
         $sql = "INSERT INTO usuario (nome, email, senha_usuario, usuario_banco, servidor, tipo_perfil) 
                 VALUES (:nome, :email, :senha, :usuario_banco, :servidor, :tipo_perfil)";
@@ -64,6 +83,15 @@ class UsuarioRepository {
         $stmt->bindValue(':usuario_banco', $dados['usuario_banco'] ?? '');
         $stmt->bindValue(':servidor', $dados['servidor'] ?? 'localhost');
         $stmt->bindValue(':tipo_perfil', $dados['tipo_perfil']);
+
+        return $stmt->execute();
+    }
+
+    public function updateSenhaPorEmail(string $email, string $senha): bool {
+        $sql = 'UPDATE usuario SET senha_usuario = :senha WHERE LOWER(email) = LOWER(:email)';
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindValue(':senha', password_hash($senha, PASSWORD_DEFAULT));
+        $stmt->bindValue(':email', $email);
 
         return $stmt->execute();
     }
