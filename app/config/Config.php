@@ -15,7 +15,10 @@ if (session_status() === PHP_SESSION_NONE) {
 
 // Configuração do sistema
 define('APP_NAME', 'DevStudio');
-define('URL_BASE', 'http://localhost:8080');
+//define('URL_BASE', 'http://localhost:8080');
+
+//conexao buche (comentar dnv quando for usar)
+define('URL_BASE', 'http://localhost:8081'); 
 
 define('URL_BASE_CSS', URL_BASE . '/assets/css');
 
