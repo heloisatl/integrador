@@ -84,14 +84,32 @@ function verificarAtivo($nomeArquivo, $paginaAtual, $queryKey = null, $queryValu
     <?php endif; ?>
 
     <div class="topbar-actions">
-        <button class="trocar-tema" onclick="toggleGlobalTheme()">
-            Alternar Tema
-        </button>
-        <?php if (isset($_SESSION['usuario_logado'])): ?>
-            <a href="<?= URL_BASE ?>/logout" class="trocar-tema">Sair</a>
-        <?php else: ?>
-            <a href="<?= URL_BASE ?>/login" class="trocar-tema">Entrar</a>
-        <?php endif; ?>
+        <div class="profile-dropdown-container">
+            <button type="button" class="profile-btn" id="profileDropdownBtn" onclick="toggleProfileMenu(event)">
+                Perfil
+            </button>
+            <div class="profile-dropdown-menu" id="profileDropdownMenu">
+                <?php if (isset($_SESSION['usuario_logado'])): 
+                    $usuarioLogado = $_SESSION['usuario_logado'];
+                ?>
+                    <div class="profile-dropdown-header">
+                        <div class="profile-user-name"><?= htmlspecialchars($usuarioLogado->getNome()) ?></div>
+                        <div class="profile-user-email"><?= htmlspecialchars($usuarioLogado->getEmail()) ?></div>
+                    </div>
+                    <div class="profile-dropdown-divider"></div>
+                <?php endif; ?>
+
+                <button type="button" class="profile-dropdown-item" onclick="toggleGlobalTheme()">
+                    Alternar Tema
+                </button>
+
+                <?php if (isset($_SESSION['usuario_logado'])): ?>
+                    <a href="<?= URL_BASE ?>/logout" class="profile-dropdown-item profile-dropdown-danger">Sair</a>
+                <?php else: ?>
+                    <a href="<?= URL_BASE ?>/login" class="profile-dropdown-item">Entrar</a>
+                <?php endif; ?>
+            </div>
+        </div>
     </div>
 </header>
 

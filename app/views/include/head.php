@@ -134,14 +134,120 @@
             padding: 1px 4px;
         }
 
-        .trocar-tema {
+        .topbar-actions {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .profile-dropdown-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .profile-btn {
             background: var(--panel);
             border: 1px solid var(--border);
             color: var(--text);
-            padding: 6px 12px;
-            border-radius: 6px;
+            padding: 7px 14px;
+            border-radius: 8px;
             cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .profile-btn:hover {
+            background-color: var(--surface);
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .profile-dropdown-menu {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: calc(100% + 8px);
+            background-color: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+            min-width: 200px;
+            padding: 8px 0;
+            z-index: 1050;
+        }
+
+        .profile-dropdown-menu.active {
+            display: block;
+            animation: profileMenuFadeIn 0.2s ease-out forwards;
+        }
+
+        @keyframes profileMenuFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .profile-dropdown-header {
+            padding: 8px 16px 10px 16px;
+        }
+
+        .profile-user-name {
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text);
+            word-break: break-word;
+        }
+
+        .profile-user-email {
+            font-size: 12px;
+            color: var(--muted);
+            word-break: break-word;
+            margin-top: 2px;
+        }
+
+        .profile-dropdown-divider {
+            height: 1px;
+            background-color: var(--border);
+            margin: 6px 0;
+        }
+
+        .profile-dropdown-item {
+            display: block;
+            width: 100%;
+            padding: 10px 16px;
+            background: transparent;
+            border: none;
+            color: var(--text);
+            text-align: left;
+            text-decoration: none;
             font-size: 13px;
+            cursor: pointer;
+            transition: background-color 0.2s ease, color 0.2s ease;
+            box-sizing: border-box;
+        }
+
+        .profile-dropdown-item:hover {
+            background-color: var(--surface);
+            color: var(--accent);
+        }
+
+        .profile-dropdown-danger {
+            color: #f44336;
+        }
+
+        .profile-dropdown-danger:hover {
+            background-color: rgba(244, 67, 54, 0.1);
+            color: #d32f2f;
         }
 
         .layout-wrapper {
@@ -225,8 +331,36 @@
         function toggleGlobalTheme() {
             const html = document.documentElement;
             const currentTheme = html.getAttribute('data-theme');
-            html.setAttribute('data-theme', currentTheme === 'dark' ? 'light' : 'dark');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+            //salva o tema selecionado no cache do navegador
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+
         }
+
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                document.documentElement.setAttribute('data-theme', savedTheme);
+            }
+        })();
+
+        function toggleProfileMenu(event) {
+            if (event) event.stopPropagation();
+            const menu = document.getElementById('profileDropdownMenu');
+            if (menu) {
+                menu.classList.toggle('active');
+            }
+        }
+
+        document.addEventListener('click', function(e) {
+            const container = document.querySelector('.profile-dropdown-container');
+            const menu = document.getElementById('profileDropdownMenu');
+            if (container && menu && !container.contains(e.target)) {
+                menu.classList.remove('active');
+            }
+        });
     </script>
 </head>
 
