@@ -142,7 +142,7 @@
     <h1 class="page-title">Usuários</h1>
     <div class="page-actions">
         <a href="<?= URL_BASE ?>/usuarios/cadastrar" class="btn btn-primary">
-            ➕ Novo Usuário
+            Novo Usuário
         </a>
     </div>
 </div>
@@ -152,7 +152,7 @@
         <div class="empty-state-icon">👤</div>
         <div class="empty-state-text">Nenhum usuário cadastrado</div>
         <a href="<?= URL_BASE ?>/usuarios/cadastrar" class="btn btn-primary">
-            ➕ Criar Primeiro Usuário
+            Criar Primeiro Usuário
         </a>
     </div>
 <?php else: ?>
@@ -177,10 +177,10 @@
                     <td>
                         <div class="table-actions">
                             <a href="<?= URL_BASE ?>/usuarios/editar?id=<?= $usuario['id_usuario'] ?>" class="btn btn-edit btn-sm">
-                                ✏️ Editar
+                                Editar
                             </a>
                             <a href="<?= URL_BASE ?>/usuarios/excluir?id=<?= $usuario['id_usuario'] ?>" class="btn btn-danger btn-sm" onclick="return confirm('Tem certeza que deseja excluir este usuário?');">
-                                🗑️ Excluir
+                                Excluir
                             </a>
                         </div>
                     </td>

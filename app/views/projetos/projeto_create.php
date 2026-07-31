@@ -212,7 +212,7 @@
             </div>
             <div class="field" style="justify-content:flex-end">
             <label>&nbsp;</label>
-            <button class="btn btn-ghost btn-sm" type="button" onclick="carregarBanco()" style="align-self:flex-start">🔄 Recarregar bancos</button>
+            <button class="btn btn-ghost btn-sm" type="button" onclick="carregarBanco()" style="align-self:flex-start">Recarregar bancos</button>
             </div>
         </div>
         <div id="mvc-s1-msg"></div>

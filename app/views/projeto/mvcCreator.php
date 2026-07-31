@@ -45,15 +45,15 @@
                 echo '<label>Banco de Dados</label>';
                 echo '<div class="mvc-linha-banco">'; // Ajustado para mvc-linha-banco
                 echo '<select name="banco" id="banco"><option value="">— preencha a senha para carregar —</option><option value="EXEMPLO_BANCO">EXEMPLO</option></select>';
-                echo '<button type="button" class="mvc-etapa-botao mvc-etapa-botao-secundario">🔄 Recarregar bancos</button>';
+                echo '<button type="button" class="mvc-etapa-botao mvc-etapa-botao-secundario">Recarregar bancos</button>';
                 echo '</div>';
                 echo '</div>';
                 
                 echo '</div>'; // Fecha mvc-grade-formulario
 
                 echo '<div class="mvc-acoes">'; // Ajustado para mvc-acoes
-                echo '<button class="mvc-etapa-botao">⚡ Conectar e Detectar Tabelas</button>';
-                echo '<button class="mvc-etapa-botao mvc-etapa-botao-secundario">📁 Exemplo: banco "oficina"</button>';
+                echo '<button class="mvc-etapa-botao">Conectar e Detectar Tabelas</button>';
+                echo '<button class="mvc-etapa-botao mvc-etapa-botao-secundario">Exemplo: banco "oficina"</button>';
                 echo '</div>';
 
                 echo '</div>'; // Fecha mvc-etapa-cartao

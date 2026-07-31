@@ -59,33 +59,33 @@ function verificarAtivo($nomeArquivo, $paginaAtual, $queryKey = null, $queryValu
     </div>
 
     <a href="home.php" class="topbar-item <?php echo verificarAtivo('home.php', $paginaAtual); ?>">
-        <span class="sb-icon">🏠</span> Início
+        <span class="sb-icon"></span> Início
     </a>
 
     <a href="configGlobal.php" class="topbar-item <?php echo verificarAtivo('configGlobal.php', $paginaAtual); ?>">
-        <span class="sb-icon">⚙</span> Config. Global
+        <span class="sb-icon"></span> Config. Global
     </a>
     <a href="../projeto/mvcCreator.php" class="topbar-item <?php echo verificarAtivo('mvcCreator.php', $paginaAtual); ?>">
-        <span class="sb-icon">⚡</span> MVC Creator
+        <span class="sb-icon"></span> MVC Creator
     </a>
     <a href="pageMaker.php" class="topbar-item <?php echo verificarAtivo('pageMaker.php', $paginaAtual); ?>">
-        <span class="sb-icon">🎨</span> Page Maker </a>
+        <span class="sb-icon"></span> Page Maker </a>
 
     <a href="historico.php" class="topbar-item <?php echo verificarAtivo('historico.php', $paginaAtual); ?>">
-        <span class="sb-icon">📁</span> Histórico </a>
+        <span class="sb-icon"></span> Histórico </a>
 
     <a href="saida.php" class="topbar-item <?php echo verificarAtivo('saida.php', $paginaAtual); ?>">
-        <span class="sb-icon">📃 </span> Saída </a>
+        <span class="sb-icon"></span> Saída </a>
 
     <?php if (defined('URL_BASE') && usuarioEhAdmin()): ?>
         <a href="<?= URL_BASE ?>/usuarios" class="topbar-item <?php echo $paginaAtual === 'usuario_list.php' ? 'active' : ''; ?>">
-            <span class="sb-icon">👤</span> Usuários
+            <span class="sb-icon"></span> Usuários
         </a>
     <?php endif; ?>
 
     <div class="topbar-actions">
         <button class="trocar-tema" onclick="toggleGlobalTheme()">
-            🌓 Alternar Tema
+            Alternar Tema
         </button>
         <?php if (isset($_SESSION['usuario_logado'])): ?>
             <a href="<?= URL_BASE ?>/logout" class="trocar-tema">Sair</a>
@@ -106,15 +106,15 @@ function verificarAtivo($nomeArquivo, $paginaAtual, $queryKey = null, $queryValu
             <div class="sb-label">Menu Principal</div>
 
             <a href="home.php" class="sb-item <?php echo verificarAtivo('home.php', $paginaAtual); ?>">
-                <span class="sb-icon">🏠</span> Visão Geral
+                <span class="sb-icon"></span> Visão Geral
             </a>
 
             <a href="configGlobal.php" class="sb-item <?php echo verificarAtivo('configGlobal.php', $paginaAtual); ?>">
-                <span class="sb-icon">⚙</span> Config. Globais
+                <span class="sb-icon"></span> Config. Globais
             </a>
 
             <a href="guia.php" class="sb-item <?php echo verificarAtivo('guia.php', $paginaAtual); ?>">
-                <span class="sb-icon">❓</span> Guia Rápido
+                <span class="sb-icon"></span> Guia Rápido
             </a>
         </div>
 
@@ -139,26 +139,25 @@ function verificarAtivo($nomeArquivo, $paginaAtual, $queryKey = null, $queryValu
             </a>
         </div>
 
-
         <!-- Page Maker -->
         <div id="sb-titulo-PageMaker" class="sb-section">
             <div class="sb-label">Page Maker</div>
 
-            <a href="PageMaker.php?section=cabecalho" class="sb-item <?php echo verificarAtivo('PageMaker.php', $paginaAtual, 'section', 'cabecalho'); ?>"> <span class="sb-icon">📌</span>Cabeçalho
+            <a href="PageMaker.php?section=cabecalho" class="sb-item <?php echo verificarAtivo('PageMaker.php', $paginaAtual, 'section', 'cabecalho'); ?>"> <span class="sb-icon"></span> Cabeçalho
             </a>
 
-            <a href="PageMaker.php?section=navegacao" class="sb-item <?php echo verificarAtivo('PageMaker.php', $paginaAtual, 'section', 'navegacao'); ?>"> <span class="sb-icon">📎</span> Navegação
-            </a>
-
-
-            <a href="PageMaker.php?section=conteudo" class="sb-item <?php echo verificarAtivo('PageMaker.php', $paginaAtual, 'section', 'conteudo'); ?>"> <span class="sb-icon">📝</span>Conteúdo
+            <a href="PageMaker.php?section=navegacao" class="sb-item <?php echo verificarAtivo('PageMaker.php', $paginaAtual, 'section', 'navegacao'); ?>"> <span class="sb-icon"></span> Navegação
             </a>
 
 
-            <a href="PageMaker.php?section=elementos" class="sb-item <?php echo verificarAtivo('PageMaker.php', $paginaAtual, 'section', 'elementos'); ?>"> <span class="sb-icon">➕</span>Elementos Extras
+            <a href="PageMaker.php?section=conteudo" class="sb-item <?php echo verificarAtivo('PageMaker.php', $paginaAtual, 'section', 'conteudo'); ?>"> <span class="sb-icon"></span> Conteúdo
             </a>
 
-            <a href="PageMaker.php?section=previsa" class="sb-item <?php echo verificarAtivo('PageMaker.php', $paginaAtual, 'section', 'previsa'); ?>"> <span class="sb-icon">👁️</span>Prévia
+
+            <a href="PageMaker.php?section=elementos" class="sb-item <?php echo verificarAtivo('PageMaker.php', $paginaAtual, 'section', 'elementos'); ?>"> <span class="sb-icon"></span> Elementos Extras
+            </a>
+
+            <a href="PageMaker.php?section=previsa" class="sb-item <?php echo verificarAtivo('PageMaker.php', $paginaAtual, 'section', 'previsa'); ?>"> <span class="sb-icon"></span> Prévia
             </a>
 
         </div>
@@ -168,10 +167,10 @@ function verificarAtivo($nomeArquivo, $paginaAtual, $queryKey = null, $queryValu
             <div id="sb-titulo-usuarios" class="sb-section">
                 <div class="sb-label">Usuários</div>
                 <a href="<?= URL_BASE ?>/usuarios" class="sb-item <?php echo $paginaAtual === 'usuario_list.php' ? 'active' : ''; ?>">
-                    <span class="sb-icon">👤</span> Listar Usuários
+                    <span class="sb-icon"></span> Listar Usuários
                 </a>
                 <a href="<?= URL_BASE ?>/usuarios/cadastrar" class="sb-item <?php echo $paginaAtual === 'usuario_create.php' ? 'active' : ''; ?>">
-                    <span class="sb-icon">➕</span> Criar Usuário
+                    <span class="sb-icon"></span> Criar Usuário
                 </a>
             </div>
         <?php endif; ?>
@@ -182,10 +181,10 @@ function verificarAtivo($nomeArquivo, $paginaAtual, $queryKey = null, $queryValu
             <div id="sb-titulo-usuarios" class="sb-section">
                 <div class="sb-label">Projetos</div>
                 <a href="<?= URL_BASE ?>/projetos" class="sb-item <?php echo $paginaAtual === 'usuario_list.php' ? 'active' : ''; ?>">
-                    <span class="sb-icon">📝</span> Listar Projetos
+                    <span class="sb-icon"></span> Listar Projetos
                 </a>
                 <a href="<?= URL_BASE ?>/projetos/cadastrar" class="sb-item <?php echo $paginaAtual === 'usuario_create.php' ? 'active' : ''; ?>">
-                    <span class="sb-icon">➕</span> Criar Projeto
+                    <span class="sb-icon"></span> Criar Projeto
                 </a>
             </div>
         <?php endif; ?>
@@ -193,10 +192,10 @@ function verificarAtivo($nomeArquivo, $paginaAtual, $queryKey = null, $queryValu
         <!-- Historico -->
         <div id="sb-titulo-historico" class="sb-section">
             <div class="sb-label">Histórico</div>
-            <a href="historico.php?tab=visualizar" class="sb-item <?php echo verificarAtivo('historico.php', $paginaAtual, 'tab', 'visualizar'); ?>"> <span class="sb-icon">�</span>Visualizar Histórico
+            <a href="historico.php?tab=visualizar" class="sb-item <?php echo verificarAtivo('historico.php', $paginaAtual, 'tab', 'visualizar'); ?>"> <span class="sb-icon"></span> Visualizar Histórico
             </a>
 
-            <a href="historico.php?tab=exportar" class="sb-item <?php echo verificarAtivo('historico.php', $paginaAtual, 'tab', 'exportar'); ?>"> <span class="sb-icon">⬇️</span>Exportar todos
+            <a href="historico.php?tab=exportar" class="sb-item <?php echo verificarAtivo('historico.php', $paginaAtual, 'tab', 'exportar'); ?>"> <span class="sb-icon"></span> Exportar todos
             </a>
         </div>
 
@@ -205,16 +204,16 @@ function verificarAtivo($nomeArquivo, $paginaAtual, $queryKey = null, $queryValu
         <div id="sb-titulo-saida" class="sb-section">
             <div class="sb-label">Saida</div>
 
-            <a href="saida.php?tab=todos" class="sb-item <?php echo verificarAtivo('saida.php', $paginaAtual, 'tab', 'todos'); ?>"> <span class="sb-icon">📝</span>Todos os arquivos
+            <a href="saida.php?tab=todos" class="sb-item <?php echo verificarAtivo('saida.php', $paginaAtual, 'tab', 'todos'); ?>"> <span class="sb-icon"></span> Todos os arquivos
             </a>
 
-            <a href="saida.php?tab=mvc" class="sb-item <?php echo verificarAtivo('saida.php', $paginaAtual, 'tab', 'mvc'); ?>"> <span class="sb-icon">⚡</span>Arquivos MVC
+            <a href="saida.php?tab=mvc" class="sb-item <?php echo verificarAtivo('saida.php', $paginaAtual, 'tab', 'mvc'); ?>"> <span class="sb-icon"></span> Arquivos MVC
             </a>
 
-            <a href="saida.php?tab=pagemaker" class="sb-item <?php echo verificarAtivo('saida.php', $paginaAtual, 'tab', 'pagemaker'); ?>"> <span class="sb-icon">🎨</span>Arquivos PageMaker
+            <a href="saida.php?tab=pagemaker" class="sb-item <?php echo verificarAtivo('saida.php', $paginaAtual, 'tab', 'pagemaker'); ?>"> <span class="sb-icon"></span> Arquivos PageMaker
             </a>
 
-            <a href="saida.php?tab=baixar" class="sb-item <?php echo verificarAtivo('saida.php', $paginaAtual, 'tab', 'baixar'); ?>"> <span class="sb-icon">⬇️</span>Baixar Tudo
+            <a href="saida.php?tab=baixar" class="sb-item <?php echo verificarAtivo('saida.php', $paginaAtual, 'tab', 'baixar'); ?>"> <span class="sb-icon"></span> Baixar Tudo
             </a>
     </aside>
 

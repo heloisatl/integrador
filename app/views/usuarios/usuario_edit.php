@@ -180,10 +180,10 @@
 
         <div class="form-actions">
             <button type="submit" class="btn btn-primary">
-                ✅ Atualizar Usuário
+                Atualizar Usuário
             </button>
             <a href="<?= URL_BASE ?>/usuarios" class="btn btn-secondary">
-                ❌ Cancelar
+                Cancelar
             </a>
         </div>
     </form>

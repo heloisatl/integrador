@@ -164,10 +164,10 @@
 
         <div class="form-actions">
             <button type="submit" class="btn btn-primary">
-                ✅ Salvar Usuário
+                Salvar Usuário
             </button>
             <a href="<?= URL_BASE ?>/usuarios" class="btn btn-secondary">
-                ❌ Cancelar
+                Cancelar
             </a>
         </div>
     </form>
