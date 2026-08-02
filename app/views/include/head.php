@@ -11,34 +11,42 @@
 
     <style>
         * {
+
             /* Para navegadores baseados no Chromium (Chrome, Edge) */
             ::-webkit-scrollbar {
-            width: 5px;               /* Largura da barra vertical */
-            height: 10px;              /* Altura da barra horizontal */
+                width: 5px;
+                /* Largura da barra vertical */
+                height: 10px;
+                /* Altura da barra horizontal */
             }
 
             ::-webkit-scrollbar-track {
-            background: #f1f1f1;       /* Cor do fundo (trilho) */
-            border-radius: 0px;
+                background: #f1f1f1;
+                /* Cor do fundo (trilho) */
+                border-radius: 0px;
             }
 
             ::-webkit-scrollbar-thumb {
-            background: #888;          /* Cor da barra de rolagem */
-            border-radius: 0px;
+                background: #888;
+                /* Cor da barra de rolagem */
+                border-radius: 0px;
             }
 
             ::-webkit-scrollbar-thumb:hover {
-            background: #555;          /* Cor da barra ao passar o mouse */
+                background: #555;
+                /* Cor da barra ao passar o mouse */
             }
 
             /* Para o Firefox */
             html {
-            scrollbar-width: thin;     /* Deixa a barra mais fina */
-            scrollbar-color: #888 #f1f1f1; /* Cor da barra e do fundo */
+                scrollbar-width: thin;
+                /* Deixa a barra mais fina */
+                scrollbar-color: #888 #f1f1f1;
+                /* Cor da barra e do fundo */
             }
 
         }
-        
+
         :root {
             --bg: #ffffff;
             --surface: #f5f5f5;
@@ -125,6 +133,11 @@
             font-weight: 700;
         }
 
+        .title-link {
+            text-decoration: none;
+            color: inherit;
+        }
+
         .versao {
             color: var(--text);
             background-color: var(--accent-h);
@@ -191,6 +204,7 @@
                 opacity: 0;
                 transform: translateY(-8px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -322,8 +336,6 @@
             overflow-y: auto;
             background-color: var(--bg);
         }
-
-        
     </style>
 
     <script>

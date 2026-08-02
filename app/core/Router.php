@@ -26,10 +26,11 @@ class Router {
     public function run(): void {
         $uri    = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
         $method = strtoupper($_SERVER['REQUEST_METHOD']);
-        
-        // Remove o path base da URI 
-        $basePath = '/integrador/CRUD-Merged/public';
-        if (strpos($uri, $basePath) === 0) {
+
+        // Remove o path base da URI (calculado dinamicamente em Config.php,
+        // funciona em qualquer pasta/porta/host, não só em uma máquina fixa)
+        $basePath = defined('BASE_PATH') ? BASE_PATH : '';
+        if ($basePath !== '' && strpos($uri, $basePath) === 0) {
             $uri = substr($uri, strlen($basePath));
         }
         if (empty($uri)) {

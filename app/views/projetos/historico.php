@@ -7,7 +7,7 @@
     ?>
 
 
-    <link rel="stylesheet" href="../include/estilos/style.css">
+    <link rel="stylesheet" href="<?= URL_BASE_CSS ?>/paginas.css">
     
     <h2 class="home-h2">historico</h2>
     <p class="home-subtitle">oiwuewiwo </p>

@@ -7,13 +7,13 @@
     // importa a topbar e sidebar integrada e abre a tag main
     include_once(__DIR__ . "/../include/navigation.php");
     ?>
-    <link rel="stylesheet" href="../include/estilos/style.css">
+    <link rel="stylesheet" href="<?= URL_BASE_CSS ?>/paginas.css">
     <!-- main já ta aberta no nagigation -->
 
     <h2 class="home-h2">Configs globais aq</h2>
     <p class="home-subtitle">Gerencie </p>
 
-    <a href="listar.php" class="home-btn">Começar </a>
+    <a href="<?= URL_BASE ?>/projetos" class="home-btn">Começar </a>
     </main>
     <div class="configGlobal-container">
         <p>oioio</p>

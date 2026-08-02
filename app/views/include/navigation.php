@@ -1,6 +1,13 @@
 <?php
-// Identifica automaticamente o nome do arquivo atual (ex: 'home.php', 'mvcCreator.php')
-$paginaAtual = basename($_SERVER['PHP_SELF']);
+// Antes essa detecção usava basename($_SERVER['PHP_SELF']), que fazia sentido quando cada página era um arquivo .php separado (home.php, configGlobal.php...
+// Agora TODA requisição passa pelo mesmo front controller (public/index.php),
+// então PHP_SELF sempre retornaria "index.php" e o menu nunca marcaria página ativa corretamente. A detecção agora usa a rota da URL atual.
+$requestPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
+$paginaAtual = trim(basename(rtrim($requestPath, '/')), '/');
+if ($paginaAtual === '' || $paginaAtual === 'index.php') {
+    $paginaAtual = 'projetos'; // rota "/projetos" = home
+}
+
 $currentSection = $_GET['section'] ?? '';
 $currentTab = $_GET['tab'] ?? '';
 $currentStep = $_GET['step'] ?? '';
@@ -9,23 +16,25 @@ function usuarioEhAdmin(): bool {
     return isset($_SESSION['usuario_logado']) && strtolower($_SESSION['usuario_logado']->getTipoPerfil()) === 'admin';
 }
 
-if ($paginaAtual === 'PageMaker.php' && $currentSection === '') {
+if ($paginaAtual === 'pagemaker' && $currentSection === '') {
     $currentSection = 'cabecalho';
 }
-if ($paginaAtual === 'historico.php' && $currentTab === '') {
+if ($paginaAtual === 'historico' && $currentTab === '') {
     $currentTab = 'visualizar';
 }
-if ($paginaAtual === 'saida.php' && $currentTab === '') {
+if ($paginaAtual === 'saida' && $currentTab === '') {
     $currentTab = 'todos';
 }
-if ($paginaAtual === 'mvcCreator.php' && $currentStep === '') {
+if ($paginaAtual === 'mvc-creator' && $currentStep === '') {
     $currentStep = 'configurar';
 }
 
-// Função auxiliar para injetar a classe 'active' de forma dinâmica
-function verificarAtivo($nomeArquivo, $paginaAtual, $queryKey = null, $queryValue = null)
+// Função auxiliar para injetar a classe 'active' de forma dinâmica.
+// $slug agora é o pedaço final da rota (ex: 'projetos', 'config-global',
+// 'mvc-creator', 'pagemaker', 'historico', 'saida', 'guia').
+function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = null)
 {
-    if ($nomeArquivo !== $paginaAtual) {
+    if ($slug !== $paginaAtual) {
         return '';
     }
 
@@ -55,26 +64,26 @@ function verificarAtivo($nomeArquivo, $paginaAtual, $queryKey = null, $queryValu
 <header class="topbar">
     <div class="topbar-logo">
         <span class="logo"></span>
-        <h1 class="title">DevStudio </h1>
+        <h1 class="title"> <a class="title-link" href="<?= URL_BASE ?>/projetos">DevStudio </a></h1>
     </div>
 
-    <a href="home.php" class="topbar-item <?php echo verificarAtivo('home.php', $paginaAtual); ?>">
+    <a href="<?= URL_BASE ?>/projetos" class="topbar-item <?php echo verificarAtivo('projetos', $paginaAtual); ?>">
         <span class="sb-icon"></span> Início
     </a>
 
-    <a href="configGlobal.php" class="topbar-item <?php echo verificarAtivo('configGlobal.php', $paginaAtual); ?>">
+    <a href="<?= URL_BASE ?>/projetos/config-global" class="topbar-item <?php echo verificarAtivo('config-global', $paginaAtual); ?>">
         <span class="sb-icon"></span> Config. Global
     </a>
-    <a href="../projeto/mvcCreator.php" class="topbar-item <?php echo verificarAtivo('mvcCreator.php', $paginaAtual); ?>">
+    <a href="<?= URL_BASE ?>/projetos/mvc-creator" class="topbar-item <?php echo verificarAtivo('mvc-creator', $paginaAtual); ?>">
         <span class="sb-icon"></span> MVC Creator
     </a>
-    <a href="pageMaker.php" class="topbar-item <?php echo verificarAtivo('pageMaker.php', $paginaAtual); ?>">
+    <a href="<?= URL_BASE ?>/projetos/pagemaker" class="topbar-item <?php echo verificarAtivo('pagemaker', $paginaAtual); ?>">
         <span class="sb-icon"></span> Page Maker </a>
 
-    <a href="historico.php" class="topbar-item <?php echo verificarAtivo('historico.php', $paginaAtual); ?>">
+    <a href="<?= URL_BASE ?>/projetos/historico" class="topbar-item <?php echo verificarAtivo('historico', $paginaAtual); ?>">
         <span class="sb-icon"></span> Histórico </a>
 
-    <a href="saida.php" class="topbar-item <?php echo verificarAtivo('saida.php', $paginaAtual); ?>">
+    <a href="<?= URL_BASE ?>/projetos/saida" class="topbar-item <?php echo verificarAtivo('saida', $paginaAtual); ?>">
         <span class="sb-icon"></span> Saída </a>
 
     <?php if (defined('URL_BASE') && usuarioEhAdmin()): ?>
@@ -123,15 +132,15 @@ function verificarAtivo($nomeArquivo, $paginaAtual, $queryKey = null, $queryValu
         <div id="sb-principal" class="sb-section">
             <div class="sb-label">Menu Principal</div>
 
-            <a href="home.php" class="sb-item <?php echo verificarAtivo('home.php', $paginaAtual); ?>">
+            <a href="<?= URL_BASE ?>/projetos" class="sb-item <?php echo verificarAtivo('projetos', $paginaAtual); ?>">
                 <span class="sb-icon"></span> Visão Geral
             </a>
 
-            <a href="configGlobal.php" class="sb-item <?php echo verificarAtivo('configGlobal.php', $paginaAtual); ?>">
+            <a href="<?= URL_BASE ?>/projetos/config-global" class="sb-item <?php echo verificarAtivo('config-global', $paginaAtual); ?>">
                 <span class="sb-icon"></span> Config. Globais
             </a>
 
-            <a href="guia.php" class="sb-item <?php echo verificarAtivo('guia.php', $paginaAtual); ?>">
+            <a href="<?= URL_BASE ?>/projetos/guia" class="sb-item <?php echo verificarAtivo('guia', $paginaAtual); ?>">
                 <span class="sb-icon"></span> Guia Rápido
             </a>
         </div>
@@ -141,19 +150,19 @@ function verificarAtivo($nomeArquivo, $paginaAtual, $queryKey = null, $queryValu
             <div class="sb-label">MVC Creator</div>
 
             <!-- Agora cada item usa a mesma página mvcCreator.php com parâmetro de etapa -->
-            <a href="../projeto/mvcCreator.php?step=configurar" class="sb-item <?php echo verificarAtivo('mvcCreator.php', $paginaAtual, 'step', 'configurar'); ?>"> 1 - Configurar Projeto
+            <a href="<?= URL_BASE ?>/projetos/mvc-creator?step=configurar" class="sb-item <?php echo verificarAtivo('mvc-creator', $paginaAtual, 'step', 'configurar'); ?>"> 1 - Configurar Projeto
             </a>
 
-            <a href="../projeto/mvcCreator.php?step=tabelas" class="sb-item <?php echo verificarAtivo('mvcCreator.php', $paginaAtual, 'step', 'tabelas'); ?>"> 2 - Tabelas Detectadas
+            <a href="<?= URL_BASE ?>/projetos/mvc-creator?step=tabelas" class="sb-item <?php echo verificarAtivo('mvc-creator', $paginaAtual, 'step', 'tabelas'); ?>"> 2 - Tabelas Detectadas
             </a>
 
-            <a href="../projeto/mvcCreator.php?step=opcoes" class="sb-item <?php echo verificarAtivo('mvcCreator.php', $paginaAtual, 'step', 'opcoes'); ?>"> 3 - Opções de Geração
+            <a href="<?= URL_BASE ?>/projetos/mvc-creator?step=opcoes" class="sb-item <?php echo verificarAtivo('mvc-creator', $paginaAtual, 'step', 'opcoes'); ?>"> 3 - Opções de Geração
             </a>
 
-            <a href="../projeto/mvcCreator.php?step=estrutura" class="sb-item <?php echo verificarAtivo('mvcCreator.php', $paginaAtual, 'step', 'estrutura'); ?>"> 4 - Estrutura de Arquivos
+            <a href="<?= URL_BASE ?>/projetos/mvc-creator?step=estrutura" class="sb-item <?php echo verificarAtivo('mvc-creator', $paginaAtual, 'step', 'estrutura'); ?>"> 4 - Estrutura de Arquivos
             </a>
 
-            <a href="../projeto/mvcCreator.php?step=gerar" class="sb-item <?php echo verificarAtivo('mvcCreator.php', $paginaAtual, 'step', 'gerar'); ?>"> 5 - Gerar e Baixar
+            <a href="<?= URL_BASE ?>/projetos/mvc-creator?step=gerar" class="sb-item <?php echo verificarAtivo('mvc-creator', $paginaAtual, 'step', 'gerar'); ?>"> 5 - Gerar e Baixar
             </a>
         </div>
 
@@ -161,21 +170,21 @@ function verificarAtivo($nomeArquivo, $paginaAtual, $queryKey = null, $queryValu
         <div id="sb-titulo-PageMaker" class="sb-section">
             <div class="sb-label">Page Maker</div>
 
-            <a href="PageMaker.php?section=cabecalho" class="sb-item <?php echo verificarAtivo('PageMaker.php', $paginaAtual, 'section', 'cabecalho'); ?>"> <span class="sb-icon"></span> Cabeçalho
+            <a href="<?= URL_BASE ?>/projetos/pagemaker?section=cabecalho" class="sb-item <?php echo verificarAtivo('pagemaker', $paginaAtual, 'section', 'cabecalho'); ?>"> <span class="sb-icon"></span> Cabeçalho
             </a>
 
-            <a href="PageMaker.php?section=navegacao" class="sb-item <?php echo verificarAtivo('PageMaker.php', $paginaAtual, 'section', 'navegacao'); ?>"> <span class="sb-icon"></span> Navegação
-            </a>
-
-
-            <a href="PageMaker.php?section=conteudo" class="sb-item <?php echo verificarAtivo('PageMaker.php', $paginaAtual, 'section', 'conteudo'); ?>"> <span class="sb-icon"></span> Conteúdo
+            <a href="<?= URL_BASE ?>/projetos/pagemaker?section=navegacao" class="sb-item <?php echo verificarAtivo('pagemaker', $paginaAtual, 'section', 'navegacao'); ?>"> <span class="sb-icon"></span> Navegação
             </a>
 
 
-            <a href="PageMaker.php?section=elementos" class="sb-item <?php echo verificarAtivo('PageMaker.php', $paginaAtual, 'section', 'elementos'); ?>"> <span class="sb-icon"></span> Elementos Extras
+            <a href="<?= URL_BASE ?>/projetos/pagemaker?section=conteudo" class="sb-item <?php echo verificarAtivo('pagemaker', $paginaAtual, 'section', 'conteudo'); ?>"> <span class="sb-icon"></span> Conteúdo
             </a>
 
-            <a href="PageMaker.php?section=previsa" class="sb-item <?php echo verificarAtivo('PageMaker.php', $paginaAtual, 'section', 'previsa'); ?>"> <span class="sb-icon"></span> Prévia
+
+            <a href="<?= URL_BASE ?>/projetos/pagemaker?section=elementos" class="sb-item <?php echo verificarAtivo('pagemaker', $paginaAtual, 'section', 'elementos'); ?>"> <span class="sb-icon"></span> Elementos Extras
+            </a>
+
+            <a href="<?= URL_BASE ?>/projetos/pagemaker?section=previsa" class="sb-item <?php echo verificarAtivo('pagemaker', $paginaAtual, 'section', 'previsa'); ?>"> <span class="sb-icon"></span> Prévia
             </a>
 
         </div>
@@ -184,10 +193,10 @@ function verificarAtivo($nomeArquivo, $paginaAtual, $queryKey = null, $queryValu
         <?php if (defined('URL_BASE') && usuarioEhAdmin()): ?>
             <div id="sb-titulo-usuarios" class="sb-section">
                 <div class="sb-label">Usuários</div>
-                <a href="<?= URL_BASE ?>/usuarios" class="sb-item <?php echo $paginaAtual === 'usuario_list.php' ? 'active' : ''; ?>">
+                <a href="<?= URL_BASE ?>/usuarios" class="sb-item <?php echo $paginaAtual === 'usuarios' ? 'active' : ''; ?>">
                     <span class="sb-icon"></span> Listar Usuários
                 </a>
-                <a href="<?= URL_BASE ?>/usuarios/cadastrar" class="sb-item <?php echo $paginaAtual === 'usuario_create.php' ? 'active' : ''; ?>">
+                <a href="<?= URL_BASE ?>/usuarios/cadastrar" class="sb-item <?php echo $paginaAtual === 'cadastrar' ? 'active' : ''; ?>">
                     <span class="sb-icon"></span> Criar Usuário
                 </a>
             </div>
@@ -198,10 +207,10 @@ function verificarAtivo($nomeArquivo, $paginaAtual, $queryKey = null, $queryValu
         <?php if (defined('URL_BASE')): ?>
             <div id="sb-titulo-usuarios" class="sb-section">
                 <div class="sb-label">Projetos</div>
-                <a href="<?= URL_BASE ?>/projetos" class="sb-item <?php echo $paginaAtual === 'usuario_list.php' ? 'active' : ''; ?>">
+                <a href="<?= URL_BASE ?>/projetos" class="sb-item <?php echo $paginaAtual === 'projetos' ? 'active' : ''; ?>">
                     <span class="sb-icon"></span> Listar Projetos
                 </a>
-                <a href="<?= URL_BASE ?>/projetos/cadastrar" class="sb-item <?php echo $paginaAtual === 'usuario_create.php' ? 'active' : ''; ?>">
+                <a href="<?= URL_BASE ?>/projetos/cadastrar" class="sb-item <?php echo $paginaAtual === 'cadastrar' ? 'active' : ''; ?>">
                     <span class="sb-icon"></span> Criar Projeto
                 </a>
             </div>
@@ -210,10 +219,10 @@ function verificarAtivo($nomeArquivo, $paginaAtual, $queryKey = null, $queryValu
         <!-- Historico -->
         <div id="sb-titulo-historico" class="sb-section">
             <div class="sb-label">Histórico</div>
-            <a href="historico.php?tab=visualizar" class="sb-item <?php echo verificarAtivo('historico.php', $paginaAtual, 'tab', 'visualizar'); ?>"> <span class="sb-icon"></span> Visualizar Histórico
+            <a href="<?= URL_BASE ?>/projetos/historico?tab=visualizar" class="sb-item <?php echo verificarAtivo('historico', $paginaAtual, 'tab', 'visualizar'); ?>"> <span class="sb-icon"></span> Visualizar Histórico
             </a>
 
-            <a href="historico.php?tab=exportar" class="sb-item <?php echo verificarAtivo('historico.php', $paginaAtual, 'tab', 'exportar'); ?>"> <span class="sb-icon"></span> Exportar todos
+            <a href="<?= URL_BASE ?>/projetos/historico?tab=exportar" class="sb-item <?php echo verificarAtivo('historico', $paginaAtual, 'tab', 'exportar'); ?>"> <span class="sb-icon"></span> Exportar todos
             </a>
         </div>
 
@@ -222,16 +231,16 @@ function verificarAtivo($nomeArquivo, $paginaAtual, $queryKey = null, $queryValu
         <div id="sb-titulo-saida" class="sb-section">
             <div class="sb-label">Saida</div>
 
-            <a href="saida.php?tab=todos" class="sb-item <?php echo verificarAtivo('saida.php', $paginaAtual, 'tab', 'todos'); ?>"> <span class="sb-icon"></span> Todos os arquivos
+            <a href="<?= URL_BASE ?>/projetos/saida?tab=todos" class="sb-item <?php echo verificarAtivo('saida', $paginaAtual, 'tab', 'todos'); ?>"> <span class="sb-icon"></span> Todos os arquivos
             </a>
 
-            <a href="saida.php?tab=mvc" class="sb-item <?php echo verificarAtivo('saida.php', $paginaAtual, 'tab', 'mvc'); ?>"> <span class="sb-icon"></span> Arquivos MVC
+            <a href="<?= URL_BASE ?>/projetos/saida?tab=mvc" class="sb-item <?php echo verificarAtivo('saida', $paginaAtual, 'tab', 'mvc'); ?>"> <span class="sb-icon"></span> Arquivos MVC
             </a>
 
-            <a href="saida.php?tab=pagemaker" class="sb-item <?php echo verificarAtivo('saida.php', $paginaAtual, 'tab', 'pagemaker'); ?>"> <span class="sb-icon"></span> Arquivos PageMaker
+            <a href="<?= URL_BASE ?>/projetos/saida?tab=pagemaker" class="sb-item <?php echo verificarAtivo('saida', $paginaAtual, 'tab', 'pagemaker'); ?>"> <span class="sb-icon"></span> Arquivos PageMaker
             </a>
 
-            <a href="saida.php?tab=baixar" class="sb-item <?php echo verificarAtivo('saida.php', $paginaAtual, 'tab', 'baixar'); ?>"> <span class="sb-icon"></span> Baixar Tudo
+            <a href="<?= URL_BASE ?>/projetos/saida?tab=baixar" class="sb-item <?php echo verificarAtivo('saida', $paginaAtual, 'tab', 'baixar'); ?>"> <span class="sb-icon"></span> Baixar Tudo
             </a>
     </aside>
 

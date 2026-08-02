@@ -26,6 +26,30 @@ class ProjetoController extends Controller{
         $this->view('projetos/home');
     }
 
+    public function configGlobal(): void {
+        $this->view('projetos/configGlobal');
+    }
+
+    public function guia(): void {
+        $this->view('projetos/guia');
+    }
+
+    public function mvcCreator(): void {
+        $this->view('projetos/mvcCreator');
+    }
+
+    public function pageMaker(): void {
+        $this->view('projetos/pageMaker');
+    }
+
+    public function historico(): void {
+        $this->view('projetos/historico');
+    }
+
+    public function saida(): void {
+        $this->view('projetos/saida');
+    }
+
     public function cadastrar(): void {
         $this->view("projetos/projeto_create");
     }

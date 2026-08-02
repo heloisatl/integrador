@@ -7,10 +7,10 @@
     ?>
 
 
-    <link rel="stylesheet" href="../include/estilos/style.css">
+    <link rel="stylesheet" href="<?= URL_BASE_CSS ?>/paginas.css">
     
     <h2 class="home-h2">Page Makerr</h2>
-    <p class="home-subtitle">oiwuewiwo </p>
+    <p class="home-subtitle">Conteúdo principal da página do page maker </p>
 
     </main>
     <div class="mvcCreator-container">

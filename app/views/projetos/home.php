@@ -7,15 +7,15 @@
     // importa a topbar e sidebar integrada e abre a tag main
     include_once(__DIR__ . "/../include/navigation.php");
     ?>
-    <link rel="stylesheet" href="../include/estilos/style.css">
+    <link rel="stylesheet" href="<?= URL_BASE_CSS ?>/paginas.css">
     <!-- main já ta aberta no nagigation -->
     <h2 class="home-h2">Bem-vindo ao Sistema </h2>
     <p class="home-subtitle">Gerencie </p>
 
-    <a href="listar.php" class="home-btn">Começar </a>
+    <a href="<?= URL_BASE ?>/projetos/mvc-creator" class="home-btn">Começar </a>
     </main>
     <div class="home-container">
-        <p>oioio</p>
+        <p>Conteúdo da página inicial</p>
 
     </div>
 </div>
