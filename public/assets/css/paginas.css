@@ -6,8 +6,8 @@
 #home #sb-principal { display: block; }
 #config-global #sb-principal { display: block; }
 #guia #sb-principal { display: block; }
-#mvcCreator #sb-titulo-MVC { display: block; }
-#pageMaker #sb-titulo-PageMaker { display: block; }
+#mvc-creator #sb-titulo-MVC { display: block; }
+#pagemaker #sb-titulo-PageMaker { display: block; }
 #historico #sb-titulo-historico { display: block; }
 #saida #sb-titulo-saida { display: block; }
 #usuarios #sb-titulo-usuarios { display: block; }
