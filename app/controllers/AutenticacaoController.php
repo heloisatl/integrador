@@ -6,16 +6,19 @@ use app\core\Controller;
 use app\services\AutenticacaoService;
 use app\services\UsuarioService;
 
-class AutenticacaoController extends Controller {
+class AutenticacaoController extends Controller
+{
     private AutenticacaoService $autenticacaoService;
     private UsuarioService $usuarioService;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->autenticacaoService = new AutenticacaoService();
         $this->usuarioService = new UsuarioService();
     }
 
-    public function login(): void {
+    public function login(): void
+    {
         $dados = [];
 
         if (!empty($_SESSION['flash_sucesso'])) {
@@ -31,7 +34,8 @@ class AutenticacaoController extends Controller {
         $this->view('autenticacao/login', $dados);
     }
 
-    public function logar(): void {
+    public function logar(): void
+    {
         $email = trim((string) ($_POST['email'] ?? ''));
         $senha = (string) ($_POST['senha'] ?? '');
 
@@ -47,13 +51,15 @@ class AutenticacaoController extends Controller {
         $this->redirect(URL_BASE . '/login');
     }
 
-    public function logout(): void {
+    public function logout(): void
+    {
         $this->autenticacaoService->logout();
         $_SESSION['flash_sucesso'] = 'Você saiu do sistema.';
         $this->redirect(URL_BASE . '/login');
     }
 
-    public function recuperarSenha(): void {
+    public function recuperarSenha(): void
+    {
         $dados = [];
 
         if (!empty($_SESSION['flash_sucesso'])) {
@@ -69,7 +75,8 @@ class AutenticacaoController extends Controller {
         $this->view('autenticacao/recuperar_senha', $dados);
     }
 
-    public function solicitarRecuperacao(): void {
+    public function solicitarRecuperacao(): void
+    {
         $email = strtolower(trim((string) ($_POST['email'] ?? '')));
 
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -94,7 +101,8 @@ class AutenticacaoController extends Controller {
         $this->redirect(URL_BASE . '/redefinir-senha?token=' . urlencode($token));
     }
 
-    public function redefinirSenhaForm(): void {
+    public function redefinirSenhaForm(): void
+    {
         $token = trim((string) ($_GET['token'] ?? ''));
 
         if ($token === '' || empty($_SESSION['password_reset_tokens'][$token]) || $_SESSION['password_reset_tokens'][$token]['expires'] < time()) {
@@ -112,13 +120,14 @@ class AutenticacaoController extends Controller {
         $this->view('autenticacao/redefinir_senha', $dados);
     }
 
-    public function salvarNovaSenha(): void {
+    public function salvarNovaSenha(): void
+    {
         $token = trim((string) ($_POST['token'] ?? ''));
         $senha = trim((string) ($_POST['senha'] ?? ''));
         $confirmacao = trim((string) ($_POST['confirmacao'] ?? ''));
 
         if ($token === '' || $senha === '' || $confirmacao === '') {
-            $_SESSION['flash_erro'] = 'Preencha todos os campos.';
+            $_SESSION['flash_erro'] = 'Preencha todos os mvc-campos.';
             $this->redirect(URL_BASE . '/redefinir-senha?token=' . urlencode($token));
         }
 
@@ -144,7 +153,8 @@ class AutenticacaoController extends Controller {
         $this->redirect(URL_BASE . '/redefinir-senha?token=' . urlencode($token));
     }
 
-    public function cadastro(): void {
+    public function cadastro(): void
+    {
         $dados = [];
 
         if (!empty($_SESSION['flash_erro'])) {
@@ -155,7 +165,8 @@ class AutenticacaoController extends Controller {
         $this->view('autenticacao/cadastro', $dados);
     }
 
-    public function salvarCadastro(): void {
+    public function salvarCadastro(): void
+    {
         $dados = [
             'nome' => trim((string) ($_POST['nome'] ?? '')),
             'email' => trim((string) ($_POST['email'] ?? '')),
@@ -174,11 +185,13 @@ class AutenticacaoController extends Controller {
         $this->redirect(URL_BASE . '/cadastro');
     }
 
-    public function esqueceuMinhaSenha(): void {
+    public function esqueceuMinhaSenha(): void
+    {
         $this->view('autenticacao/esqueceu_senha');
     }
 
-    public function explorar(): void {
+    public function explorar(): void
+    {
         $this->redirect(URL_BASE . '/projetos');
     }
 }

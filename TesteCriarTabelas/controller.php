@@ -20,20 +20,20 @@ class Controller {
 
     /**
      * Constrói e executa o CREATE TABLE a partir dos dados dinâmicos do formulário.
-     * Espera $_POST['campos'] como array de:
+     * Espera $_POST['mvc-campos'] como array de:
      *   [ nome, tipo, tamanho, pk, nn, ai ]
      */
-    public function criarTabela($conn, $nomeTabela, $campos) {
+    public function criarTabela($conn, $nomeTabela, $mvc-campos) {
         $partes = [];
         $temPK  = false;
 
-        foreach ($campos as $campo) {
-            $nome    = trim($campo['nome'] ?? '');
-            $tipo    = $campo['tipo']    ?? 'VARCHAR';
-            $tamanho = trim($campo['tamanho'] ?? '');
-            $pk      = !empty($campo['pk']);
-            $nn      = !empty($campo['nn']);
-            $ai      = !empty($campo['ai']);
+        foreach ($mvc-campos as $mvc-campo) {
+            $nome    = trim($mvc-campo['nome'] ?? '');
+            $tipo    = $mvc-campo['tipo']    ?? 'VARCHAR';
+            $tamanho = trim($mvc-campo['tamanho'] ?? '');
+            $pk      = !empty($mvc-campo['pk']);
+            $nn      = !empty($mvc-campo['nn']);
+            $ai      = !empty($mvc-campo['ai']);
 
             if ($nome === '') continue;
 

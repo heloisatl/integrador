@@ -150,7 +150,7 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
         <div id="sb-titulo-MVC" class="sb-section">
             <div class="sb-label">MVC Creator</div>
 
-            <!-- Agora cada item usa a mesma página mvcCreator.php com parâmetro de etapa -->
+            <!-- Agora cada item usa a mesma página mvcCreator.php com parâmetro de mvc-etapa -->
             <a href="<?= URL_BASE ?>/projetos/mvc-creator?step=configurar" class="sb-item <?php echo verificarAtivo('mvc-creator', $paginaAtual, 'step', 'configurar'); ?>"> 1 - Configurar Projeto
             </a>
 

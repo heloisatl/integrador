@@ -79,14 +79,14 @@
     border-radius: 5px;
 }
 
-.mvc-etapa-cartao {
+.mvc-etapa {
     padding: 24px;
     border: 1px solid var(--border);
     border-radius: 12px;
     background: var(--panel);
 }
 
-.mvc-etapa-cartao h3 {
+.mvc-etapa h3 {
     margin-top: 0;
     margin-bottom: 12px;
     color: var(--text);
@@ -165,8 +165,8 @@
     margin-left: auto;
 }
 
-.mvc-etapa-cartao input,
-.mvc-etapa-cartao select {
+.mvc-etapa input,
+.mvc-etapa select {
     width: 100%;
     padding: 11px 12px;
     border: 1px solid var(--border);
@@ -178,17 +178,17 @@
     transition: border-color 0.15s ease;
 }
 
-.mvc-etapa-cartao input::placeholder {
+.mvc-etapa input::placeholder {
     color: var(--muted);
 }
 
-.mvc-etapa-cartao input:focus,
-.mvc-etapa-cartao select:focus {
+.mvc-etapa input:focus,
+.mvc-etapa select:focus {
     outline: none;
     border-color: var(--accent);
 }
 
-.mvc-etapa-cartao label {
+.mvc-etapa label {
     display: block;
     margin-bottom: 8px;
 }
