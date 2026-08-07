@@ -38,7 +38,7 @@ $router->get("/projetos/cadastrar","ProjetoController@cadastrar");
 $router->post("/projetos/cadastrar/opcoes","ProjetoController@bools");
 $router->post("/projetos/criar","ProjetoController@criar");
 $router->post("/projetos/editar","ProjetoController@editar");
-$router->post("/projeto/editar/opcoes","ProjetoController@editBools");
+$router->post("/projetos/editar/opcoes","ProjetoController@editBools");
 $router->post("/projetos/getDatabases","ProjetoController@getDatabases");
 
 // Páginas do "menu principal" (topbar/sidebar) que já tinham view pronta

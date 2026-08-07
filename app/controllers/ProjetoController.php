@@ -15,9 +15,9 @@ class ProjetoController extends Controller{
 
 
     public function getDatabases(){
-        $user   = trim($_POST['user']);
-        $pass   = trim($_POST['pass']);
-        $server = trim($_POST['server']);
+        $user   = trim($_POST['usuario']);
+        $pass   = trim($_POST['senha']);
+        $server = trim($_POST['servidor']);
         echo $this->projetoService->getDatabases("mysql:host=$server",$user,$pass);
     }
 

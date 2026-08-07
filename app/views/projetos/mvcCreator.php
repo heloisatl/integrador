@@ -39,14 +39,14 @@
 
                 echo '<div class="mvc-campo">';
                 echo '<label>Senha</label>';
-                echo '<input type="password" name="senha" id="senha" value="123456" placeholder="*********">';
+                echo '<input type="password" onblur="carregarBanco();" name="senha" id="senha" value="123456" placeholder="*********">';
                 echo '</div>';
 
                 echo '<div class="mvc-campo mvc-campo-completo">';
                 echo '<label>Banco de Dados</label>';
                 echo '<div class="mvc-linha-banco">';
                 echo '<select name="banco" id="banco"><option value="">— preencha a senha para carregar —</option><option value="EXEMPLO_BANCO">EXEMPLO</option></select>';
-                echo '<button type="button" class="mvc-etapa-botao mvc-etapa-botao-secundario">Recarregar bancos</button>';
+                echo '<button type="button" onclick="carregarBanco();" class="mvc-etapa-botao mvc-etapa-botao-secundario">Recarregar bancos</button>';
                 echo '</div>';
                 echo '</div>';
 
@@ -131,6 +131,7 @@
     </div>
 
     </main>
+    <script src="<?= URL_BASE ?>/assets/js/mvcLoad.js"></script>
 </div>
 </div>
 </body>
