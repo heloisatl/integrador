@@ -70,8 +70,8 @@ class ProjetoController extends Controller{
                     }
                 }
 
-                // Gerar módulos na pasta oficial app/ e na pasta temp
-                $gerenciador->gerarTudo($tabela, $atributos, $chavePrimaria);
+                // Desativado a geração direta no app/ do projeto ativo:
+                // $gerenciador->gerarTudo($tabela, $atributos, $chavePrimaria);
 
                 // Copiar também para a pasta de exportação ZIP
                 $geradorModel = new \app\tools\gerador\GeradorModel();
@@ -95,6 +95,9 @@ class ProjetoController extends Controller{
             $geradorZip = new GeradorZip();
             $geradorZip->compactarPasta($pastaOutput, $arquivoZip);
 
+            // Apaga a pasta temporária de compilação após gerar o ZIP
+            $this->excluirDiretorioRecursivo($pastaOutput);
+
             $downloadUrl = URL_BASE . '/projetos/downloadZip?file=' . urlencode($nomeProjeto . '.zip');
 
             echo json_encode([
@@ -105,6 +108,16 @@ class ProjetoController extends Controller{
         } catch (\Exception $e) {
             echo json_encode(['sucesso' => false, 'mensagem' => $e->getMessage()]);
         }
+    }
+
+    private function excluirDiretorioRecursivo(string $dir): void {
+        if (!file_exists($dir)) return;
+        $items = array_diff(scandir($dir), ['.', '..']);
+        foreach ($items as $item) {
+            $path = $dir . '/' . $item;
+            is_dir($path) ? $this->excluirDiretorioRecursivo($path) : unlink($path);
+        }
+        rmdir($dir);
     }
 
     public function downloadZip(): void {

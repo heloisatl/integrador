@@ -21,9 +21,9 @@ A refatoração transformou o módulo em um conjunto de **classes especialistas 
 
 O sistema do Gerador MVC é composto por 3 camadas principais:
 
-1. **Camada de Apresentação (Interface & AJAX)**:
+1. **Camada de Apresentação (Interface, AJAX & SessionStorage)**:
    - Form em 5 passos: `app/views/projetos/mvcCreator.php`
-   - Scripts de manipulação e requisições AJAX: `public/assets/js/mvcLoad.js`
+   - Scripts de manipulação, chamadas AJAX e persistência de dados de sessão: `public/assets/js/mvcLoad.js`
    - Estilização unificada: `public/assets/css/pagina-mvc.css` e `head.php`
 
 2. **Camada de Controle e Endpoints (`app/controllers/ProjetoController.php`)**:
@@ -43,126 +43,45 @@ O sistema do Gerador MVC é composto por 3 camadas principais:
 
 ---
 
-## 3. Detalhamento Técnico das Classes Criadas
+## 3. Detalhamento Técnico das Classes e Isolação de Ambientes
 
-### 3.1 `app\tools\gerador\GeradorModel`
-- **Função**: Compilar o código PHP da classe de modelo da entidade com propriedades privadas, getters e setters.
-- **Namespace Gerado**: `namespace app\models;`
-- **Assinatura dos Métodos**:
-  ```php
-  public function gerarModel(string $nomeTabela, array $atributos): string
-  public function salvarModel(string $nomeTabela, array $atributos, string $caminhoBase = __DIR__ . '/../../models'): string
-  ```
-- **Padrão de Saída**: Arquivo `app/models/{NomeTabelaUCFirst}.php`.
+### 3.1 Isolação e Limpeza Automática (`public/temp/` vs `public/downloads/`)
+- A compilação dos arquivos ocorre em uma pasta temporária isolada: `public/temp/{nomeProjeto}/app/`.
+- O empacotador `GeradorZip` gera o arquivo `.ZIP` final na pasta **`public/downloads/{nomeProjeto}.zip`**.
+- **Limpeza Automática de Disco**: Imediatamente após a conclusão da criação do `.ZIP`, o método privado `excluirDiretorioRecursivo($pastaOutput)` em `ProjetoController.php` **apaga automaticamente** a pasta `public/temp/{nomeProjeto}/`.
+- Desta forma, o servidor não acumula arquivos temporários soltos e armazena exclusivamente os arquivos `.ZIP` na pasta `public/downloads/`.
 
-### 3.2 `app\tools\gerador\GeradorRepositorio`
-- **Função**: Compilar a camada de persistência de dados baseada em PDO usando `app\database\ConnectionFactory::getConnection()`.
-- **Namespace Gerado**: `namespace app\repositories;`
-- **Métodos Gerados na Classe Destino**:
-  - `inserir($obj): bool`
-  - `listarTodos(): array`
-  - `buscarPorId(int $id): ?array`
-  - `alterar($obj, int $id): bool`
-  - `excluir(int $id): bool`
-- **Assinatura dos Métodos**:
-  ```php
-  public function gerarRepositorio(string $nomeTabela, array $atributos, string $chavePrimaria = 'id'): string
-  public function salvarRepositorio(string $nomeTabela, array $atributos, string $chavePrimaria = 'id', string $caminhoBase = __DIR__ . '/../../repositories'): string
-  ```
+### 3.2 Persistência via `sessionStorage` no Cliente (`public/assets/js/mvcLoad.js`)
+Para evitar perda de dados durante a navegação nos 5 passos do formulário com redirecionamentos `?step=...`, os dados do formulário e o resultado de `SHOW TABLES` são mantidos em `sessionStorage` (`mvc_tabelas`, `mvc_banco`, etc.).
 
-### 3.3 `app\tools\gerador\GeradorController`
-- **Função**: Compilar a camada de controlador do MVC estendendo a classe base `app\core\Controller`.
-- **Namespace Gerado**: `namespace app\controllers;`
-- **Métodos Gerados na Classe Destino**:
-  - `index()`: Carrega a view de listagem com os registros.
-  - `cadastrar()`: Renderiza o formulário de cadastro.
-  - `salvar()`: Processa os campos recebidos via `$_POST` e insere no repositório.
-  - `editar()`: Carrega os dados da entidade e renderiza a view de edição.
-  - `atualizar()`: Processa a edição via `$_POST`.
-  - `excluir()`: Remove o registro informando o ID via `$_GET['id']`.
-- **Assinatura dos Métodos**:
-  ```php
-  public function gerarController(string $nomeTabela, array $atributos, string $chavePrimaria = 'id'): string
-  public function salvarController(string $nomeTabela, array $atributos, string $chavePrimaria = 'id', string $caminhoBase = __DIR__ . '/../../controllers'): string
-  ```
-
-### 3.4 `app\tools\gerador\GeradorView`
-- **Função**: Compilar os arquivos de interface de usuário em HTML/PHP.
-- **Estrutura Gerada**:
-  - `app/views/{nometabelas}/index.php` (Tabela responsiva de listagem com botões Editar/Excluir).
-  - `app/views/{nometabelas}/create.php` (Formulário de inclusão).
-  - `app/views/{nometabelas}/edit.php` (Formulário de alteração preenchido).
-- **Assinatura dos Métodos**:
-  ```php
-  public function gerarIndexView(string $nomeTabela, array $atributos, string $chavePrimaria = 'id'): string
-  public function gerarCreateView(string $nomeTabela, array $atributos, string $chavePrimaria = 'id'): string
-  public function gerarEditView(string $nomeTabela, array $atributos, string $chavePrimaria = 'id'): string
-  public function salvarViews(string $nomeTabela, array $atributos, string $chavePrimaria = 'id', string $caminhoBase = __DIR__ . '/../../views'): array
-  ```
-
-### 3.5 `app\tools\gerador\GerenciadorGerador`
-- **Função**: Atuar como fachada para invocar a geração completa em uma única chamada.
-- **Assinatura do Método Principal**:
-  ```php
-  public function gerarTudo(string $nomeTabela, array $atributos, string $chavePrimaria = 'id'): array
-  ```
-
-### 3.6 `app\tools\gerador\GeradorZip`
-- **Função**: Tratar do empacotamento em formato `.zip` e transmissão de dados HTTP ao cliente.
-- **Assinatura dos Métodos**:
-  ```php
-  public function compactarPasta(string $pastaOrigem, string $arquivoZipDestino): bool
-  public function enviarDownload(string $caminhoZip, string $nomeArquivoDownload = 'projeto_mvc.zip'): void
-  ```
-- **Cabeçalhos HTTP Utilizados**:
-  ```php
-  header('Content-Type: application/zip');
-  header('Content-Disposition: attachment; filename="..."');
-  header('Content-Length: ' . filesize($caminhoZip));
-  ```
+### 3.3 Módulos Geradores em `app/tools/gerador/`
+- **`GeradorModel`**: Gera `namespace app\models;` com getters/setters.
+- **`GeradorRepositorio`**: Gera repositórios PDO apontando para `ConnectionFactory`.
+- **`GeradorController`**: Gera Controllers RESTful estendendo `app\core\Controller`.
+- **`GeradorView`**: Gera views `index.php`, `create.php` e `edit.php` em subpastas em `app/views/{tabela}s/`.
+- **`GeradorZip`**: Empacota o projeto compilado em `.zip` para envio via HTTP `readfile()`.
 
 ---
 
 ## 4. Diagrama do Fluxo de Execução End-to-End
 
 ```
-[ Usuário na View mvcCreator.php ]
+[ Passo 1: mvcCreator.php ]
              │
-             │ 1. Preenche senha e desfoca o campo
+             │ 1. Seleciona banco e clica "Conectar e Detectar Tabelas"
              ▼
-[ AJAX: /projetos/getDatabases ] ──► [ ProjetoController::getDatabases() ] ──► Retorna <option> dos bancos
+[ AJAX: /projetos/getTabelas ] ──► Salva res.tabelas no sessionStorage ──► Redireciona ?step=tabelas
+                                                                                   │
+[ Passo 2: Tabelas Detectadas ] ◄── DOMContentLoaded lê sessionStorage ────────────┘
              │
-             │ 2. Seleciona banco e clica em "Detectar Tabelas"
+             │ 2. Seleciona tabelas e avança até Passo 5
              ▼
-[ AJAX: /projetos/getTabelas ]   ──► [ ProjetoController::getTabelas() ]   ──► Retorna JSON com nomes das tabelas
-             │
-             │ 3. Avança pelos passos de seleção de opções e visualização da estrutura
-             ▼
-[ AJAX: /projetos/gerarMvc ]     ──► [ ProjetoController::gerarMvc() ]
+[ Passo 5: Gerar Sistema ]     ──► [ AJAX: /projetos/gerarMvc ]
                                                │
-                                               ├──► [ GerenciadorGerador::gerarTudo() ]
-                                               │        ├── GeradorModel
-                                               │        ├── GeradorRepositorio
-                                               │        ├── GeradorController
-                                               │        └── GeradorView
-                                               │
-                                               └──► [ GeradorZip::compactarPasta() ]
+                                               ├──► Compila em public/temp/{nomeProjeto}/
+                                               ├──► [ GeradorZip::compactarPasta() ] ──► Salva .ZIP em public/downloads/
+                                               └──► Apaga public/temp/{nomeProjeto}/
                                                         │
                                                         ▼
 [ Download Automático .ZIP ]     ◄── [ ProjetoController::downloadZip() ]
 ```
-
----
-
-## 5. Instruções para Mantenedores e Futuras Extensões
-
-1. **Alterar Templates de Código Gerados**:
-   - Se for necessário adicionar novos métodos padrão em todos os controllers gerados, edite a string heredoc em `app/tools/gerador/GeradorController.php`.
-   - Se o projeto passar a usar um ORM ou Query Builder, ajuste a geração SQL dentro de `app/tools/gerador/GeradorRepositorio.php`.
-
-2. **Diretórios de Download e Limpeza de Arquivos Temporários**:
-   - Os arquivos compactados são armazenados em `public/downloads/` e os fontes compilados temporários em `public/temp/`.
-   - Recomenda-se configurar uma rotina de cron/script para deletar arquivos em `public/downloads/` com mais de 24 horas de criação para liberar espaço em disco.
-
-3. **Verificação de Segurança**:
-   - A chamada `downloadZip` utiliza `basename()` na variável `$_GET['file']` para evitar ataques de *Directory Traversal* (`../`). Mantenha essa higienização em qualquer novo endpoint de download.
