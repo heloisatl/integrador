@@ -60,7 +60,28 @@ class ProjetoRepository{
         return $aa;
     }
 
+    //CELSO REVISAR ISSO AQUI - FELIPE
+    public function getTabelas($dsn, $user, $pass, $banco) {
+        $dsnComBanco = "$dsn;dbname=$banco";
+        $specialConn = self::specialConn($dsnComBanco, $user, $pass);
+        $sql = "SHOW TABLES";
+        $stm = $specialConn->prepare($sql);
+        $stm->execute();
+        $tabelas = $stm->fetchAll(PDO::FETCH_COLUMN);
+        unset($specialConn);
+        return $tabelas;
+    }
 
+    public function getColunas($dsn, $user, $pass, $banco, $tabela) {
+        $dsnComBanco = "$dsn;dbname=$banco";
+        $specialConn = self::specialConn($dsnComBanco, $user, $pass);
+        $sql = "SHOW COLUMNS FROM `$tabela`";
+        $stm = $specialConn->prepare($sql);
+        $stm->execute();
+        $colunas = $stm->fetchAll(PDO::FETCH_ASSOC);
+        unset($specialConn);
+        return $colunas;
+    }
 
     private static function specialConn($dsn,$user,$pass){
         // print $dsn;
