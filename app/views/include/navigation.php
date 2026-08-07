@@ -12,7 +12,8 @@ $currentSection = $_GET['section'] ?? '';
 $currentTab = $_GET['tab'] ?? '';
 $currentStep = $_GET['step'] ?? '';
 
-function usuarioEhAdmin(): bool {
+function usuarioEhAdmin(): bool
+{
     return isset($_SESSION['usuario_logado']) && strtolower($_SESSION['usuario_logado']->getTipoPerfil()) === 'admin';
 }
 
@@ -67,28 +68,28 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
         <h1 class="title"> <a class="title-link" href="<?= URL_BASE ?>/projetos">DevStudio </a></h1>
     </div>
 
-    <a href="<?= URL_BASE ?>/projetos" class="topbar-item <?php echo verificarAtivo('projetos', $paginaAtual); ?>">
-        <span class="sb-icon"></span> Início
+    <a href="<?= URL_BASE ?>/projetos" class="topbar-item-inicio <?php echo verificarAtivo('projetos', $paginaAtual); ?>">
+        Início
     </a>
 
     <a href="<?= URL_BASE ?>/projetos/config-global" class="topbar-item <?php echo verificarAtivo('config-global', $paginaAtual); ?>">
-        <span class="sb-icon"></span> Config. Global
+        Config. Global
     </a>
     <a href="<?= URL_BASE ?>/projetos/mvc-creator" class="topbar-item <?php echo verificarAtivo('mvc-creator', $paginaAtual); ?>">
-        <span class="sb-icon"></span> MVC Creator
+        MVC Creator
     </a>
     <a href="<?= URL_BASE ?>/projetos/pagemaker" class="topbar-item <?php echo verificarAtivo('pagemaker', $paginaAtual); ?>">
-        <span class="sb-icon"></span> Page Maker </a>
+        Page Maker </a>
 
     <a href="<?= URL_BASE ?>/projetos/historico" class="topbar-item <?php echo verificarAtivo('historico', $paginaAtual); ?>">
-        <span class="sb-icon"></span> Histórico </a>
+        Histórico </a>
 
     <a href="<?= URL_BASE ?>/projetos/saida" class="topbar-item <?php echo verificarAtivo('saida', $paginaAtual); ?>">
-        <span class="sb-icon"></span> Saída </a>
+        Saída </a>
 
     <?php if (defined('URL_BASE') && usuarioEhAdmin()): ?>
-        <a href="<?= URL_BASE ?>/usuarios" class="topbar-item <?php echo $paginaAtual === 'usuario_list.php' ? 'active' : ''; ?>">
-            <span class="sb-icon"></span> Usuários
+        <a href="<?= URL_BASE ?>/usuarios" class="topbar-item <?php echo $paginaAtual === 'usuarios' ? 'active' : ''; ?>">
+            Usuários
         </a>
     <?php endif; ?>
 
@@ -98,7 +99,7 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
                 Perfil
             </button>
             <div class="profile-dropdown-menu" id="profileDropdownMenu">
-                <?php if (isset($_SESSION['usuario_logado'])): 
+                <?php if (isset($_SESSION['usuario_logado'])):
                     $usuarioLogado = $_SESSION['usuario_logado'];
                 ?>
                     <div class="profile-dropdown-header">
@@ -133,15 +134,15 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
             <div class="sb-label">Menu Principal</div>
 
             <a href="<?= URL_BASE ?>/projetos" class="sb-item <?php echo verificarAtivo('projetos', $paginaAtual); ?>">
-                <span class="sb-icon"></span> Visão Geral
+                Visão Geral
             </a>
 
             <a href="<?= URL_BASE ?>/projetos/config-global" class="sb-item <?php echo verificarAtivo('config-global', $paginaAtual); ?>">
-                <span class="sb-icon"></span> Config. Globais
+                Config. Globais
             </a>
 
             <a href="<?= URL_BASE ?>/projetos/guia" class="sb-item <?php echo verificarAtivo('guia', $paginaAtual); ?>">
-                <span class="sb-icon"></span> Guia Rápido
+                Guia Rápido
             </a>
         </div>
 
@@ -149,7 +150,7 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
         <div id="sb-titulo-MVC" class="sb-section">
             <div class="sb-label">MVC Creator</div>
 
-            <!-- Agora cada item usa a mesma página mvcCreator.php com parâmetro de etapa -->
+            <!-- Agora cada item usa a mesma página mvcCreator.php com parâmetro de mvc-etapa -->
             <a href="<?= URL_BASE ?>/projetos/mvc-creator?step=configurar" class="sb-item <?php echo verificarAtivo('mvc-creator', $paginaAtual, 'step', 'configurar'); ?>"> 1 - Configurar Projeto
             </a>
 
@@ -169,6 +170,9 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
         <!-- Page Maker -->
         <div id="sb-titulo-PageMaker" class="sb-section">
             <div class="sb-label">Page Maker</div>
+
+            <a href="<?= URL_BASE ?>/projetos/pagemaker?step=cabecalho" class="sb-item <?php echo verificarAtivo('pagemaker', $paginaAtual, 'step', 'cabecalho'); ?>"> Cabeçalho
+            </a>
 
             <a href="<?= URL_BASE ?>/projetos/pagemaker?section=cabecalho" class="sb-item <?php echo verificarAtivo('pagemaker', $paginaAtual, 'section', 'cabecalho'); ?>"> <span class="sb-icon"></span> Cabeçalho
             </a>
@@ -203,9 +207,9 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
         <?php endif; ?>
 
 
-        <!-- Usuários -->
+        <!-- Projetos -->
         <?php if (defined('URL_BASE')): ?>
-            <div id="sb-titulo-usuarios" class="sb-section">
+            <div id="sb-titulo-projetos" class="sb-section">
                 <div class="sb-label">Projetos</div>
                 <a href="<?= URL_BASE ?>/projetos" class="sb-item <?php echo $paginaAtual === 'projetos' ? 'active' : ''; ?>">
                     <span class="sb-icon"></span> Listar Projetos

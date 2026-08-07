@@ -103,6 +103,33 @@
             gap: 10px;
         }
 
+        /* Especifico pra "Inicio" pra ele ficar mais longe da logo DevStudio */
+        .topbar-item-inicio {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--text);
+            text-decoration: none;
+            padding: 10px 12px;
+            margin-left: 80px;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .topbar-item-inicio:hover {
+            background-color: var(--panel);
+            color: var(--accent);
+        }
+
+        .topbar-item-inicio.active {
+            background-color: var(--accent);
+            color: #ffffff;
+            font-weight: 500;
+        }
+
+
+
         .topbar-item {
             display: flex;
             align-items: center;
@@ -272,7 +299,7 @@
         }
 
         .sidebar {
-            width: 260px;
+            width: 15%;
             background-color: var(--surface);
             border-right: 1px solid var(--border);
             padding: 24px 16px;
@@ -330,13 +357,21 @@
         }
 
         /* Área do Conteúdo da Página */
+        /* TODO: deixar responsiiiveeeeeel aaaa */
         .main-content {
+            width: 75%;
             flex: 1;
             padding: 32px;
             overflow-y: auto;
             background-color: var(--bg);
         }
     </style>
+
+    <?php
+    // Link global para estilos públicos (migrados para public/assets/css)
+    $hrefGlobalStyle = defined('URL_BASE') ? (URL_BASE . '/assets/css/style.css') : '/assets/css/style.css';
+    echo '<link rel="stylesheet" href="' . $hrefGlobalStyle . '">';
+    ?>
 
     <script>
         // Função para manter o alternador de temas ativo no ecossistema modular
@@ -374,6 +409,23 @@
             }
         });
     </script>
+    <?php
+    // Incluir link para stylesheet pública da seção `usuarios`
+    $requestUri = $_SERVER['REQUEST_URI'] ?? '';
+    if (strpos($requestUri, '/usuarios') !== false) {
+        $href = defined('URL_BASE') ? (URL_BASE . '/assets/css/usuarios.css') : '/assets/css/usuarios.css';
+        echo '<link rel="stylesheet" href="' . $href . '">';
+    }
+    ?>
 </head>
 
-<body>
+<?php
+// Definir um id no <body> de acordo com a rota atual para permitir seletores do tipo
+// #<pageId> #sb-titulo-... funcionarem mesmo quando a view não envolver todo o layout.
+$requestPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
+$bodyId = trim(basename(rtrim($requestPath, '/')), '/');
+if ($bodyId === '' || $bodyId === 'index.php') {
+    $bodyId = 'projetos';
+}
+echo '<body id="' . htmlspecialchars($bodyId, ENT_QUOTES) . '">';
+?>

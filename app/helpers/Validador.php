@@ -5,9 +5,9 @@ namespace app\helpers;
 class Validador {
     private array $erros = [];
 
-    public function obrigatorio(string $campo, mixed $valor, ?string $mensagem = null): static {
+    public function obrigatorio(string $mvc-campo, mixed $valor, ?string $mensagem = null): static {
         if (empty($valor) && $valor !== '0') {
-            $this->erros[$campo] = $mensagem ?? "O campo {$campo} é obrigatório";
+            $this->erros[$mvc-campo] = $mensagem ?? "O mvc-campo {$mvc-campo} é obrigatório";
         }
 
         return $this;
