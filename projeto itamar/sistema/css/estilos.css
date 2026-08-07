@@ -1,0 +1,241 @@
+
+/* Paleta de cores moderna */
+:root {
+    --cor-primaria: #FEF3E2;    /* Bege claro */
+    --cor-secundaria: #FAB12F;   /* Amarelo dourado */
+    --cor-terciaria: #FA812F;    /* Laranja */  
+    --cor-acento: #DD0303;       /* Vermelho */
+    --borda-radius: 20px;        /* Bordas arredondadas */
+    --sombra: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, var(--cor-primaria) 0%, #f8f0e3 100%);
+    margin: 0;
+    padding: 20px;
+    min-height: 100vh;
+    line-height: 1.6;
+}
+
+/* Container principal */
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Formulários modernos */
+form {
+    background: rgba(255,255,255,0.9);
+    backdrop-filter: blur(10px);
+    padding: 30px 40px;
+    border-radius: var(--borda-radius);
+    box-shadow: var(--sombra);
+    width: 100%;
+    max-width: 500px;
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+/* Títulos */
+h1, h2, h3 {
+    text-align: center;
+    color: var(--cor-acento);
+    margin-bottom: 25px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+}
+
+h1 { font-size: 28px; }
+h2 { font-size: 24px; }
+h3 { font-size: 20px; }
+
+/* Labels modernos */
+label {
+    display: block;
+    margin-bottom: 8px;
+    margin-top: 20px;
+    font-weight: 600;
+    color: var(--cor-acento);
+    font-size: 16px;
+}
+
+/* Campos de entrada */
+input[type="text"],
+input[type="password"],
+input[type="hidden"],
+select {
+    width: 100%;
+    padding: 15px 20px;
+    border: 2px solid rgba(250, 177, 47, 0.3);
+    border-radius: 15px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    background: rgba(255,255,255,0.8);
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+select:focus {
+    outline: none;
+    border-color: var(--cor-secundaria);
+    box-shadow: 0 0 0 3px rgba(250, 177, 47, 0.2);
+    transform: translateY(-2px);
+}
+
+/* Botões modernos */
+button, .btn {
+    display: inline-block;
+    margin-top: 25px;
+    padding: 15px 30px;
+    background: linear-gradient(135deg, var(--cor-secundaria) 0%, var(--cor-terciaria) 100%);
+    border: none;
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 15px;
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 15px rgba(250, 177, 47, 0.3);
+    width: 100%;
+}
+
+button:hover, .btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(250, 177, 47, 0.4);
+}
+
+/* Botão de voltar */
+.btn-voltar {
+    background: linear-gradient(135deg, var(--cor-terciaria) 0%, var(--cor-acento) 100%);
+    box-shadow: 0 4px 15px rgba(221, 3, 3, 0.3);
+    margin: 20px 0;
+    width: auto;
+    display: inline-block;
+}
+
+.btn-voltar:hover {
+    box-shadow: 0 8px 25px rgba(221, 3, 3, 0.4);
+}
+
+/* Mensagens */
+.mensagem {
+    background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+    color: white;
+    padding: 15px 20px;
+    border-radius: var(--borda-radius);
+    margin-bottom: 25px;
+    width: 100%;
+    text-align: center;
+    box-shadow: var(--sombra);
+    border: none;
+}
+
+.mensagem_erro {
+    background: linear-gradient(135deg, var(--cor-acento) 0%, #b30202 100%);
+    color: white;
+    padding: 15px 20px;
+    border-radius: var(--borda-radius);
+    margin-bottom: 25px;
+    width: 100%;
+    text-align: center;
+    box-shadow: var(--sombra);
+    border: none;
+}
+
+.info-adicional {
+    background: rgba(254, 243, 226, 0.8);
+    color: var(--cor-acento);
+    padding: 12px 15px;
+    border-radius: 12px;
+    margin-top: 15px;
+    border-left: 4px solid var(--cor-secundaria);
+}
+
+.info-adicional strong {
+    color: var(--cor-terciaria);
+}
+
+/* Tabelas modernas */
+table {
+    width: 100%;
+    background: rgba(255,255,255,0.9);
+    backdrop-filter: blur(10px);
+    border-radius: var(--borda-radius);
+    box-shadow: var(--sombra);
+    border-collapse: separate;
+    border-spacing: 0;
+    overflow: hidden;
+    margin: 20px 0;
+}
+
+table th {
+    background: linear-gradient(135deg, var(--cor-secundaria) 0%, var(--cor-terciaria) 100%);
+    color: white;
+    padding: 15px 20px;
+    text-align: left;
+    font-weight: 600;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+}
+
+table th:first-child {
+    border-radius: var(--borda-radius) 0 0 0;
+}
+
+table th:last-child {
+    border-radius: 0 var(--borda-radius) 0 0;
+}
+
+table td {
+    padding: 15px 20px;
+    border-bottom: 1px solid rgba(250, 177, 47, 0.2);
+    transition: background-color 0.3s ease;
+}
+
+table tr:hover td {
+    background-color: rgba(250, 177, 47, 0.1);
+}
+
+table tr:last-child td:first-child {
+    border-radius: 0 0 0 var(--borda-radius);
+}
+
+table tr:last-child td:last-child {
+    border-radius: 0 0 var(--borda-radius) 0;
+}
+
+/* Links em tabelas */
+table a {
+    color: var(--cor-acento);
+    text-decoration: none;
+    font-weight: 600;
+    padding: 8px 15px;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+table a:hover {
+    background-color: var(--cor-acento);
+    color: white;
+    transform: translateY(-1px);
+}
+
+/* Área de botões */
+.botoes-acao {
+    text-align: center;
+    margin: 30px 0;
+}
+
+.botoes-acao .btn {
+    margin: 10px;
+    width: auto;
+    min-width: 150px;
+}
