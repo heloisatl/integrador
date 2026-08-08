@@ -19,3 +19,23 @@ h3 {
     color: var(--text);
     margin: 0;
 }
+
+@media (max-width: 900px) {
+    .mvc-etapa,
+    .pm-cartao {
+        padding: 20px;
+    }
+}
+
+@media (max-width: 640px) {
+    .mvc-etapa,
+    .pm-cartao {
+        padding: 16px;
+    }
+
+    .pm-cartao input,
+    .pm-cartao select,
+    .pm-cartao button {
+        width: 100%;
+    }
+}

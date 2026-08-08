@@ -99,7 +99,7 @@
                 echo '<div class="mvc-etapa">';
                 echo '<p class="mvc-subtitulo">Árvore de diretórios gerada automaticamente:</p>';
 
-                echo '<div style="background: #1e1e1e; color: #d4d4d4; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 14px; margin: 15px 0;">';
+                echo '<div style="background: #1e1e1e; color: #d4d4d4; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 14px; margin: 15px 0; overflow-x: auto; white-space: nowrap;">';
                 echo '📂 app/<br>';
                 echo '&nbsp;&nbsp;├── 📂 controllers/<br>';
                 echo '&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── 📄 [NomeTabela]Controller.php<br>';

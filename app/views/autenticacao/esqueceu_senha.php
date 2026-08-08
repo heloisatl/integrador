@@ -3,6 +3,8 @@
 <style>
     body {
         background: linear-gradient(135deg, #0f172a 0%, #111827 100%);
+        overflow-x: hidden;
+        overflow-y: auto;
     }
 
     .auth-card {
@@ -38,6 +40,14 @@
         font-weight: 600;
         cursor: pointer;
         margin-top: 8px;
+    }
+
+    @media (max-width: 640px) {
+        .auth-card {
+            margin: 32px auto;
+            padding: 20px;
+            border-radius: 16px;
+        }
     }
 </style>
 

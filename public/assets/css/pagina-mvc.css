@@ -275,4 +275,52 @@
     font-style: italic;
 }
 
+@media (max-width: 900px) {
+    .mvc-etapa-wrapper {
+        max-width: 100%;
+    }
+
+    .mvc-grade-formulario {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .mvc-etapa {
+        padding: 20px;
+    }
+
+    .mvc-linha-banco {
+        flex-direction: column;
+    }
+
+    .mvc-linha-banco .mvc-etapa-botao {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .mvc-acoes {
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 640px) {
+    .mvc-etapa-cabecalho {
+        flex-wrap: wrap;
+    }
+
+    .mvc-etapa {
+        padding: 16px;
+    }
+
+    .mvc-aviso-info {
+        flex-direction: column;
+    }
+
+    .mvc-etapa-botao,
+    .mvc-etapa-botao-secundario {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
 

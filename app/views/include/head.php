@@ -94,6 +94,7 @@
             left: 0;
             right: 0;
             z-index: 1000;
+            gap: 12px;
         }
 
         .topbar-logo {
@@ -101,6 +102,93 @@
             align-items: center;
             padding-right: 24px;
             gap: 10px;
+            flex-shrink: 0;
+        }
+
+        .topbar-toggle {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            gap: 4px;
+            width: 42px;
+            height: 42px;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 8px;
+            cursor: pointer;
+            margin-left: auto;
+        }
+
+        .topbar-toggle span {
+            display: block;
+            height: 2px;
+            background-color: var(--text);
+            border-radius: 2px;
+        }
+
+        .topbar-nav {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .topbar-nav .topbar-actions {
+            margin-left: auto;
+        }
+
+        @media (max-width: 900px) {
+            .topbar {
+                height: auto;
+                min-height: 60px;
+                flex-wrap: wrap;
+                padding: 12px 16px;
+            }
+
+            .topbar-toggle {
+                display: flex;
+            }
+
+            .topbar-nav {
+                display: none;
+                width: 100%;
+                flex-direction: column;
+                align-items: stretch;
+                padding-top: 8px;
+                gap: 6px;
+            }
+
+            .topbar-nav.open {
+                display: flex;
+            }
+
+            .topbar-item-inicio {
+                margin-left: 0;
+            }
+
+            .topbar-nav .topbar-actions {
+                margin-left: 0;
+                justify-content: flex-end;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .topbar {
+                padding: 10px 12px;
+            }
+
+            .topbar-nav {
+                padding-top: 6px;
+            }
+
+            .topbar-item,
+            .topbar-item-inicio,
+            .profile-btn {
+                width: 100%;
+                justify-content: center;
+            }
         }
 
         /* Especifico pra "Inicio" pra ele ficar mais longe da logo DevStudio */
@@ -175,7 +263,6 @@
         }
 
         .topbar-actions {
-            margin-left: auto;
             display: flex;
             align-items: center;
             gap: 12px;
@@ -365,6 +452,23 @@
             overflow-y: auto;
             background-color: var(--bg);
         }
+
+        @media (max-width: 900px) {
+            .sidebar {
+                display: none;
+            }
+
+            .main-content {
+                width: 100%;
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .main-content {
+                padding: 16px;
+            }
+        }
     </style>
 
     <?php
@@ -401,11 +505,30 @@
             }
         }
 
+        function toggleTopbarNav(event) {
+            if (event) event.stopPropagation();
+            const nav = document.getElementById('topbarNav');
+            const toggle = document.getElementById('topbarToggle');
+            if (!nav || !toggle) return;
+
+            const isOpen = nav.classList.toggle('open');
+            toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+            toggle.setAttribute('aria-label', isOpen ? 'Fechar menu' : 'Abrir menu');
+        }
+
         document.addEventListener('click', function(e) {
             const container = document.querySelector('.profile-dropdown-container');
             const menu = document.getElementById('profileDropdownMenu');
             if (container && menu && !container.contains(e.target)) {
                 menu.classList.remove('active');
+            }
+
+            const toggle = document.getElementById('topbarToggle');
+            const nav = document.getElementById('topbarNav');
+            if (toggle && nav && !toggle.contains(e.target) && !nav.contains(e.target)) {
+                nav.classList.remove('open');
+                toggle.setAttribute('aria-expanded', 'false');
+                toggle.setAttribute('aria-label', 'Abrir menu');
             }
         });
     </script>
