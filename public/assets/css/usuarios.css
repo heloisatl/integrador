@@ -234,3 +234,72 @@ td {
     font-size: 16px;
     margin-bottom: 24px;
 }
+
+@media (max-width: 900px) {
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .page-actions {
+        width: 100%;
+        flex-wrap: wrap;
+    }
+
+    .form-container {
+        padding: 24px;
+        max-width: 100%;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 640px) {
+    .page-title {
+        font-size: 24px;
+    }
+
+    .form-container {
+        padding: 16px;
+    }
+
+    .form-group {
+        margin-bottom: 16px;
+    }
+
+    .table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        background-image: linear-gradient(to right, var(--panel), var(--panel)), linear-gradient(to right, rgba(0,0,0,0.18), rgba(0,0,0,0));
+        background-position: 100% 0, 100% 0;
+        background-repeat: no-repeat;
+        background-size: 24px 100%, 24px 100%;
+        background-attachment: local, scroll;
+    }
+
+    table {
+        min-width: 560px;
+    }
+
+    th,
+    td {
+        padding: 12px;
+        white-space: nowrap;
+    }
+
+    .table-actions {
+        flex-wrap: wrap;
+    }
+
+    .empty-state {
+        padding: 40px 16px;
+    }
+}

@@ -3,6 +3,8 @@
 <style>
     body {
         background: linear-gradient(135deg, #0f172a 0%, #111827 100%);
+        overflow-x: hidden;
+        overflow-y: auto;
     }
 
     .auth-card {
@@ -71,6 +73,14 @@
         border: 1px solid rgba(248,113,113,0.24);
         margin-bottom: 16px;
     }
+
+    @media (max-width: 640px) {
+        .auth-card {
+            margin: 32px auto;
+            padding: 20px;
+            border-radius: 16px;
+        }
+    }
 </style>
 
 <div class="auth-card">
@@ -82,7 +92,7 @@
     <?php endif; ?>
 
     <form method="POST" action="<?= URL_BASE ?>/redefinir-senha">
-        <input type="hidden" name="token" value="<?= htmlspecialchars($token) ?>">
+        <input type="hidden" name="token" value="<?= htmlspecialchars($token ?? '') ?>">
 
         <div class="form-group">
             <label for="senha">Nova senha</label>
