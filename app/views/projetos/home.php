@@ -1,4 +1,4 @@
-<div id="home">
+    <div id="home">
 
     <?php
     // Importa a navbar e a estilização

@@ -1,4 +1,5 @@
-.mvc-etapa {
+.pm-etapa {
+    margin: 20px;   
     padding: 24px;
     border: 1px solid var(--border);
     border-radius: 12px;
@@ -6,6 +7,7 @@
 }
 
 .pm-cartao {
+    margin: 20px;
     padding: 24px;
     border: 1px solid var(--border);
     border-radius: 12px;
@@ -18,4 +20,135 @@ h3 {
     font-weight: 700;
     color: var(--text);
     margin: 0;
+}
+
+/* PageMaker specific layout additions */
+.pm-etapa-wrapper {
+    max-width: 980px;
+    margin: 0 auto 18px;
+}
+
+.pm-grade-formulario {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px 18px;
+    margin-top: 12px;
+}
+
+.pm-campo {
+    display: flex;
+    flex-direction: column;
+}
+
+.pm-campo-completo {
+    grid-column: 1 / -1;
+}
+
+.pm-campo label {
+    display: block;
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--muted);
+    margin-bottom: 8px;
+}
+
+.pm-etiqueta {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--muted);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 2px 7px;
+    border-radius: 5px;
+    margin-left: 8px;
+}
+
+.pm-formulario-opcoes {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 4px;
+    color: var(--text);
+    font-size: 14px;
+    border-bottom: 1px solid transparent;
+}
+
+.pm-formulario-opcoes input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--accent);
+}
+
+.pm-etapa input,
+.pm-etapa select,
+.pm-cartao input,
+.pm-cartao select {
+    width: 100%;
+    padding: 11px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface);
+    color: var(--text);
+    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+    transition: border-color 0.15s ease;
+}
+
+.pm-etapa input::placeholder,
+.pm-cartao input::placeholder {
+    color: var(--muted);
+}
+
+.pm-etapa input:focus,
+.pm-etapa select:focus,
+.pm-cartao input:focus,
+.pm-cartao select:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.pm-botao {
+    margin-top: 10px;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.pm-botao:hover {
+    background: var(--accent-h);
+}
+
+.pm-botao-secundario {
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+}
+
+.pm-links-list {
+    margin-top: 12px;
+}
+
+.pm-image-controls input[type="file"] {
+    padding: 6px 8px;
+    background: transparent;
+}
+
+/* Small responsive tweak */
+@media (max-width: 720px) {
+    .pm-grade-formulario {
+        grid-template-columns: 1fr;
+    }
 }

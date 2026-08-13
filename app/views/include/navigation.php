@@ -171,8 +171,7 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
         <div id="sb-titulo-PageMaker" class="sb-section">
             <div class="sb-label">Page Maker</div>
 
-            <a href="<?= URL_BASE ?>/projetos/pagemaker?step=cabecalho" class="sb-item <?php echo verificarAtivo('pagemaker', $paginaAtual, 'step', 'cabecalho'); ?>"> Cabeçalho
-            </a>
+            
 
             <a href="<?= URL_BASE ?>/projetos/pagemaker?section=cabecalho" class="sb-item <?php echo verificarAtivo('pagemaker', $paginaAtual, 'section', 'cabecalho'); ?>"> <span class="sb-icon"></span> Cabeçalho
             </a>
