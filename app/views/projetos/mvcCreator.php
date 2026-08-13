@@ -7,57 +7,40 @@
 
     <link rel="stylesheet" href="<?= URL_BASE_CSS ?>/pagina-mvc.css">
 
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+
     <?php
     $step = $_GET['step'] ?? 'configurar';
 
     $steps = [
-        //TODO: HELOISA: Arrumar o nome destas variaveis para algo mais intuitivo
         'configurar' => [
             'title' => 'Configurar Projeto',
             'number' => '1',
             'content' => function () {
                 echo '<div class="mvc-etapa">';
 
-                echo '<div class="mvc-aviso-info">💡 <span>As credenciais foram pré-carregadas das <strong>Configurações Globais</strong>. Você só precisa informar o nome do projeto e selecionar o banco.</span></div>';
+                echo '<div class="mvc-aviso-info"><span>As credenciais foram pré-carregadas das <strong>Configurações Globais</strong>. Informe o nome do projeto e selecione o banco de dados.</span></div>';
 
                 echo '<div class="mvc-grade-formulario">';
 
                 echo '<div class="mvc-campo">';
-                echo '<label>Nome do Projeto <span class="etiqueta">Sem espaços</span></label>';
-                echo '<input type="text" name="nomeProjeto" id="nomeProjeto" value="sistema_oficina" placeholder="Nome do Projeto">';
+                echo '<label for="nomeProjeto">Nome do Projeto</label>';
+                echo '<input type="text" name="nomeProjeto" id="nomeProjeto" placeholder="Insira aqui o nome do seu projeto">';
                 echo '</div>';
 
                 echo '<div class="mvc-campo">';
-                echo '<label>Servidor <span class="etiqueta">Da config global</span></label>';
-                echo '<input type="text" name="servidor" id="servidor" value="localhost" disabled placeholder="localhost">';
-                echo '</div>';
-
-                echo '<div class="mvc-campo">';
-                echo '<label>Usuário</label>';
-                echo '<input type="text" name="usuario" id="usuario" value="root" placeholder="root">';
-                echo '</div>';
-
-                echo '<div class="mvc-campo">';
-                echo '<label>Senha</label>';
-                echo '<input type="password" name="senha" id="senha" value="123456" placeholder="*********">';
-                echo '</div>';
-
-                echo '<div class="mvc-campo mvc-campo-completo">';
-                echo '<label>Banco de Dados</label>';
+                echo '<label for="banco">Banco de Dados</label>';
                 echo '<div class="mvc-linha-banco">';
-                echo '<select name="banco" id="banco"><option value="">— preencha a senha para carregar —</option><option value="EXEMPLO_BANCO">EXEMPLO</option></select>';
-                echo '<button type="button" class="mvc-etapa-botao mvc-etapa-botao-secundario">Recarregar bancos</button>';
+                echo '<select disabled name="banco" id="banco"><option value="">Preencha o nome do projeto para carregar os bancos</option></select>';
+                echo '<div class="mvc-botoes-banco">';
+                echo '<button type="button" onclick="carregarBanco();" disabled class="mvc-etapa-botao mvc-etapa-botao-secundario mvc-btn-icon" title="Atualizar"><span class="material-symbols-outlined">refresh</span></button>';
+                echo '<button type="button" onclick="" class="mvc-etapa-botao">Criar novo banco</button>';
                 echo '</div>';
                 echo '</div>';
-
-                echo '</div>';
-
-                echo '<div class="mvc-acoes">';
-                echo '<button class="mvc-etapa-botao">Conectar e Detectar Tabelas</button>';
-                echo '<button class="mvc-etapa-botao mvc-etapa-botao-secundario">Exemplo: banco "oficina"</button>';
                 echo '</div>';
 
-                echo '</div>';
+                echo '</div>'; // fecha mvc-grade-formulario
+                echo '</div>'; // fecha mvc-etapa
             }
         ],
         'tabelas' => [
@@ -65,8 +48,12 @@
             'number' => '2',
             'content' => function () {
                 echo '<div class="mvc-etapa">';
-                echo '<p>As tabelas encontradas aparecerão aqui.</p>';
-                echo '<button class="mvc-etapa-botao">Próximo →</button>';
+                echo '<p class="mvc-subtitulo">Selecione as tabelas que farão parte do sistema MVC:</p>';
+                echo '<div id="container-tabelas"><p style="color: #666;">Carregando tabelas do banco...</p></div>';
+                echo '<div class="mvc-acoes">';
+                echo '<a href="?step=opcoes" class="mvc-etapa-botao">Próximo: Opções de Geração →</a>';
+                echo '<a href="?step=configurar" class="mvc-etapa-botao mvc-etapa-botao-secundario">← Voltar</a>';
+                echo '</div>';
                 echo '</div>';
             }
         ],
@@ -75,29 +62,46 @@
             'number' => '3',
             'content' => function () {
                 echo '<div class="mvc-etapa">';
-                echo '<p class="mvc-subtitulo">O que será gerado</p>';
+                echo '<p class="mvc-subtitulo">Selecione as camadas que deseja gerar:</p>';
                 echo '<form class="mvc-formulario-opcoes">';
-                echo '<label><input type="checkbox" checked> Camada Model</label>';
-                echo '<label><input type="checkbox" checked> Camada Controller</label>';
-                echo '<label><input type="checkbox" checked> Camada DAO</label>';
-                echo '<label><input type="checkbox" checked> Views</label>';
-                echo '<label><input type="checkbox"> Quero receber novidades por e-mail</label>';
+                echo '<label><input type="checkbox" checked disabled> Camada Model (Models PSR-4)</label>';
+                echo '<label><input type="checkbox" checked disabled> Camada Controller (Controllers RESTful)</label>';
+                echo '<label><input type="checkbox" checked disabled> Camada Repositório (DAO / PDO ConnectionFactory)</label>';
+                echo '<label><input type="checkbox" checked disabled> Camada Views (Listagem, Cadastro e Edição)</label>';
                 echo '</form>';
-                echo '<button class="mvc-etapa-botao">Ver Estrutura de Arquivos →</button>';
+                echo '<div class="mvc-acoes">';
+                echo '<a href="?step=estrutura" class="mvc-etapa-botao">Ver Estrutura de Arquivos →</a>';
+                echo '<a href="?step=tabelas" class="mvc-etapa-botao mvc-etapa-botao-secundario">← Voltar</a>';
+                echo '</div>';
                 echo '</div>';
             }
         ],
         'estrutura' => [
             'title' => 'Estrutura de Arquivos que Será Criada',
             'number' => '4',
-            'tag' => 'NOVO',
+            'tag' => 'VISUALIZAÇÃO',
             'content' => function () {
                 echo '<div class="mvc-etapa">';
-                echo '<p class="mvc-subtitulo">Visualize a árvore de diretórios antes de gerar.</p>';
+                echo '<p class="mvc-subtitulo">Árvore de diretórios gerada automaticamente:</p>';
+
+                echo '<div style="background: #1e1e1e; color: #d4d4d4; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 14px; margin: 15px 0; overflow-x: auto; white-space: nowrap;">';
+                echo '📂 app/<br>';
+                echo '&nbsp;&nbsp;├── 📂 controllers/<br>';
+                echo '&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── 📄 [NomeTabela]Controller.php<br>';
+                echo '&nbsp;&nbsp;├── 📂 models/<br>';
+                echo '&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── 📄 [NomeTabela].php<br>';
+                echo '&nbsp;&nbsp;├── 📂 repositories/<br>';
+                echo '&nbsp;&nbsp;│&nbsp;&nbsp;&nbsp;└── 📄 [NomeTabela]Repository.php<br>';
+                echo '&nbsp;&nbsp;└── 📂 views/<br>';
+                echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── 📂 [nometabela]s/<br>';
+                echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── 📄 index.php<br>';
+                echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├── 📄 create.php<br>';
+                echo '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── 📄 edit.php<br>';
+                echo '</div>';
 
                 echo '<div class="mvc-acoes">';
-                echo '<button class="mvc-etapa-botao">Confirmar e Gerar →</button>';
-                echo '<button class="mvc-etapa-botao mvc-etapa-botao-secundario">← Voltar</button>';
+                echo '<a href="?step=gerar" class="mvc-etapa-botao">Avançar para Geração →</a>';
+                echo '<a href="?step=opcoes" class="mvc-etapa-botao mvc-etapa-botao-secundario">← Voltar</a>';
                 echo '</div>';
                 echo '</div>';
             }
@@ -107,7 +111,11 @@
             'number' => '5',
             'content' => function () {
                 echo '<div class="mvc-etapa">';
-                echo '<button class="mvc-etapa-botao"> Gerar Todo o Sistema</button>';
+                echo '<p class="mvc-subtitulo">Clique no botão abaixo para gerar o código MVC e baixar o arquivo .ZIP completo:</p>';
+                echo '<div class="mvc-acoes">';
+                echo '<button type="button" id="btn-gerar-final" onclick="executarGeracaoMvc();" class="mvc-etapa-botao" style="font-size: 16px; padding: 12px 24px;">🚀 Gerar Todo o Sistema (.ZIP)</button>';
+                echo '<a href="?step=estrutura" class="mvc-etapa-botao mvc-etapa-botao-secundario">← Voltar</a>';
+                echo '</div>';
                 echo '</div>';
             }
         ]
@@ -131,6 +139,8 @@
     </div>
 
     </main>
+    <script src="<?= URL_BASE ?>/assets/js/mvcLoad.js"></script>
+    <script src="<?= URL_BASE ?>/assets/js/desabilitado.js"></script>
 </div>
 </div>
 </body>

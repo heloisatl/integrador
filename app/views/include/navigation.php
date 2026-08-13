@@ -68,56 +68,64 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
         <h1 class="title"> <a class="title-link" href="<?= URL_BASE ?>/projetos">DevStudio </a></h1>
     </div>
 
-    <a href="<?= URL_BASE ?>/projetos" class="topbar-item-inicio <?php echo verificarAtivo('projetos', $paginaAtual); ?>">
-        Início
-    </a>
+    <button type="button" class="topbar-toggle" id="topbarToggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="topbarNav" onclick="toggleTopbarNav(event)">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
 
-    <a href="<?= URL_BASE ?>/projetos/config-global" class="topbar-item <?php echo verificarAtivo('config-global', $paginaAtual); ?>">
-        Config. Global
-    </a>
-    <a href="<?= URL_BASE ?>/projetos/mvc-creator" class="topbar-item <?php echo verificarAtivo('mvc-creator', $paginaAtual); ?>">
-        MVC Creator
-    </a>
-    <a href="<?= URL_BASE ?>/projetos/pagemaker" class="topbar-item <?php echo verificarAtivo('pagemaker', $paginaAtual); ?>">
-        Page Maker </a>
-
-    <a href="<?= URL_BASE ?>/projetos/historico" class="topbar-item <?php echo verificarAtivo('historico', $paginaAtual); ?>">
-        Histórico </a>
-
-    <a href="<?= URL_BASE ?>/projetos/saida" class="topbar-item <?php echo verificarAtivo('saida', $paginaAtual); ?>">
-        Saída </a>
-
-    <?php if (defined('URL_BASE') && usuarioEhAdmin()): ?>
-        <a href="<?= URL_BASE ?>/usuarios" class="topbar-item <?php echo $paginaAtual === 'usuarios' ? 'active' : ''; ?>">
-            Usuários
+    <div class="topbar-nav" id="topbarNav">
+        <a href="<?= URL_BASE ?>/projetos" class="topbar-item-inicio <?php echo verificarAtivo('projetos', $paginaAtual); ?>">
+            Início
         </a>
-    <?php endif; ?>
 
-    <div class="topbar-actions">
-        <div class="profile-dropdown-container">
-            <button type="button" class="profile-btn" id="profileDropdownBtn" onclick="toggleProfileMenu(event)">
-                Perfil
-            </button>
-            <div class="profile-dropdown-menu" id="profileDropdownMenu">
-                <?php if (isset($_SESSION['usuario_logado'])):
-                    $usuarioLogado = $_SESSION['usuario_logado'];
-                ?>
-                    <div class="profile-dropdown-header">
-                        <div class="profile-user-name"><?= htmlspecialchars($usuarioLogado->getNome()) ?></div>
-                        <div class="profile-user-email"><?= htmlspecialchars($usuarioLogado->getEmail()) ?></div>
-                    </div>
-                    <div class="profile-dropdown-divider"></div>
-                <?php endif; ?>
+        <a href="<?= URL_BASE ?>/projetos/config-global" class="topbar-item <?php echo verificarAtivo('config-global', $paginaAtual); ?>">
+            Config. Global
+        </a>
+        <a href="<?= URL_BASE ?>/projetos/mvc-creator" class="topbar-item <?php echo verificarAtivo('mvc-creator', $paginaAtual); ?>">
+            MVC Creator
+        </a>
+        <a href="<?= URL_BASE ?>/projetos/pagemaker" class="topbar-item <?php echo verificarAtivo('pagemaker', $paginaAtual); ?>">
+            Page Maker </a>
 
-                <button type="button" class="profile-dropdown-item" onclick="toggleGlobalTheme()">
-                    Alternar Tema
+        <a href="<?= URL_BASE ?>/projetos/historico" class="topbar-item <?php echo verificarAtivo('historico', $paginaAtual); ?>">
+            Histórico </a>
+
+        <a href="<?= URL_BASE ?>/projetos/saida" class="topbar-item <?php echo verificarAtivo('saida', $paginaAtual); ?>">
+            Saída </a>
+
+        <?php if (defined('URL_BASE') && usuarioEhAdmin()): ?>
+            <a href="<?= URL_BASE ?>/usuarios" class="topbar-item <?php echo $paginaAtual === 'usuarios' ? 'active' : ''; ?>">
+                Usuários
+            </a>
+        <?php endif; ?>
+
+        <div class="topbar-actions">
+            <div class="profile-dropdown-container">
+                <button type="button" class="profile-btn" id="profileDropdownBtn" onclick="toggleProfileMenu(event)">
+                    Perfil
                 </button>
+                <div class="profile-dropdown-menu" id="profileDropdownMenu">
+                    <?php if (isset($_SESSION['usuario_logado'])):
+                        $usuarioLogado = $_SESSION['usuario_logado'];
+                    ?>
+                        <div class="profile-dropdown-header">
+                            <div class="profile-user-name"><?= htmlspecialchars($usuarioLogado->getNome()) ?></div>
+                            <div class="profile-user-email"><?= htmlspecialchars($usuarioLogado->getEmail()) ?></div>
+                        </div>
+                        <div class="profile-dropdown-divider"></div>
+                    <?php endif; ?>
 
-                <?php if (isset($_SESSION['usuario_logado'])): ?>
-                    <a href="<?= URL_BASE ?>/logout" class="profile-dropdown-item profile-dropdown-danger">Sair</a>
-                <?php else: ?>
-                    <a href="<?= URL_BASE ?>/login" class="profile-dropdown-item">Entrar</a>
-                <?php endif; ?>
+                    <button type="button" class="profile-dropdown-item" onclick="toggleGlobalTheme()">
+                        Alternar Tema
+                    </button>
+
+                    <?php if (isset($_SESSION['usuario_logado'])): ?>
+                        <a href="<?= URL_BASE ?>/logout" class="profile-dropdown-item profile-dropdown-danger">Sair</a>
+                    <?php else: ?>
+                        <a href="<?= URL_BASE ?>/login" class="profile-dropdown-item">Entrar</a>
+                    <?php endif; ?>
+                </div>
             </div>
         </div>
     </div>

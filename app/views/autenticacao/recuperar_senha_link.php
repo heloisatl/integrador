@@ -3,6 +3,8 @@
 <style>
     body {
         background: linear-gradient(135deg, #0f172a 0%, #111827 100%);
+        overflow-x: hidden;
+        overflow-y: auto;
     }
 
     .auth-card {
@@ -54,6 +56,14 @@
         word-break: break-all;
         font-family: monospace;
     }
+
+    @media (max-width: 640px) {
+        .auth-card {
+            margin: 32px auto;
+            padding: 20px;
+            border-radius: 16px;
+        }
+    }
 </style>
 
 <div class="auth-card">
@@ -64,5 +74,5 @@
         <?= htmlspecialchars(URL_BASE . '/redefinir-senha?token=' . ($token ?? '')) ?>
     </div>
 
-    <a href="<?= URL_BASE ?>/redefinir-senha?token=<?= urlencode($token) ?>" class="btn">Redefinir senha agora</a>
+    <a href="<?= URL_BASE ?>/redefinir-senha?token=<?= urlencode($token ?? '') ?>" class="btn">Redefinir senha agora</a>
 </div>

@@ -17,6 +17,14 @@ class ProjetoService{
         return $this->projetoRepository->getDatabases($dsn,$user,$pass);
     }
 
+    public function getTabelas($dsn, $user, $pass, $banco) {
+        return $this->projetoRepository->getTabelas($dsn, $user, $pass, $banco);
+    }
+
+    public function getColunas($dsn, $user, $pass, $banco, $tabela) {
+        return $this->projetoRepository->getColunas($dsn, $user, $pass, $banco, $tabela);
+    }
+
     public function getById(int $id){   
         return $this->projetoRepository->getById($id);
     }
