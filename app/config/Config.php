@@ -54,4 +54,4 @@ define('DB_HOST', 'localhost');
 define('DB_NAME', 'mvc_creator');
 
 define('DB_USER', 'root');
-define('DB_PASS', 'bancodedados');
+define('DB_PASS', '');

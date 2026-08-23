@@ -62,6 +62,7 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
 }
 ?>
 
+
 <header class="topbar">
     <div class="topbar-logo">
         <span class="logo"></span>
@@ -101,8 +102,18 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
         <?php endif; ?>
 
         <div class="topbar-actions">
+
+            <button type="button" class="profile-dropdown-item theme-toggle" onclick="toggleGlobalTheme()">
+                Alternar Tema
+                <i class="bi bi-brightness-high-fill" aria-hidden="true"></i>
+                <i class="bi bi-moon-fill" aria-hidden="true"></i>
+            </button>
+
+
             <div class="profile-dropdown-container">
                 <button type="button" class="profile-btn" id="profileDropdownBtn" onclick="toggleProfileMenu(event)">
+                    <i class="bi bi-person"></i>
+                    <i class="bi bi-person-fill" aria-hidden="true"></i>
                     Perfil
                 </button>
                 <div class="profile-dropdown-menu" id="profileDropdownMenu">
@@ -116,14 +127,24 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
                         <div class="profile-dropdown-divider"></div>
                     <?php endif; ?>
 
-                    <button type="button" class="profile-dropdown-item" onclick="toggleGlobalTheme()">
-                        Alternar Tema
-                    </button>
+
 
                     <?php if (isset($_SESSION['usuario_logado'])): ?>
                         <a href="<?= URL_BASE ?>/logout" class="profile-dropdown-item profile-dropdown-danger">Sair</a>
                     <?php else: ?>
-                        <a href="<?= URL_BASE ?>/login" class="profile-dropdown-item">Entrar</a>
+                        <a href="<?= URL_BASE ?>/login" class="profile-dropdown-item login-link">
+                            <i class="bi bi-door-closed" aria-hidden="true"></i>
+                            <i class="bi bi-door-open-fill" aria-hidden="true"></i>
+                            Entrar
+                        </a>
+                        <a href="<?= URL_BASE ?>/cadastro" class="profile-dropdown-item register-link">
+                            <i class="bi bi-person-plus" aria-hidden="true"></i>
+                            <i class="bi bi-person-plus-fill" aria-hidden="true"></i>
+
+                            Cadastrar
+                        </a>
+
+
                     <?php endif; ?>
                 </div>
             </div>
@@ -179,7 +200,7 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
         <div id="sb-titulo-PageMaker" class="sb-section">
             <div class="sb-label">Page Maker</div>
 
-            
+
 
             <a href="<?= URL_BASE ?>/projetos/pagemaker?section=cabecalho" class="sb-item <?php echo verificarAtivo('pagemaker', $paginaAtual, 'section', 'cabecalho'); ?>"> <span class="sb-icon"></span> Cabeçalho
             </a>

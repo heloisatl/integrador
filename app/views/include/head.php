@@ -8,6 +8,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@600;700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <style>
         * {
@@ -288,6 +289,52 @@
             transition: all 0.2s ease;
         }
 
+        .profile-btn .bi-person,
+        .login-link .bi-door-closed,
+        .register-link .bi-person-plus {
+            display: inline-block;
+        }
+
+        .profile-btn .bi-person-fill,
+        .login-link .bi-door-open-fill,
+        .register-link .bi-person-plus-fill {
+            display: none;
+        }
+
+        .profile-btn:hover .bi-person {
+            display: none;
+        }
+
+        .profile-btn:hover .bi-person-fill,
+        .login-link:hover .bi-door-open-fill {
+            display: inline-block;
+        }
+
+        .login-link:hover .bi-door-closed,
+        .register-link:hover .bi-person-plus {
+            display: none;
+        }
+
+        .register-link:hover .bi-person-plus-fill {
+            display: inline-block;
+        }
+
+        .theme-toggle .bi-brightness-high-fill {
+            display: none;
+        }
+
+        .theme-toggle .bi-moon-fill {
+            display: inline-block;
+        }
+
+        .theme-toggle.is-light .bi-brightness-high-fill {
+            display: inline-block;
+        }
+
+        .theme-toggle.is-light .bi-moon-fill {
+            display: none;
+        }
+
         .profile-btn:hover {
             background-color: var(--surface);
             border-color: var(--accent);
@@ -487,6 +534,14 @@
             //salva o tema selecionado no cache do navegador
             html.setAttribute('data-theme', newTheme);
             localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        }
+
+        function updateThemeIcon(theme) {
+            const themeToggle = document.querySelector('.theme-toggle');
+            if (themeToggle) {
+                themeToggle.classList.toggle('is-light', theme === 'light');
+            }
 
         }
 
@@ -495,6 +550,7 @@
             if (savedTheme) {
                 document.documentElement.setAttribute('data-theme', savedTheme);
             }
+            updateThemeIcon(document.documentElement.getAttribute('data-theme'));
         })();
 
         function toggleProfileMenu(event) {

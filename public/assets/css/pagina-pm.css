@@ -1,5 +1,5 @@
 .pm-etapa {
-    margin: 20px;   
+    margin: 20px;
     padding: 24px;
     border: 1px solid var(--border);
     border-radius: 12px;
@@ -150,22 +150,27 @@ h3 {
 @media (max-width: 720px) {
     .pm-grade-formulario {
         grid-template-columns: 1fr;
-@media (max-width: 900px) {
-    .mvc-etapa,
-    .pm-cartao {
-        padding: 20px;
-    }
-}
 
-@media (max-width: 640px) {
-    .mvc-etapa,
-    .pm-cartao {
-        padding: 16px;
-    }
+        @media (max-width: 900px) {
 
-    .pm-cartao input,
-    .pm-cartao select,
-    .pm-cartao button {
-        width: 100%;
+            .mvc-etapa,
+            .pm-cartao {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 640px) {
+
+            .mvc-etapa,
+            .pm-cartao {
+                padding: 16px;
+            }
+
+            .pm-cartao input,
+            .pm-cartao select,
+            .pm-cartao button {
+                width: 100%;
+            }
+        }
     }
 }
