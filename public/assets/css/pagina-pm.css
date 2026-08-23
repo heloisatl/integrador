@@ -1,37 +1,30 @@
-.pm-etapa {
-    margin: 20px;
-    padding: 24px;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    background: var(--panel);
+.pm-etapa-wrapper {
+    margin: 0 auto 18px;
+    max-width: 980px;
 }
 
+.pm-etapa,
 .pm-cartao {
-    margin: 20px;
-    padding: 24px;
+    background: var(--panel);
     border: 1px solid var(--border);
     border-radius: 12px;
-    background: var(--panel);
+    margin: 20px 0;
+    padding: 24px;
 }
 
-h3 {
+.pm-etapa h3,
+.pm-cartao h3 {
+    color: var(--text);
     font-family: 'Syne', sans-serif;
     font-size: 19px;
     font-weight: 700;
-    color: var(--text);
     margin: 0;
-}
-
-/* PageMaker specific layout additions */
-.pm-etapa-wrapper {
-    max-width: 980px;
-    margin: 0 auto 18px;
 }
 
 .pm-grade-formulario {
     display: grid;
-    grid-template-columns: 1fr 1fr;
     gap: 14px 18px;
+    grid-template-columns: 1fr 1fr;
     margin-top: 12px;
 }
 
@@ -44,87 +37,111 @@ h3 {
     grid-column: 1 / -1;
 }
 
-.pm-campo label {
+.pm-campo label,
+.pm-saida>label {
+    color: var(--muted);
     display: block;
     font-family: 'Syne', sans-serif;
     font-size: 11px;
     font-weight: 700;
-    text-transform: uppercase;
     letter-spacing: 0.6px;
-    color: var(--muted);
     margin-bottom: 8px;
+    text-transform: uppercase;
 }
 
 .pm-etiqueta {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    color: var(--muted);
     font-family: 'DM Sans', sans-serif;
     font-size: 10px;
     font-weight: 500;
-    color: var(--muted);
-    background: var(--surface);
-    border: 1px solid var(--border);
-    padding: 2px 7px;
-    border-radius: 5px;
     margin-left: 8px;
+    padding: 2px 7px;
 }
 
 .pm-formulario-opcoes {
-    display: flex;
     align-items: center;
+    color: var(--text);
+    display: flex;
+    font-size: 14px;
     gap: 10px;
     padding: 8px 4px;
-    color: var(--text);
-    font-size: 14px;
-    border-bottom: 1px solid transparent;
 }
 
-.pm-formulario-opcoes input[type="checkbox"] {
-    width: 16px;
-    height: 16px;
+.pm-formulario-opcoes input[type='checkbox'] {
     accent-color: var(--accent);
+    height: 16px;
+    width: 16px;
 }
 
 .pm-etapa input,
 .pm-etapa select,
+.pm-etapa textarea,
 .pm-cartao input,
-.pm-cartao select {
-    width: 100%;
-    padding: 11px 12px;
+.pm-cartao select,
+.pm-cartao textarea {
+    background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 8px;
-    background: var(--surface);
+    box-sizing: border-box;
     color: var(--text);
-    font-size: 14px;
     font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    padding: 11px 12px;
     transition: border-color 0.15s ease;
+    width: 100%;
 }
 
-.pm-etapa input::placeholder,
-.pm-cartao input::placeholder {
-    color: var(--muted);
+.pm-etapa textarea,
+.pm-cartao textarea {
+    min-height: 88px;
+    resize: vertical;
 }
 
 .pm-etapa input:focus,
 .pm-etapa select:focus,
+.pm-etapa textarea:focus,
 .pm-cartao input:focus,
-.pm-cartao select:focus {
-    outline: none;
+.pm-cartao select:focus,
+.pm-cartao textarea:focus {
     border-color: var(--accent);
+    outline: none;
+}
+
+.pm-etapa input[type='color'],
+.pm-cartao input[type='color'] {
+    height: 42px;
+    padding: 4px;
+}
+
+.pm-etapa input[type='range'],
+.pm-cartao input[type='range'] {
+    accent-color: var(--accent);
+    padding: 0;
+}
+
+output {
+    color: var(--accent);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
 }
 
 .pm-botao {
-    margin-top: 10px;
-    padding: 10px 16px;
-    border: none;
-    border-radius: 8px;
+    align-items: center;
     background: var(--accent);
+    border: 0;
+    border-radius: 8px;
     color: #fff;
-    font-size: 14px;
-    font-weight: 500;
-    font-family: 'DM Sans', sans-serif;
     cursor: pointer;
     display: inline-flex;
-    align-items: center;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
     gap: 8px;
+    margin-top: 10px;
+    padding: 10px 16px;
 }
 
 .pm-botao:hover {
@@ -133,44 +150,108 @@ h3 {
 
 .pm-botao-secundario {
     background: var(--surface);
-    color: var(--text);
     border: 1px solid var(--border);
+    color: var(--text);
+}
+
+.pm-botao-pequeno {
+    margin-top: 0;
+    padding: 10px 14px;
 }
 
 .pm-links-list {
     margin-top: 12px;
 }
 
-.pm-image-controls input[type="file"] {
-    padding: 6px 8px;
-    background: transparent;
+.pm-grupo-link {
+    align-items: center;
+    display: grid;
+    gap: 10px;
+    grid-column: 1 / -1;
+    grid-template-columns: 1fr 1fr auto;
 }
 
-/* Small responsive tweak */
+.pm-grupo-link input {
+    width: 100%;
+}
+
+.pm-grupo-link>span {
+    display: block;
+    width: 48px;
+}
+
+.pm-oculto {
+    display: none;
+}
+
+.pm-image-controls input[type='file'] {
+    background: transparent;
+    padding: 6px 8px;
+}
+
+.pm-saida {
+    display: grid;
+    gap: 8px;
+    grid-column: 1 / -1;
+    margin-top: 18px;
+}
+
+.pm-saida textarea {
+    min-height: 150px;
+}
+
+.pm-saida iframe {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    height: 300px;
+    width: 100%;
+}
+
+.pm-controles-tela {
+    align-items: center;
+    display: flex;
+    gap: 8px;
+    margin: 14px 0 4px;
+}
+
+.pm-controles-tela .pm-botao {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    margin-top: 0;
+}
+
+.pm-controles-tela .pm-botao.pm-tela-ativa,
+.pm-controles-tela .pm-botao:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+}
+
 @media (max-width: 720px) {
-    .pm-grade-formulario {
+
+    .pm-grade-formulario,
+    .pm-grupo-link {
         grid-template-columns: 1fr;
+    }
 
-        @media (max-width: 900px) {
+    .pm-etapa,
+    .pm-cartao {
+        padding: 18px;
+    }
 
-            .mvc-etapa,
-            .pm-cartao {
-                padding: 20px;
-            }
-        }
+    .pm-campo-completo,
+    .pm-grupo-link {
+        grid-column: auto;
+    }
 
-        @media (max-width: 640px) {
+    .pm-botao {
+        justify-content: center;
+        width: 100%;
+    }
 
-            .mvc-etapa,
-            .pm-cartao {
-                padding: 16px;
-            }
-
-            .pm-cartao input,
-            .pm-cartao select,
-            .pm-cartao button {
-                width: 100%;
-            }
-        }
+    .pm-controles-tela .pm-botao {
+        width: auto;
     }
 }

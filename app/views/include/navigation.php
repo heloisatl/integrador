@@ -89,8 +89,12 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
         <a href="<?= URL_BASE ?>/projetos/pagemaker" class="topbar-item <?php echo verificarAtivo('pagemaker', $paginaAtual); ?>">
             Page Maker </a>
 
-        <a href="<?= URL_BASE ?>/projetos/historico" class="topbar-item <?php echo verificarAtivo('historico', $paginaAtual); ?>">
+        <?php if (isset($_SESSION['usuario_logado'])):
+                        $usuarioLogado = $_SESSION['usuario_logado'];
+                    ?>
+                    <a href="<?= URL_BASE ?>/projetos/historico" class="topbar-item <?php echo verificarAtivo('historico', $paginaAtual); ?>">
             Histórico </a>
+            <?php endif; ?>
 
         <a href="<?= URL_BASE ?>/projetos/saida" class="topbar-item <?php echo verificarAtivo('saida', $paginaAtual); ?>">
             Saída </a>
