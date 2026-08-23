@@ -10,8 +10,9 @@ use app\core\Router;
 
 $router = new Router();
 
-$router->get('/', 'UsuarioController@index');
+$router->get("/projetos",'ProjetoController@index');
 
+$router->get('/', 'ProjetoController@index');
 $router->get('/login', 'AutenticacaoController@login');
 $router->post('/logar', 'AutenticacaoController@logar');
 $router->get('/logout', 'AutenticacaoController@logout');
@@ -33,7 +34,6 @@ $router->post('/usuarios/atualizar', 'UsuarioController@atualizar');
 
 
 
-$router->get("/projetos",'ProjetoController@index');
 $router->get("/projetos/cadastrar","ProjetoController@cadastrar");
 $router->post("/projetos/cadastrar/opcoes","ProjetoController@bools");
 $router->post("/projetos/criar","ProjetoController@criar");

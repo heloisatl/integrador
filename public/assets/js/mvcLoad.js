@@ -3,6 +3,8 @@ document.addEventListener("DOMContentLoaded", function () {
     renderizarTabelasSeExistirem();
 });
 
+const URL_BASE = new URL("../..", document.currentScript.src).href.replace(/\/$/, "");
+
 function salvarConfiguracoesSession() {
     let nomeProjeto = document.getElementById("nomeProjeto") ? document.getElementById("nomeProjeto").value : "";
     let srv = document.getElementById("servidor") ? document.getElementById("servidor").value : "localhost";
@@ -33,7 +35,6 @@ function restaurarValoresFormulario() {
 }
 
 function carregarBanco() {
-    const URL_BASE = "http://localhost:8081";
     salvarConfiguracoesSession();
 
     let usr = sessionStorage.getItem("mvc_usuario") || "root";
@@ -62,7 +63,6 @@ function carregarBanco() {
 }
 
 function carregarTabelas() {
-    const URL_BASE = "http://localhost:8081";
     salvarConfiguracoesSession();
 
     let usr = sessionStorage.getItem("mvc_usuario") || "root";
