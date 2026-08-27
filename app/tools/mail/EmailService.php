@@ -22,18 +22,21 @@ class EmailService {
     private function configurarSMTP() {
         $this->mail->SMTPDebug = SMTP::DEBUG_OFF;
         $this->mail->isSMTP();
-        $this->mail->Host = "smtp.gmail.com";
+        $this->mail->Host = env('SMTP_HOST', 'smtp.gmail.com');
         $this->mail->SMTPAuth = true;
-        $this->mail->Username = "creatormvc@gmail.com";
-        $this->mail->Password = "antcbjvvcciyarpz";
+        $this->mail->Username = env('SMTP_USER', '');
+        $this->mail->Password = env('SMTP_PASS', '');
         $this->mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-        $this->mail->Port = 587;
+        $this->mail->Port = (int) env('SMTP_PORT', 587);
         $this->mail->CharSet = 'UTF-8';
     }
 
     public function enviarNovaSenha($emailDestino, $novaSenha) {
         try {
-            $this->mail->setFrom('creatormvc@gmail.com', 'Equipe DevStudio');
+            $remetenteEmail = env('MAIL_FROM_ADDRESS', env('SMTP_USER', ''));
+            $remetenteNome  = env('MAIL_FROM_NAME', 'Equipe DevStudio');
+
+            $this->mail->setFrom($remetenteEmail, $remetenteNome);
             $this->mail->addAddress($emailDestino);
 
             $this->mail->isHTML(true);
