@@ -12,6 +12,7 @@ use app\services\TabelaService;
 use app\services\AtributoService;
 use app\tools\gerador\GerenciadorGerador;
 use app\tools\gerador\GeradorZip;
+use app\tools\SchemaInspector;
 use app\services\UsuarioService;
 
 class ProjetoController extends Controller{
@@ -60,13 +61,46 @@ class ProjetoController extends Controller{
         
         foreach($atributos as $atributo){
             foreach($atributo as $att){
-                print_r($att);
+                // print_r($att);
             }
         }
 
         // print_r($bancoSelecionado);
         // print_r($tabelas);
         // print_r($atributos);
+    }
+
+    public function testeInserirBanco(){
+        $host = '127.0.0.1:3306';
+        $hostEporta = explode(':',$host);
+        $nome_banco = 'phpmyadmin';
+        $usuario_banco = 'root';
+        $senha_banco = '';
+        $fk_usuario = $_SESSION['usuario_logado']->getIdUsuario();
+        
+        // SchemaInspector com o Banco Selecionado
+        $schema = new SchemaInspector("mysql:host=$host;dbname=$nome_banco",$usuario_banco,$senha_banco);
+
+        // Insercao do Banco
+        $bancoService = new BancoService();
+        $bancoService->insert($fk_usuario,$nome_banco,$usuario_banco,$senha_banco,$hostEporta[0],$hostEporta[1]);
+        $bancoEspecifico = $bancoService->getBancoEspecifico($nome_banco,$usuario_banco,$fk_usuario);
+        // Insercao da Tabela e atributos
+        $tabelaService = new TabelaService();
+        $tabelas = $schema->getTabelas();
+        
+        
+        $atributoService = new AtributoService();
+        foreach($tabelas as $key => $value){
+            $tabelaService->insert($value[0],$bancoEspecifico['id_banco']);
+            $tabelaEspecifica = $tabelaService->getTabelaEspecifica($value[0],$bancoEspecifico['id_banco']);
+            // print_r($schema->getAtributos($value[0]));
+            foreach($schema->getAtributos($value[0]) as $att){
+                $pk = $att['Key']=="PRI" ? 1 : 0;
+                $nn = $att['Null']=="NO" ? 1 : 0;
+                $atributoService->insert($tabelaEspecifica['id_tabela'],null,$att['Field'],$att['Type'],$pk,$nn,0,0);
+            }
+        }
     }
 
     public function gerarMvc(): void {
@@ -181,13 +215,15 @@ class ProjetoController extends Controller{
         $this->view('projetos/guia');
     }
 
+    
+
     public function mvcCreator(): void {
         $usuarioService = new UsuarioService();
         $bancoService = new BancoService();
         $usuario = $usuarioService->getUsuarioPorEmail($_SESSION['usuario_logado']->getEmail());
         // print_r($usuario);
         $bancos = $bancoService->getBancoByUsuario($usuario->getIdUsuario());
-        print_r($bancos);
+        // print_r($bancos);
         $bancoOpts = '';
         foreach($bancos as $banco){
             $bancoOpts .= '<option value="' . $banco['id_banco'] . '">' . $banco['nome_banco'] . '</option>';
