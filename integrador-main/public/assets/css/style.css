@@ -1,0 +1,443 @@
+/* ---------- NAVBAR ---------- */
+.navbar {
+  z-index: 2;
+  background: linear-gradient(90deg, var(--bg-darker), var(--bg-dark)) !important;
+  padding: 0.8rem 1.5rem;
+  border-radius: 0 0 16px 16px;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.12);
+}
+
+@media (max-width: 1200px) {
+  .sidebar {
+    width: 24%;
+  }
+
+  .main-content {
+    width: 76%;
+  }
+}
+
+@media (max-width: 900px) {
+  body {
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .topbar {
+    position: sticky;
+    flex-wrap: wrap;
+    height: auto;
+    min-height: 60px;
+    padding: 10px 16px;
+    gap: 8px;
+  }
+
+  .topbar-logo {
+    padding-right: 12px;
+  }
+
+  .topbar-item-inicio {
+    margin-left: 0;
+  }
+
+  .topbar-actions {
+    margin-left: 0;
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .layout-wrapper {
+    flex-direction: column;
+    margin-top: 0;
+    height: auto;
+    min-height: calc(100vh - 60px);
+  }
+
+  .sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    padding: 16px;
+    gap: 12px;
+  }
+
+  .main-content {
+    width: 100%;
+    padding: 20px;
+  }
+}
+
+@media (max-width: 640px) {
+  .topbar {
+    padding: 10px 12px;
+  }
+
+  .topbar-logo {
+    width: 100%;
+    padding-right: 0;
+  }
+
+  .topbar-item,
+  .topbar-item-inicio {
+    width: calc(50% - 4px);
+    justify-content: center;
+    font-size: 13px;
+  }
+
+  .topbar-actions {
+    width: 100%;
+  }
+
+  .profile-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .sidebar {
+    padding: 12px;
+  }
+
+  .sb-item {
+    font-size: 13px;
+    padding: 9px 10px;
+  }
+
+  .main-content {
+    padding: 16px;
+  }
+}
+
+
+.navbar .navbar-brand,
+.navbar .nav-link {
+  color: var(--text-light) !important;
+  font-weight: 600;
+}
+.navbar .nav-link:hover,
+.navbar .nav-link.active {
+  color: var(--bg-mid) !important;
+}
+
+
+/* Esconde todas as seções de sidebar por padrão */
+.sb-section { display: none; }
+
+/* Mostra apenas o que deve aparecer em cada página */
+#home #sb-principal { display: block; }
+#config-global #sb-principal { display: block; }
+#guia #sb-principal { display: block; }
+#mvc-creator #sb-titulo-MVC { display: block; }
+#pagemaker #sb-titulo-PageMaker { display: block; }
+#historico #sb-titulo-historico { display: block; }
+#saida #sb-titulo-saida { display: block; }
+#usuarios #sb-titulo-usuarios { display: block; }
+
+.mvc-etapa-wrapper {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.mvc-etapa-cabecalho {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.mvc-etapa-cabecalho h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--text);
+    margin: 0;
+}
+
+.mvc-etapa-selo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.mvc-etapa-selo-novo {
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: #fff;
+    background: var(--accent);
+    padding: 3px 8px;
+    border-radius: 5px;
+}
+
+.mvc-etapa {
+    padding: 24px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--panel);
+}
+
+.mvc-etapa h3 {
+    margin-top: 0;
+    margin-bottom: 12px;
+    color: var(--text);
+}
+
+.mvc-subtitulo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--muted);
+    font-size: 13px;
+    margin-bottom: 16px;
+}
+
+.mvc-aviso-info {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+    color: var(--accent);
+    font-size: 13px;
+    line-height: 1.5;
+    padding: 12px 14px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.mvc-aviso-info strong {
+    color: var(--text);
+}
+
+.mvc-grade-formulario {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px 20px;
+    margin-bottom: 16px;
+}
+
+.mvc-campo {
+    display: flex;
+    flex-direction: column;
+}
+
+.mvc-campo-completo {
+    grid-column: 1 / -1;
+}
+
+.mvc-campo label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--muted);
+    margin-bottom: 8px;
+}
+
+.mvc-etiqueta {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--muted);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 2px 7px;
+    border-radius: 5px;
+}
+
+.mvc-etiqueta-discreta {
+    margin-left: auto;
+}
+
+.mvc-etapa input,
+.mvc-etapa select {
+    width: 100%;
+    padding: 11px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--surface);
+    color: var(--text);
+    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+    transition: border-color 0.15s ease;
+}
+
+.mvc-etapa input::placeholder {
+    color: var(--muted);
+}
+
+.mvc-etapa input:focus,
+.mvc-etapa select:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.mvc-etapa label {
+    display: block;
+    margin-bottom: 8px;
+}
+
+.mvc-linha-banco {
+    display: flex;
+    gap: 10px;
+}
+
+.mvc-linha-banco select {
+    flex: 1;
+}
+
+.mvc-linha-banco .mvc-etapa-botao {
+    margin-top: 0;
+    white-space: nowrap;
+}
+
+.mvc-acoes {
+    display: flex;
+    gap: 10px;
+    margin-top: 6px;
+}
+
+.mvc-etapa-botao {
+    margin-top: 10px;
+    padding: 11px 18px;
+    border: none;
+    border-radius: 8px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.15s ease;
+}
+
+.mvc-etapa-botao:hover {
+    background: var(--accent-h);
+}
+
+.mvc-etapa-botao-secundario {
+    margin-left: 0;
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+}
+
+.mvc-etapa-botao-secundario:hover {
+    background: var(--panel);
+    border-color: var(--muted);
+}
+
+.mvc-formulario-opcoes label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 4px;
+    color: var(--text);
+    font-size: 14px;
+    border-bottom: 1px solid var(--border);
+}
+
+.mvc-formulario-opcoes label:last-child {
+    border-bottom: none;
+}
+
+.mvc-formulario-opcoes input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--accent);
+}
+
+.mvc-arvore {
+    padding: 16px 18px;
+    margin: 12px 0 20px;
+    background: var(--surface);
+    border-left: 3px solid var(--accent);
+    border-radius: 8px;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    line-height: 1.9;
+    color: var(--text);
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+.mvc-arvore-pasta {
+    color: #f0b429;
+}
+
+.mvc-arvore-arquivo {
+    color: #6ea8fe;
+}
+
+.mvc-arvore-comentario {
+    color: var(--muted);
+    font-style: italic;
+}
+
+@media (max-width: 900px) {
+    .mvc-etapa-wrapper {
+        max-width: 100%;
+    }
+
+    .mvc-grade-formulario {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .mvc-etapa {
+        padding: 20px;
+    }
+
+    .mvc-linha-banco {
+        flex-direction: column;
+    }
+
+    .mvc-linha-banco .mvc-etapa-botao {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .mvc-acoes {
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 640px) {
+    .mvc-etapa-cabecalho {
+        flex-wrap: wrap;
+    }
+
+    .mvc-etapa {
+        padding: 16px;
+    }
+
+    .mvc-aviso-info {
+        flex-direction: column;
+    }
+
+    .mvc-etapa-botao,
+    .mvc-etapa-botao-secundario {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
