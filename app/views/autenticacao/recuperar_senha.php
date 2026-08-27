@@ -83,6 +83,27 @@
         margin-bottom: 16px;
     }
 
+    .btn:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+    }
+
+    .spinner {
+        display: inline-block;
+        width: 14px;
+        height: 14px;
+        border: 2px solid rgba(255,255,255,0.3);
+        border-top-color: #ffffff;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+        margin-right: 8px;
+        vertical-align: middle;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
     @media (max-width: 640px) {
         .auth-card {
             margin: 32px auto;
@@ -94,7 +115,7 @@
 
 <div class="auth-card">
     <h1 class="auth-title">Recuperar senha</h1>
-    <p class="auth-subtitle">Informe o e-mail cadastrado para receber o link de redefinição.</p>
+    <p class="auth-subtitle">Informe o e-mail cadastrado para receber a sua nova senha temporária.</p>
 
     <?php if (!empty($sucesso)) : ?>
         <div class="success"><?= htmlspecialchars($sucesso) ?></div>
@@ -104,14 +125,24 @@
         <div class="alert"><?= htmlspecialchars($erro) ?></div>
     <?php endif; ?>
 
-    <form method="POST" action="<?= URL_BASE ?>/recuperar-senha">
+    <form method="POST" action="<?= URL_BASE ?>/recuperar-senha" id="formRecuperar">
         <div class="form-group">
             <label for="email">E-mail</label>
             <input type="email" id="email" name="email" required>
         </div>
 
-        <button type="submit" class="btn">Enviar instruções</button>
+        <button type="submit" id="btnSubmit" class="btn">Enviar instruções</button>
     </form>
 
-    <p style="margin-top:16px;color:#cbd5e1;">Se o e-mail existir em nosso sistema, você verá o link de recuperação na próxima tela.</p>
+    <script>
+        document.getElementById('formRecuperar')?.addEventListener('submit', function() {
+            const btn = document.getElementById('btnSubmit');
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<span class="spinner"></span> Enviando e-mail...';
+            }
+        });
+    </script>
+
+    <p style="margin-top:16px;color:#cbd5e1;">Se o e-mail estiver cadastrado em nosso sistema, você receberá a nova senha em instantes.</p>
 </div>

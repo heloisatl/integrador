@@ -1,0 +1,224 @@
+/* Estilos para o e-mail HTML - DevStudio (Universal Smart Theme for Mobile & Desktop) */
+
+body, table, td, a {
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+}
+
+table, td {
+    mso-table-lspace: 0pt;
+    mso-table-rspace: 0pt;
+}
+
+img {
+    -ms-interpolation-mode: bicubic;
+    border: 0;
+    height: auto;
+    line-height: 100%;
+    outline: none;
+    text-decoration: none;
+}
+
+body {
+    height: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    background-color: #f4f6fb;
+    color: #0f172a;
+    font-family: 'DM Sans', Arial, Helvetica, sans-serif;
+    line-height: 1.6;
+}
+
+.email-wrapper {
+    width: 100%;
+    background-color: #f4f6fb;
+    padding: 40px 12px;
+    box-sizing: border-box;
+}
+
+.email-container {
+    max-width: 580px;
+    width: 100%;
+    margin: 0 auto;
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    box-sizing: border-box;
+}
+
+.email-header {
+    background-color: #f8fafc;
+    padding: 24px 32px;
+    border-bottom: 1px solid #e2e8f0;
+    text-align: left;
+}
+
+.brand-title {
+    font-family: 'Syne', Arial, sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: #0f172a;
+    text-decoration: none;
+}
+
+.brand-accent {
+    color: #5b6af0;
+}
+
+.badge-tag {
+    display: inline-block;
+    background-color: #e2e8f0;
+    color: #475569;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-left: 8px;
+    vertical-align: middle;
+    border: 1px solid #cbd5e1;
+}
+
+.email-body {
+    padding: 32px;
+    background-color: #ffffff;
+}
+
+.email-title {
+    font-family: 'Syne', Arial, sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-top: 0;
+    margin-bottom: 16px;
+}
+
+.email-text {
+    font-size: 15px;
+    color: #334155;
+    margin-bottom: 24px;
+    line-height: 1.6;
+}
+
+.password-card {
+    background-color: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    margin: 24px 0;
+    word-break: break-all;
+}
+
+.password-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #64748b;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.password-code {
+    font-family: 'DM Mono', Consolas, Monaco, monospace;
+    font-size: 24px;
+    font-weight: 700;
+    color: #5b6af0;
+    letter-spacing: 2px;
+    margin: 0;
+    word-break: break-all;
+}
+
+.btn-container {
+    text-align: center;
+    margin: 32px 0 24px 0;
+}
+
+.btn-primary {
+    display: inline-block;
+    background-color: #5b6af0;
+    color: #ffffff !important;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 12px 28px;
+    border-radius: 8px;
+    text-decoration: none;
+    box-sizing: border-box;
+}
+
+.security-warning {
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-left: 3px solid #5b6af0;
+    padding: 14px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #475569;
+    margin-top: 24px;
+    line-height: 1.5;
+}
+
+.security-warning strong {
+    color: #0f172a;
+}
+
+.email-footer {
+    background-color: #f8fafc;
+    padding: 24px 32px;
+    border-top: 1px solid #e2e8f0;
+    text-align: center;
+    font-size: 12px;
+    color: #64748b;
+}
+
+/* Regras de Responsividade para Dispositivos Móveis */
+@media only screen and (max-width: 600px) {
+    .email-wrapper {
+        padding: 16px 8px !important;
+    }
+    .email-container {
+        width: 100% !important;
+        border-radius: 8px !important;
+    }
+    .email-header {
+        padding: 18px 20px !important;
+    }
+    .email-body {
+        padding: 20px 16px !important;
+    }
+    .email-title {
+        font-size: 19px !important;
+        margin-bottom: 12px !important;
+    }
+    .email-text {
+        font-size: 14px !important;
+        margin-bottom: 18px !important;
+    }
+    .password-card {
+        padding: 16px 12px !important;
+        margin: 18px 0 !important;
+    }
+    .password-code {
+        font-size: 20px !important;
+        letter-spacing: 1.5px !important;
+    }
+    .btn-container {
+        margin: 24px 0 18px 0 !important;
+    }
+    .btn-primary {
+        display: block !important;
+        width: 100% !important;
+        padding: 14px 16px !important;
+        text-align: center !important;
+    }
+    .security-warning {
+        padding: 10px 12px !important;
+        font-size: 12px !important;
+    }
+    .email-footer {
+        padding: 18px 16px !important;
+        font-size: 11px !important;
+    }
+}

@@ -95,6 +95,37 @@
         text-decoration: none;
     }
 
+    .password-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+        width: 100%;
+    }
+
+    .password-wrapper input {
+        width: 100%;
+        padding-right: 44px;
+    }
+
+    .btn-toggle-password {
+        position: absolute;
+        right: 12px;
+        background: transparent;
+        border: none;
+        color: #94a3b8;
+        cursor: pointer;
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 4px;
+        transition: color 0.2s ease;
+    }
+
+    .btn-toggle-password:hover {
+        color: #f8fafc;
+    }
+
     @media (max-width: 640px) {
         .auth-card {
             margin: 32px auto;
@@ -124,11 +155,35 @@
 
         <div class="form-group">
             <label for="senha">Senha</label>
-            <input type="password" id="senha" name="senha" required>
+            <div class="password-wrapper">
+                <input type="password" id="senha" name="senha" required>
+                <button type="button" id="toggleSenha" class="btn-toggle-password" title="Mostrar/ocultar senha">
+                    <i class="bi bi-eye" id="iconeOlho"></i>
+                </button>
+            </div>
         </div>
 
         <button type="submit" class="btn">Entrar</button>
     </form>
+
+    <script>
+        document.getElementById('toggleSenha')?.addEventListener('click', function() {
+            const inputSenha = document.getElementById('senha');
+            const icone = document.getElementById('iconeOlho');
+            
+            if (inputSenha && icone) {
+                if (inputSenha.type === 'password') {
+                    inputSenha.type = 'text';
+                    icone.classList.remove('bi-eye');
+                    icone.classList.add('bi-eye-slash');
+                } else {
+                    inputSenha.type = 'password';
+                    icone.classList.remove('bi-eye-slash');
+                    icone.classList.add('bi-eye');
+                }
+            }
+        });
+    </script>
 
     <div class="links">
         <a href="<?= URL_BASE ?>/recuperar-senha">Esqueceu a senha?</a>

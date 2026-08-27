@@ -42,6 +42,8 @@ $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
 
 define('URL_BASE', $protocolo . '://' . $host . BASE_PATH);
 
+define('ROOT_PATH', str_replace('\\', '/', dirname(__DIR__, 2)));
+
 define('URL_BASE_CSS', URL_BASE . '/assets/css');
 
 define('UPLOAD_PATH', __DIR__ . '/../../public/assets/uploads');
