@@ -58,11 +58,16 @@
         padding: 12px 16px;
         border: none;
         border-radius: 10px;
-        background: linear-gradient(90deg, #6366f1, #8b5cf6);
+        background-color: #5b6af0;
         color: white;
         font-weight: 600;
         cursor: pointer;
         margin-top: 8px;
+        transition: background-color 0.2s ease;
+    }
+
+    .btn:hover:not(:disabled) {
+        background-color: #4a59df;
     }
 
     .alert {

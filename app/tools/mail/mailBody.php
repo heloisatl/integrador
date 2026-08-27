@@ -52,8 +52,7 @@ function renderizarEmail($novaSenha, $emailDestino = '', $loginUrl = '') {
                     <!-- Cabeçalho / Logo -->
                     <tr>
                         <td bgcolor="#f8fafc" class="email-header" style="background-color: #f8fafc; padding: 24px 32px; border-bottom: 1px solid #e2e8f0; text-align: left;">
-                            <span class="brand-title" style="font-family: 'Syne', Arial, sans-serif; font-size: 20px; font-weight: 700; color: #0f172a;">Dev<span class="brand-accent" style="color: #5b6af0;">Studio</span></span>
-                            <span class="badge-tag" style="display: inline-block; background-color: #e2e8f0; color: #475569; font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 4px; margin-left: 8px; border: 1px solid #cbd5e1;">Segurança</span>
+                            <span class="brand-title" style="font-family: 'Syne', Arial, sans-serif; font-size: 20px; font-weight: 700; color: #5b6af0;">DevStudio</span>
                         </td>
                     </tr>
                     
@@ -62,8 +61,8 @@ function renderizarEmail($novaSenha, $emailDestino = '', $loginUrl = '') {
                         <td bgcolor="#ffffff" class="email-body" style="padding: 32px; background-color: #ffffff;">
                             <h1 class="email-title" style="font-family: 'Syne', Arial, sans-serif; font-size: 22px; font-weight: 700; color: #0f172a; margin-top: 0; margin-bottom: 16px;">Recuperação de Senha</h1>
                             <p class="email-text" style="font-size: 15px; color: #334155; margin-bottom: 24px; line-height: 1.6;">
-                                Olá! Recebemos uma solicitação de redefinição de senha para a sua conta no <strong style="color: #0f172a;">DevStudio</strong>.
-                                Sua nova senha temporária foi gerada com sucesso:
+                                Olá! Recebemos uma solicitação de redefinição de senha para a sua conta na plataforma <strong style="color: #0f172a;">DevStudio</strong>.
+                                Sua nova senha foi gerada com sucesso e está disponível abaixo.
                             </p>
                             
                             <!-- Card da Senha -->
@@ -89,7 +88,7 @@ function renderizarEmail($novaSenha, $emailDestino = '', $loginUrl = '') {
                             <table width="100%" border="0" cellpadding="0" cellspacing="0" bgcolor="#f8fafc" class="security-warning" style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-left: 3px solid #5b6af0; border-radius: 8px; margin-top: 24px;">
                                 <tr>
                                     <td style="padding: 14px 16px; font-size: 13px; color: #475569; line-height: 1.5; background-color: #f8fafc;">
-                                        <strong style="color: #0f172a;">Dica de Segurança:</strong> Recomendamos que você faça login e altere esta senha temporária nas configurações do seu perfil. Caso não tenha solicitado esta alteração, por favor ignore este e-mail.
+                                        <strong style="color: #0f172a;">Dica de Segurança:</strong> Recomendamos que você faça login e altere esta senha nas configurações do perfil. Caso não tenha solicitado esta alteração, por favor, ignore este e-mail.
                                     </td>
                                 </tr>
                             </table>
@@ -100,7 +99,7 @@ function renderizarEmail($novaSenha, $emailDestino = '', $loginUrl = '') {
                     <tr>
                         <td bgcolor="#f8fafc" class="email-footer" style="background-color: #f8fafc; padding: 24px 32px; border-top: 1px solid #e2e8f0; text-align: center; font-size: 12px; color: #64748b;">
                             <p style="margin: 0 0 6px 0; color: #64748b;">&copy; {$anoAtual} DevStudio. Todos os direitos reservados.</p>
-                            <p style="margin: 0; color: #64748b;">Este é um e-mail automático. Por favor, não responda a esta mensagem.</p>
+                            <p style="margin: 0; color: #64748b;">Este é um e-mail automático. Não responda a esta mensagem.</p>
                         </td>
                     </tr>
                 </table>
