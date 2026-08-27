@@ -1,4 +1,3 @@
-
 <div id="saida">
 
     <?php
@@ -8,19 +7,20 @@
 
 
     <link rel="stylesheet" href="<?= URL_BASE_CSS ?>/paginas.css">
-    
+
     <h2 class="home-h2">Page Makerr</h2>
     <p class="home-subtitle">oiwuewiwo </p>
 
+    <?php require_once __DIR__ . '/../include/footer.php'; ?>
     </main>
     <div class="mvcCreator-container">
         <p></p>
 
     </div>
 
-   
+
 
 </div>
 </body>
 
-</html> 
+</html>

@@ -12,10 +12,10 @@
         margin: 80px auto;
         padding: 32px;
         border-radius: 20px;
-        background: rgba(255,255,255,0.08);
+        background: rgba(255, 255, 255, 0.08);
         backdrop-filter: blur(16px);
-        border: 1px solid rgba(255,255,255,0.14);
-        box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
         color: #f8fafc;
     }
 
@@ -56,3 +56,5 @@
     <p class="auth-subtitle">Esta função ainda pode ser implementada com envio de e-mail. Por enquanto, basta voltar ao login e usar a conta cadastrada.</p>
     <a href="<?= URL_BASE ?>/login" class="btn" style="display:inline-block;text-align:center;text-decoration:none;">Voltar para o login</a>
 </div>
+
+<?php require_once __DIR__ . '/../include/footer.php'; ?>

@@ -14,6 +14,7 @@
     <p class="home-subtitle">Gerencie </p>
 
     <a href="<?= URL_BASE ?>/projetos" class="home-btn">Começar </a>
+    <?php require_once __DIR__ . '/../include/footer.php'; ?>
     </main>
     <div class="configGlobal-container">
         <p>oioio</p>

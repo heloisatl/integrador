@@ -12,10 +12,10 @@
         margin: 70px auto;
         padding: 32px;
         border-radius: 20px;
-        background: rgba(255,255,255,0.08);
+        background: rgba(255, 255, 255, 0.08);
         backdrop-filter: blur(16px);
-        border: 1px solid rgba(255,255,255,0.14);
-        box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
         color: #f8fafc;
     }
 
@@ -47,9 +47,9 @@
 
     input {
         padding: 12px 14px;
-        border: 1px solid rgba(255,255,255,0.16);
+        border: 1px solid rgba(255, 255, 255, 0.16);
         border-radius: 10px;
-        background: rgba(255,255,255,0.08);
+        background: rgba(255, 255, 255, 0.08);
         color: white;
     }
 
@@ -68,18 +68,18 @@
     .alert {
         padding: 12px;
         border-radius: 10px;
-        background: rgba(248,113,113,0.16);
+        background: rgba(248, 113, 113, 0.16);
         color: #fecaca;
-        border: 1px solid rgba(248,113,113,0.24);
+        border: 1px solid rgba(248, 113, 113, 0.24);
         margin-bottom: 16px;
     }
 
     .success {
         padding: 12px;
         border-radius: 10px;
-        background: rgba(34,197,94,0.16);
+        background: rgba(34, 197, 94, 0.16);
         color: #dcfce7;
-        border: 1px solid rgba(34,197,94,0.24);
+        border: 1px solid rgba(34, 197, 94, 0.24);
         margin-bottom: 16px;
     }
 
@@ -139,3 +139,5 @@
         <a href="<?= URL_BASE ?>/cadastro">Se cadastrar</a>
     </div>
 </div>
+
+<?php require_once __DIR__ . '/../include/footer.php'; ?>
