@@ -20,6 +20,8 @@ class Usuario {
         $this->nome         = $nome;
         $this->email        = $email;
         $this->senhaUsuario = $senhaUsuario;
+        $this->usuarioBanco = $usuarioBanco ?? '';
+        $this->servidor     = $servidor ?? 'localhost';
         $this->tipoPerfil   = $tipoPerfil;
     }
 
@@ -39,7 +41,13 @@ class Usuario {
         return $this->senhaUsuario;
     }
 
-    
+    public function getUsuarioBanco(): string {
+        return $this->usuarioBanco ?? '';
+    }
+
+    public function getServidor(): string {
+        return $this->servidor ?? 'localhost';
+    }
 
     public function getTipoPerfil(): string {
         return $this->tipoPerfil;
@@ -47,11 +55,13 @@ class Usuario {
 
     public static function arrayParaObjeto(array $dados): self {
         return new self(
-            (int) $dados['id_usuario'],
-            $dados['nome'],
-            $dados['email'],
-            $dados['senha_usuario'],
-            $dados['tipo_perfil']
+            (int) ($dados['id_usuario'] ?? 0),
+            (string) ($dados['nome'] ?? ''),
+            (string) ($dados['email'] ?? ''),
+            (string) ($dados['senha_usuario'] ?? ''),
+            (string) ($dados['usuario_banco'] ?? ''),
+            (string) ($dados['servidor'] ?? 'localhost'),
+            (string) ($dados['tipo_perfil'] ?? 'usuario')
         );
     }
 }

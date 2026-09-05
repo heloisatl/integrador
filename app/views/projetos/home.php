@@ -71,6 +71,7 @@
                 </div>
             </section>
         </section>
+        <?php require_once __DIR__ . '/../include/footer.php'; ?>
         </main>
     </div>
     </body>

@@ -1,7 +1,47 @@
 <?php
 
-// Configuração do ambiente
-define('DEV_ENVIRONMENT', true);
+define('ROOT_PATH', str_replace('\\', '/', dirname(__DIR__, 2)));
+
+/**
+ * Carrega variáveis de ambiente de um arquivo .env se ele existir
+ */
+function carregaEnv(string $caminho): bool {
+    if (!file_exists($caminho)) {
+        return false;
+    }
+    $linhas = file($caminho, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($linhas as $linha) {
+        $linha = trim($linha);
+        if ($linha === '' || strpos($linha, '#') === 0) {
+            continue;
+        }
+        if (strpos($linha, '=') !== false) {
+            list($chave, $valor) = explode('=', $linha, 2);
+            $chave = trim($chave);
+            $valor = trim($valor);
+            $valor = trim($valor, '"\'');
+            if (!array_key_exists($chave, $_SERVER) && !array_key_exists($chave, $_ENV)) {
+                putenv("{$chave}={$valor}");
+                $_ENV[$chave] = $valor;
+                $_SERVER[$chave] = $valor;
+            }
+        }
+    }
+    return true;
+}
+
+carregaEnv(ROOT_PATH . '/.env');
+
+function env(string $chave, $padrao = null) {
+    $valor = getenv($chave);
+    if ($valor === false) {
+        $valor = $_ENV[$chave] ?? $_SERVER[$chave] ?? $padrao;
+    }
+    return $valor;
+}
+
+
+define('DEV_ENVIRONMENT', filter_var(env('DEV_ENVIRONMENT', true), FILTER_VALIDATE_BOOLEAN));
 
 if (DEV_ENVIRONMENT == true) {
     ini_set('display_errors', 1);
@@ -14,21 +54,11 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 // Configuração do sistema
-define('APP_NAME', 'DevStudio');
+define('APP_NAME', env('APP_NAME', 'DevStudio'));
 
 // ---------------------------------------------------------------------
 // BASE_PATH / URL_BASE calculados dinamicamente
 // ---------------------------------------------------------------------
-// Antes esses valores eram fixos (ex: 'http://localhost:8081' e, no
-// Router, '/integrador/CRUD-Merged/public'), o que só funcionava na
-// máquina/porta de quem escreveu o código. Em qualquer outra pasta,
-// porta ou host as rotas simplesmente não batiam e tudo dava
-// "Rota não encontrada".
-//
-// Agora descobrimos isso automaticamente a partir da própria requisição:
-// - BASE_PATH = a pasta onde o index.php está (ex: /integrador-main/public,
-//   ou vazio se o site estiver na raiz do domínio).
-// - URL_BASE  = protocolo + host + BASE_PATH, montado na hora.
 $scriptDir = isset($_SERVER['SCRIPT_NAME']) ? str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'])) : '';
 $scriptDir = rtrim($scriptDir, '/');
 if ($scriptDir === '/' || $scriptDir === '.') {
@@ -46,12 +76,11 @@ define('URL_BASE_CSS', URL_BASE . '/assets/css');
 
 define('UPLOAD_PATH', __DIR__ . '/../../public/assets/uploads');
 
-// Caminho absoluto para as views da Helo (usadas nas páginas projeto/*)
+// Caminho absoluto para as views
 define('VIEWS_HELO_PATH', __DIR__ . '/../views');
 
-// Configurações do banco de dados
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'mvc_creator');
-
-define('DB_USER', 'root');
-define('DB_PASS', 'bancodedados');
+// Configurações do banco de dados (lidas do .env com fallback seguro)
+define('DB_HOST', env('DB_HOST', 'localhost'));
+define('DB_NAME', env('DB_NAME', 'mvc_creator'));
+define('DB_USER', env('DB_USER', 'root'));
+define('DB_PASS', env('DB_PASS', ''));

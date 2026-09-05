@@ -12,10 +12,10 @@
         margin: 80px auto;
         padding: 32px;
         border-radius: 20px;
-        background: rgba(255,255,255,0.08);
+        background: rgba(255, 255, 255, 0.08);
         backdrop-filter: blur(16px);
-        border: 1px solid rgba(255,255,255,0.14);
-        box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
         color: #f8fafc;
     }
 
@@ -47,9 +47,9 @@
 
     input {
         padding: 12px 14px;
-        border: 1px solid rgba(255,255,255,0.16);
+        border: 1px solid rgba(255, 255, 255, 0.16);
         border-radius: 10px;
-        background: rgba(255,255,255,0.08);
+        background: rgba(255, 255, 255, 0.08);
         color: white;
     }
 
@@ -58,29 +58,55 @@
         padding: 12px 16px;
         border: none;
         border-radius: 10px;
-        background: linear-gradient(90deg, #6366f1, #8b5cf6);
+        background-color: #5b6af0;
         color: white;
         font-weight: 600;
         cursor: pointer;
         margin-top: 8px;
+        transition: background-color 0.2s ease;
+    }
+
+    .btn:hover:not(:disabled) {
+        background-color: #4a59df;
     }
 
     .alert {
         padding: 12px;
         border-radius: 10px;
-        background: rgba(248,113,113,0.16);
+        background: rgba(248, 113, 113, 0.16);
         color: #fecaca;
-        border: 1px solid rgba(248,113,113,0.24);
+        border: 1px solid rgba(248, 113, 113, 0.24);
         margin-bottom: 16px;
     }
 
     .success {
         padding: 12px;
         border-radius: 10px;
-        background: rgba(34,197,94,0.16);
+        background: rgba(34, 197, 94, 0.16);
         color: #dcfce7;
-        border: 1px solid rgba(34,197,94,0.24);
+        border: 1px solid rgba(34, 197, 94, 0.24);
         margin-bottom: 16px;
+    }
+
+    .btn:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+    }
+
+    .spinner {
+        display: inline-block;
+        width: 14px;
+        height: 14px;
+        border: 2px solid rgba(255,255,255,0.3);
+        border-top-color: #ffffff;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+        margin-right: 8px;
+        vertical-align: middle;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
     }
 
     @media (max-width: 640px) {
@@ -94,7 +120,7 @@
 
 <div class="auth-card">
     <h1 class="auth-title">Recuperar senha</h1>
-    <p class="auth-subtitle">Informe o e-mail cadastrado para receber o link de redefinição.</p>
+    <p class="auth-subtitle">Informe o e-mail cadastrado para receber a sua nova senha temporária.</p>
 
     <?php if (!empty($sucesso)) : ?>
         <div class="success"><?= htmlspecialchars($sucesso) ?></div>
@@ -104,14 +130,26 @@
         <div class="alert"><?= htmlspecialchars($erro) ?></div>
     <?php endif; ?>
 
-    <form method="POST" action="<?= URL_BASE ?>/recuperar-senha">
+    <form method="POST" action="<?= URL_BASE ?>/recuperar-senha" id="formRecuperar">
         <div class="form-group">
             <label for="email">E-mail</label>
             <input type="email" id="email" name="email" required>
         </div>
 
-        <button type="submit" class="btn">Enviar instruções</button>
+        <button type="submit" id="btnSubmit" class="btn">Enviar instruções</button>
     </form>
 
-    <p style="margin-top:16px;color:#cbd5e1;">Se o e-mail existir em nosso sistema, você verá o link de recuperação na próxima tela.</p>
+    <script>
+        document.getElementById('formRecuperar')?.addEventListener('submit', function() {
+            const btn = document.getElementById('btnSubmit');
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<span class="spinner"></span> Enviando e-mail...';
+            }
+        });
+    </script>
+
+    <p style="margin-top:16px;color:#cbd5e1;">Se o e-mail estiver cadastrado em nosso sistema, você receberá a nova senha em instantes.</p>
 </div>
+
+<?php require_once __DIR__ . '/../include/footer.php'; ?>

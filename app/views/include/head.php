@@ -80,7 +80,10 @@
         body {
             background-color: var(--bg);
             color: var(--text);
+            display: flex;
+            flex-direction: column;
             overflow: hidden;
+            min-height: 100vh;
         }
 
         .topbar {
@@ -495,6 +498,8 @@
         .main-content {
             width: 75%;
             flex: 1;
+            display: flex;
+            flex-direction: column;
             padding: 32px;
             overflow-y: auto;
             background-color: var(--bg);

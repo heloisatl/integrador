@@ -12,10 +12,10 @@
         margin: 60px auto;
         padding: 32px;
         border-radius: 20px;
-        background: rgba(255,255,255,0.08);
+        background: rgba(255, 255, 255, 0.08);
         backdrop-filter: blur(16px);
-        border: 1px solid rgba(255,255,255,0.14);
-        box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
         color: #f8fafc;
     }
 
@@ -47,9 +47,9 @@
 
     input {
         padding: 12px 14px;
-        border: 1px solid rgba(255,255,255,0.16);
+        border: 1px solid rgba(255, 255, 255, 0.16);
         border-radius: 10px;
-        background: rgba(255,255,255,0.08);
+        background: rgba(255, 255, 255, 0.08);
         color: white;
     }
 
@@ -58,11 +58,16 @@
         padding: 12px 16px;
         border: none;
         border-radius: 10px;
-        background: linear-gradient(90deg, #6366f1, #8b5cf6);
+        background-color: #5b6af0;
         color: white;
         font-weight: 600;
         cursor: pointer;
         margin-top: 8px;
+        transition: background-color 0.2s ease;
+    }
+
+    .btn:hover {
+        background-color: #4a59df;
     }
 
     .link-row {
@@ -80,10 +85,41 @@
     .alert {
         padding: 12px;
         border-radius: 10px;
-        background: rgba(248,113,113,0.16);
+        background: rgba(248, 113, 113, 0.16);
         color: #fecaca;
-        border: 1px solid rgba(248,113,113,0.24);
+        border: 1px solid rgba(248, 113, 113, 0.24);
         margin-bottom: 16px;
+    }
+
+    .password-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+        width: 100%;
+    }
+
+    .password-wrapper input {
+        width: 100%;
+        padding-right: 44px;
+    }
+
+    .btn-toggle-password {
+        position: absolute;
+        right: 12px;
+        background: transparent;
+        border: none;
+        color: #94a3b8;
+        cursor: pointer;
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 4px;
+        transition: color 0.2s ease;
+    }
+
+    .btn-toggle-password:hover {
+        color: #f8fafc;
     }
 
     @media (max-width: 640px) {
@@ -116,14 +152,40 @@
 
         <div class="form-group">
             <label for="senha">Senha</label>
-            <input type="password" id="senha" name="senha" required>
+            <div class="password-wrapper">
+                <input type="password" id="senha" name="senha" required>
+                <button type="button" id="toggleSenha" class="btn-toggle-password" title="Mostrar/ocultar senha">
+                    <i class="bi bi-eye" id="iconeOlho"></i>
+                </button>
+            </div>
         </div>
 
         <button type="submit" class="btn">Cadastrar</button>
     </form>
+
+    <script>
+        document.getElementById('toggleSenha')?.addEventListener('click', function() {
+            const inputSenha = document.getElementById('senha');
+            const icone = document.getElementById('iconeOlho');
+            
+            if (inputSenha && icone) {
+                if (inputSenha.type === 'password') {
+                    inputSenha.type = 'text';
+                    icone.classList.remove('bi-eye');
+                    icone.classList.add('bi-eye-slash');
+                } else {
+                    inputSenha.type = 'password';
+                    icone.classList.remove('bi-eye-slash');
+                    icone.classList.add('bi-eye');
+                }
+            }
+        });
+    </script>
 
     <div class="link-row">
         <a href="<?= URL_BASE ?>/login">Já tenho conta</a>
         <a href="<?= URL_BASE ?>/explorar">Continuar sem login</a>
     </div>
 </div>
+
+<?php require_once __DIR__ . '/../include/footer.php'; ?>

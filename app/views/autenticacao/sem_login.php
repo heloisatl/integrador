@@ -12,10 +12,10 @@
         margin: 80px auto;
         padding: 32px;
         border-radius: 20px;
-        background: rgba(255,255,255,0.08);
+        background: rgba(255, 255, 255, 0.08);
         backdrop-filter: blur(16px);
-        border: 1px solid rgba(255,255,255,0.14);
-        box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
         color: #f8fafc;
     }
 
@@ -44,3 +44,5 @@
     <p style="color:#cbd5e1;line-height:1.6;">Este bloco pode ser usado como área pública para visualizar informações sem autenticação. Para entrar no painel completo, faça login ou crie uma conta.</p>
     <a href="<?= URL_BASE ?>/login" class="btn">Entrar agora</a>
 </div>
+
+<?php require_once __DIR__ . '/../include/footer.php'; ?>

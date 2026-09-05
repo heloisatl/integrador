@@ -12,10 +12,10 @@
         margin: 80px auto;
         padding: 32px;
         border-radius: 20px;
-        background: rgba(255,255,255,0.08);
+        background: rgba(255, 255, 255, 0.08);
         backdrop-filter: blur(16px);
-        border: 1px solid rgba(255,255,255,0.14);
-        box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
         color: #f8fafc;
     }
 
@@ -49,7 +49,7 @@
     .code-box {
         padding: 18px 16px;
         background: rgba(15, 23, 42, 0.7);
-        border: 1px solid rgba(255,255,255,0.12);
+        border: 1px solid rgba(255, 255, 255, 0.12);
         border-radius: 14px;
         margin-top: 20px;
         color: #c7d2fe;
@@ -76,3 +76,5 @@
 
     <a href="<?= URL_BASE ?>/redefinir-senha?token=<?= urlencode($token ?? '') ?>" class="btn">Redefinir senha agora</a>
 </div>
+
+<?php require_once __DIR__ . '/../include/footer.php'; ?>

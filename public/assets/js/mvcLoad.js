@@ -15,7 +15,6 @@ function salvarConfiguracoesSession() {
     let pass = document.getElementById("senha") ? document.getElementById("senha").value : "";
     let banco = document.getElementById("banco") ? document.getElementById("banco").value : "";
 
-
     if (nomeProjeto) sessionStorage.setItem("mvc_nomeProjeto", nomeProjeto);
     if (srv) sessionStorage.setItem("mvc_servidor", srv);
     if (usr) sessionStorage.setItem("mvc_usuario", usr);
