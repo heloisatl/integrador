@@ -58,11 +58,16 @@
         padding: 12px 16px;
         border: none;
         border-radius: 10px;
-        background: linear-gradient(90deg, #6366f1, #8b5cf6);
+        background-color: #5b6af0;
         color: white;
         font-weight: 600;
         cursor: pointer;
         margin-top: 8px;
+        transition: background-color 0.2s ease;
+    }
+
+    .btn:hover {
+        background-color: #4a59df;
     }
 
     .link-row {
@@ -84,6 +89,37 @@
         color: #fecaca;
         border: 1px solid rgba(248, 113, 113, 0.24);
         margin-bottom: 16px;
+    }
+
+    .password-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+        width: 100%;
+    }
+
+    .password-wrapper input {
+        width: 100%;
+        padding-right: 44px;
+    }
+
+    .btn-toggle-password {
+        position: absolute;
+        right: 12px;
+        background: transparent;
+        border: none;
+        color: #94a3b8;
+        cursor: pointer;
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 4px;
+        transition: color 0.2s ease;
+    }
+
+    .btn-toggle-password:hover {
+        color: #f8fafc;
     }
 
     @media (max-width: 640px) {
@@ -116,11 +152,35 @@
 
         <div class="form-group">
             <label for="senha">Senha</label>
-            <input type="password" id="senha" name="senha" required>
+            <div class="password-wrapper">
+                <input type="password" id="senha" name="senha" required>
+                <button type="button" id="toggleSenha" class="btn-toggle-password" title="Mostrar/ocultar senha">
+                    <i class="bi bi-eye" id="iconeOlho"></i>
+                </button>
+            </div>
         </div>
 
         <button type="submit" class="btn">Cadastrar</button>
     </form>
+
+    <script>
+        document.getElementById('toggleSenha')?.addEventListener('click', function() {
+            const inputSenha = document.getElementById('senha');
+            const icone = document.getElementById('iconeOlho');
+            
+            if (inputSenha && icone) {
+                if (inputSenha.type === 'password') {
+                    inputSenha.type = 'text';
+                    icone.classList.remove('bi-eye');
+                    icone.classList.add('bi-eye-slash');
+                } else {
+                    inputSenha.type = 'password';
+                    icone.classList.remove('bi-eye-slash');
+                    icone.classList.add('bi-eye');
+                }
+            }
+        });
+    </script>
 
     <div class="link-row">
         <a href="<?= URL_BASE ?>/login">Já tenho conta</a>

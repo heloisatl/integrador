@@ -84,21 +84,51 @@ class AutenticacaoController extends Controller
             $this->redirect(URL_BASE . '/recuperar-senha');
         }
 
+        // Trava de segurança (Rate Limiting): Bloqueia solicitações repetidas do mesmo e-mail em menos de 60s
+        $tempoCooldown = 60;
+        if (isset($_SESSION['last_reset_request'][$email])) {
+            $tempoDecorrido = time() - $_SESSION['last_reset_request'][$email];
+            if ($tempoDecorrido < $tempoCooldown) {
+                $restante = $tempoCooldown - $tempoDecorrido;
+                $_SESSION['flash_erro'] = "Aguarde {$restante} segundo(s) antes de solicitar uma nova senha.";
+                $this->redirect(URL_BASE . '/recuperar-senha');
+            }
+        }
+
+        // Verifica se o e-mail informado existe no banco de dados do sistema
         $usuario = $this->usuarioService->getUsuarioPorEmail($email);
 
         if (!$usuario) {
-            $_SESSION['flash_erro'] = 'Se o e-mail existir, você receberá instruções para redefinir a senha.';
+            $_SESSION['flash_erro'] = 'E-mail não encontrado em nosso sistema.';
             $this->redirect(URL_BASE . '/recuperar-senha');
         }
 
-        $token = bin2hex(random_bytes(16));
-        $_SESSION['password_reset_tokens'][$token] = [
-            'email' => $email,
-            'expires' => time() + 3600,
-        ];
+        // Registrar timestamp do envio
+        $_SESSION['last_reset_request'][$email] = time();
 
-        $_SESSION['flash_sucesso'] = 'E-mail encontrado. Defina uma nova senha abaixo.';
-        $this->redirect(URL_BASE . '/redefinir-senha?token=' . urlencode($token));
+        // Gerar nova senha temporária (10 caracteres)
+        $caracteres = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$';
+        $novaSenha = substr(str_shuffle(str_repeat($caracteres, 3)), 0, 10);
+
+        // Atualizar senha no banco de dados com hash de segurança
+        $atualizado = $this->usuarioService->updateSenhaPorEmail($email, $novaSenha);
+
+        if (!$atualizado) {
+            $_SESSION['flash_erro'] = 'Erro ao atualizar a senha no sistema. Tente novamente.';
+            $this->redirect(URL_BASE . '/recuperar-senha');
+        }
+
+        try {
+            require_once __DIR__ . '/../tools/mail/EmailService.php';
+            $emailService = new \EmailService();
+            $emailService->enviarNovaSenha($email, $novaSenha);
+
+            $_SESSION['flash_sucesso'] = 'Sua nova senha foi enviada para o e-mail informado. Faça login com a nova senha.';
+            $this->redirect(URL_BASE . '/login');
+        } catch (\Exception $e) {
+            $_SESSION['flash_erro'] = 'Senha alterada no sistema, mas houve uma falha ao enviar o e-mail: ' . $e->getMessage();
+            $this->redirect(URL_BASE . '/recuperar-senha');
+        }
     }
 
     public function redefinirSenhaForm(): void
