@@ -1,9 +1,12 @@
 document.addEventListener("DOMContentLoaded", function () {
+    salvarConfiguracoesSession();
     restaurarValoresFormulario();
     renderizarTabelasSeExistirem();
+    carregarBanco();
 });
 
-const URL_BASE = new URL("../..", document.currentScript.src).href.replace(/\/$/, "");
+globalThis.URL_BASE = new URL("../..", document.currentScript.src).href.replace(/\/$/, "");
+
 
 function salvarConfiguracoesSession() {
     let nomeProjeto = document.getElementById("nomeProjeto") ? document.getElementById("nomeProjeto").value : "";
@@ -37,15 +40,13 @@ function restaurarValoresFormulario() {
 function carregarBanco() {
     salvarConfiguracoesSession();
 
-    let usr = sessionStorage.getItem("mvc_usuario") || "root";
-    let pass = sessionStorage.getItem("mvc_senha") || "";
-    let srv = sessionStorage.getItem("mvc_servidor") || "localhost";
+   let selecionado = sessionStorage.getItem("mvc_banco") || (document.getElementById("banco") ? document.getElementById("banco").value : "");
 
     const data = new FormData();
-    data.append('usuario', usr);
-    data.append('senha', pass);
-    data.append('servidor', srv);
+    
+    data.append("selecionado", selecionado);
 
+    console.log(URL_BASE);
     let xhr = new XMLHttpRequest();
     xhr.open('POST', URL_BASE + '/projetos/getDatabases', true);
     xhr.onreadystatechange = function () {
@@ -132,7 +133,7 @@ function renderizarTabelasSeExistirem() {
 }
 
 function executarGeracaoMvc() {
-    const URL_BASE = "http://localhost:8081";
+    const URL_BASE = "http://localhost:8080"; // Ajuste conforme necessário
 
     let usr = sessionStorage.getItem("mvc_usuario") || "root";
     let pass = sessionStorage.getItem("mvc_senha") || "";
@@ -143,16 +144,16 @@ function executarGeracaoMvc() {
     let checkboxes = document.querySelectorAll('.cb-tabela:checked');
     let tabelas = Array.from(checkboxes).map(cb => cb.value);
 
-    if (tabelas.length === 0 && sessionStorage.getItem("mvc_tabelas")) {
-        try {
-            tabelas = JSON.parse(sessionStorage.getItem("mvc_tabelas"));
-        } catch (e) {}
-    }
+    // if (tabelas.length === 0 && sessionStorage.getItem("mvc_tabelas")) {
+    //     try {
+    //         tabelas = JSON.parse(sessionStorage.getItem("mvc_tabelas"));
+    //     } catch (e) {}
+    // }
 
-    if (tabelas.length === 0) {
-        alert("Selecione ao menos uma tabela para gerar o projeto.");
-        return;
-    }
+    // if (tabelas.length === 0) {
+    //     alert("Selecione ao menos uma tabela para gerar o projeto.");
+    //     return;
+    // }
 
     const data = new FormData();
     data.append('nomeProjeto', nomeProjeto);
@@ -181,6 +182,8 @@ function executarGeracaoMvc() {
                 }
             } catch (e) {
                 alert("Resposta inesperada do servidor ao gerar.");
+                console.log(e);
+                console.log(xhr.responseText);
             }
             if (btn) btn.innerText = "🚀 Gerar Todo o Sistema (.ZIP)";
         }

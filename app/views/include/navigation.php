@@ -137,7 +137,7 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
 
 
                     <?php if (isset($_SESSION['usuario_logado'])): ?>
-                        <a href="<?= URL_BASE ?>/logout" class="profile-dropdown-item profile-dropdown-danger">Sair</a>
+                        <a href="<?= URL_BASE ?>/logout" onclick="desfazSessionStorage()" class="profile-dropdown-item profile-dropdown-danger">Sair</a>
                     <?php else: ?>
                         <a href="<?= URL_BASE ?>/login" class="profile-dropdown-item login-link">
                             <i class="bi bi-door-closed" aria-hidden="true"></i>
@@ -282,5 +282,7 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
             <a href="<?= URL_BASE ?>/projetos/saida?tab=baixar" class="sb-item <?php echo verificarAtivo('saida', $paginaAtual, 'tab', 'baixar'); ?>"> <span class="sb-icon"></span> Baixar Tudo
             </a>
     </aside>
+
+  <script src="<?= URL_BASE ?>/assets/js/deslogar.js"></script>
 
     <main class="main-content">

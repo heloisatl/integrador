@@ -22,7 +22,7 @@ class UsuarioRepository {
     }
 
     public function getUsuarioById(int $id): array|false {
-        $sql  = "SELECT id_usuario, nome, email, usuario_banco, servidor, tipo_perfil FROM usuario WHERE id_usuario = :id";
+        $sql  = "SELECT id_usuario, nome, email, tipo_perfil FROM usuario WHERE id_usuario = :id";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindValue(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
@@ -73,15 +73,13 @@ class UsuarioRepository {
     }
 
     public function createUsuario(array $dados): bool {
-        $sql = "INSERT INTO usuario (nome, email, senha_usuario, usuario_banco, servidor, tipo_perfil) 
-                VALUES (:nome, :email, :senha, :usuario_banco, :servidor, :tipo_perfil)";
+        $sql = "INSERT INTO usuario (nome, email, senha_usuario, tipo_perfil) 
+                VALUES (:nome, :email, :senha, :tipo_perfil)";
         $stmt = $this->connection->prepare($sql);
         
         $stmt->bindValue(':nome', $dados['nome']);
         $stmt->bindValue(':email', $dados['email']);
         $stmt->bindValue(':senha', password_hash($dados['senha'], PASSWORD_DEFAULT));
-        $stmt->bindValue(':usuario_banco', $dados['usuario_banco'] ?? '');
-        $stmt->bindValue(':servidor', $dados['servidor'] ?? 'localhost');
         $stmt->bindValue(':tipo_perfil', $dados['tipo_perfil']);
 
         return $stmt->execute();
@@ -100,8 +98,6 @@ class UsuarioRepository {
         $sql = "UPDATE usuario SET 
                 nome = :nome, 
                 email = :email, 
-                usuario_banco = :usuario_banco, 
-                servidor = :servidor, 
                 tipo_perfil = :tipo_perfil";
         
         if (!empty($dados['senha'])) {
@@ -114,8 +110,6 @@ class UsuarioRepository {
         
         $stmt->bindValue(':nome', $dados['nome']);
         $stmt->bindValue(':email', $dados['email']);
-        $stmt->bindValue(':usuario_banco', $dados['usuario_banco'] ?? '');
-        $stmt->bindValue(':servidor', $dados['servidor'] ?? 'localhost');
         $stmt->bindValue(':tipo_perfil', $dados['tipo_perfil']);
         $stmt->bindValue(':id', $id, PDO::PARAM_INT);
         

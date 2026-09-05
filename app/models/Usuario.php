@@ -3,22 +3,18 @@
 namespace app\models;
 
 class Usuario {
-    private int     $idUsuario;
-    private string  $nome;
-    private string  $email;
-    private string  $senhaUsuario;
-    private ?string $usuarioBanco;
-    private ?string $servidor;
-    private string  $tipoPerfil;
+    private int    $idUsuario;
+    private string $nome;
+    private string $email;
+    private string $senhaUsuario;
+    private string $tipoPerfil;
 
     public function __construct(
-        int     $idUsuario,
-        string  $nome,
-        string  $email,
-        string  $senhaUsuario,
-        ?string $usuarioBanco = '',
-        ?string $servidor = 'localhost',
-        string  $tipoPerfil = 'usuario'
+        int    $idUsuario,
+        string $nome,
+        string $email,
+        string $senhaUsuario,
+        string $tipoPerfil
     ) {
         $this->idUsuario    = $idUsuario;
         $this->nome         = $nome;

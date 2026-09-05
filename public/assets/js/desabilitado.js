@@ -14,6 +14,9 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
+
+globalThis.URL_BASE = new URL("../..", document.currentScript.src).href.replace(/\/$/, "");
+
 // Função responsável por liberar ou bloquear a área do Banco
 function validarCampoProjeto() {
     let inputProjeto = document.getElementById("nomeProjeto");
@@ -37,10 +40,10 @@ function validarCampoProjeto() {
         }
     } else {
         // Se não tem nome, bloqueia tudo
-        selectBanco.disabled = true;
-        selectBanco.innerHTML = '<option value="">Informe o nome do projeto para selecionar o banco</option>';
-        if (btnCriar) btnCriar.disabled = true;
-        if (btnRefresh) btnRefresh.disabled = true;
+        // selectBanco.disabled = true;
+        // selectBanco.innerHTML = '<option value="">Informe o nome do projeto para selecionar o banco</option>';
+        // if (btnCriar) btnCriar.disabled = true;
+        // if (btnRefresh) btnRefresh.disabled = true;
     }
 }
 
@@ -50,29 +53,25 @@ function carregarBanco() {
     let nomeProjeto = inputProjeto ? inputProjeto.value.trim() : "";
 
     // Trava de segurança extra caso tentem disparar a função manualmente
-    if (!nomeProjeto) {
-        alert("Por favor, informe o nome do projeto antes de carregar ou selecionar o banco.");
-        if (inputProjeto) inputProjeto.focus();
-        return;
-    }
+    // if (!nomeProjeto) {
+    //     alert("Por favor, informe o nome do projeto antes de carregar ou selecionar o banco.");
+    //     if (inputProjeto) inputProjeto.focus();
+    //     return;
+    // }
 
-    const URL_BASE = "http://localhost:8081";
     salvarConfiguracoesSession();
 
-    let usr = sessionStorage.getItem("mvc_usuario") || "root";
-    let pass = sessionStorage.getItem("mvc_senha") || "";
-    let srv = sessionStorage.getItem("mvc_servidor") || "localhost";
+    let selecionado = sessionStorage.getItem("mvc_banco") || (document.getElementById("banco") ? document.getElementById("banco").value : "");
 
     const data = new FormData();
-    data.append('usuario', usr);
-    data.append('senha', pass);
-    data.append('servidor', srv);
+    data.append("selecionado", selecionado);
 
     let xhr = new XMLHttpRequest();
     xhr.open('POST', URL_BASE + '/projetos/getDatabases', true);
     xhr.onreadystatechange = function () {
         if (xhr.readyState == 4 && xhr.status == 200) {
             let elBanco = document.getElementById("banco");
+            console.log(xhr.responseText);
             if (elBanco) {
                 elBanco.innerHTML = xhr.responseText;
                 if (sessionStorage.getItem("mvc_banco")) {

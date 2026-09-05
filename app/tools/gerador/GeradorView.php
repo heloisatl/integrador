@@ -1,6 +1,8 @@
 <?php
 
 namespace app\tools\gerador;
+use app\models\Tabela;
+use app\models\Atributo;
 
 class GeradorView {
     /**
@@ -11,16 +13,18 @@ class GeradorView {
      * @param string $chavePrimaria
      * @return string
      */
-    public function gerarIndexView(string $nomeTabela, array $atributos, string $chavePrimaria = 'id'): string {
-        $nomeClasse = ucfirst($nomeTabela);
-        $varPlural = strtolower($nomeTabela) . 's';
-        $varSingular = strtolower($nomeTabela);
+    public function gerarIndexView(Tabela $tabela, array $atributos, string $chavePrimaria = 'id'): string {
+        $nomeClasse = $tabela->getNome_tabelaUC();
+        $varPlural = strtolower($tabela->getNome_tabela()) . 's';
+        $varSingular = strtolower($tabela->getNome_tabela());
 
         $ths = "";
         $tds = "";
-        foreach ($atributos as $campo) {
-            $ths .= "                    <th>" . ucfirst($campo) . "</th>\n";
-            $tds .= "                        <td><?= htmlspecialchars(\${$varSingular}['{$campo}'] ?? '') ?></td>\n";
+        foreach ($atributos as $atributo) {
+            foreach($atributo as $campo){
+                $ths .= "                    <th>" . ucfirst($campo->getNome_atributo()) . "</th>\n";
+                $tds .= "                        <td><?= htmlspecialchars(\${$varSingular}['{$campo->getNome_atributo()}'] ?? '') ?></td>\n";
+            }
         }
 
         return <<<PHP
@@ -71,26 +75,23 @@ PHP;
     /**
      * Gera a view de Cadastro (create.php)
      *
-     * @param string $nomeTabela
+     * @param Tabela $tabela
      * @param array $atributos
      * @param string $chavePrimaria
      * @return string
      */
-    public function gerarCreateView(string $nomeTabela, array $atributos, string $chavePrimaria = 'id'): string {
-        $nomeClasse = ucfirst($nomeTabela);
-        $varPlural = strtolower($nomeTabela) . 's';
+    public function gerarCreateView(Tabela $tabela, array $atributos, string $chavePrimaria = 'id'): string {
+        $nomeClasse = $tabela->getNome_tabelaUC();
+        $varPlural = strtolower($tabela->getNome_tabela()) . 's';
 
         $camposForm = "";
-        foreach ($atributos as $campo) {
-            if ($campo === $chavePrimaria) continue;
-            $label = ucfirst($campo);
-            $camposForm .= <<<HTML
-    <div class="form-group">
-        <label for="{$campo}">{$label}</label>
-        <input type="text" name="{$campo}" id="{$campo}" class="form-control" required>
-    </div>
+        foreach($atributos as $atributo){
+            foreach($atributo as $campo){
+                if ($campo->getPk()) continue;
+                // $label = ucfirst($campo->getNome_atributo());
+                $camposForm .= $campo->getInput();
 
-HTML;
+            }
         }
 
         return <<<PHP
@@ -116,27 +117,30 @@ PHP;
     /**
      * Gera a view de Edição (edit.php)
      *
-     * @param string $nomeTabela
+     * @param Tabela $tabela
      * @param array $atributos
      * @param string $chavePrimaria
      * @return string
      */
-    public function gerarEditView(string $nomeTabela, array $atributos, string $chavePrimaria = 'id'): string {
-        $nomeClasse = ucfirst($nomeTabela);
-        $varPlural = strtolower($nomeTabela) . 's';
-        $varSingular = strtolower($nomeTabela);
+    public function gerarEditView(Tabela $tabela, array $atributos, string $chavePrimaria = 'id'): string {
+        $nomeClasse = $tabela->getNome_tabelaUC();
+        $varPlural = strtolower($tabela->getNome_tabela()) . 's';
+        $varSingular = strtolower($tabela->getNome_tabela());
 
         $camposForm = "";
-        foreach ($atributos as $campo) {
-            if ($campo === $chavePrimaria) continue;
-            $label = ucfirst($campo);
-            $camposForm .= <<<HTML
-    <div class="form-group">
-        <label for="{$campo}">{$label}</label>
-        <input type="text" name="{$campo}" id="{$campo}" value="<?= htmlspecialchars(\${$varSingular}['{$campo}'] ?? '') ?>" class="form-control" required>
-    </div>
+        foreach ($atributos as $atributo){
+            foreach($atributo as $campo){
+                if ($campo->getPk()) continue;
+                $label = $campo->getNome_atributo();
+                $camposForm .= <<<HTML
+                    <div class="form-group">
+                        <label for="{$campo->getNome_atributo()}">{$label}</label>
+                        <input type="text" name="{$campo->getNome_atributo()}" id="{$campo->getNome_atributo()}" value="<?= htmlspecialchars(\${$varSingular}['{$campo->getNome_atributo()}'] ?? '') ?>" class="form-control" required>
+                    </div>
 
-HTML;
+                HTML;
+
+            }
         }
 
         return <<<PHP
@@ -169,8 +173,8 @@ PHP;
      * @param string $caminhoBase
      * @return array
      */
-    public function salvarViews(string $nomeTabela, array $atributos, string $chavePrimaria = 'id', string $caminhoBase = __DIR__ . '/../../views'): array {
-        $varPlural = strtolower($nomeTabela) . 's';
+    public function salvarViews(Tabela $tabela, array $atributos, string $chavePrimaria = 'id', string $caminhoBase = __DIR__ . '/../../views'): array {
+        $varPlural = strtolower($tabela->getNome_tabela()) . 's';
         $pastaDestino = "{$caminhoBase}/{$varPlural}";
 
         if (!is_dir($pastaDestino)) {
@@ -179,15 +183,15 @@ PHP;
 
         $arquivosSalvos = [];
 
-        $indexContent = $this->gerarIndexView($nomeTabela, $atributos, $chavePrimaria);
+        $indexContent = $this->gerarIndexView($tabela, $atributos, $chavePrimaria);
         file_put_contents("{$pastaDestino}/index.php", $indexContent);
         $arquivosSalvos[] = "{$pastaDestino}/index.php";
 
-        $createContent = $this->gerarCreateView($nomeTabela, $atributos, $chavePrimaria);
+        $createContent = $this->gerarCreateView($tabela, $atributos, $chavePrimaria);
         file_put_contents("{$pastaDestino}/create.php", $createContent);
         $arquivosSalvos[] = "{$pastaDestino}/create.php";
 
-        $editContent = $this->gerarEditView($nomeTabela, $atributos, $chavePrimaria);
+        $editContent = $this->gerarEditView($tabela, $atributos, $chavePrimaria);
         file_put_contents("{$pastaDestino}/edit.php", $editContent);
         $arquivosSalvos[] = "{$pastaDestino}/edit.php";
 
