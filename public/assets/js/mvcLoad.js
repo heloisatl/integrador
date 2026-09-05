@@ -71,11 +71,6 @@ function carregarTabelas() {
     let srv = sessionStorage.getItem("mvc_servidor") || "localhost";
     let banco = sessionStorage.getItem("mvc_banco") || (document.getElementById("banco") ? document.getElementById("banco").value : "");
 
-    if (!banco) {
-        alert("Por favor, selecione um banco de dados antes de continuar.");
-        return;
-    }
-
     const data = new FormData();
     data.append('usuario', usr);
     data.append('senha', pass);
@@ -92,7 +87,7 @@ function carregarTabelas() {
                     sessionStorage.setItem("mvc_tabelas", JSON.stringify(res.tabelas));
                     window.location.href = '?step=tabelas';
                 } else {
-                    alert("Erro ao buscar tabelas: " + res.mensagem);
+                    alert(res.mensagem);
                 }
             } catch (e) {
                 console.error("Erro no parse JSON", e);
@@ -119,7 +114,7 @@ function renderizarTabelasSeExistirem() {
             tabelas.forEach(t => {
                 html += `<label style="display: flex; align-items: center; gap: 10px; font-size: 15px; cursor: pointer; background: rgba(255,255,255,0.05); padding: 10px 14px; border-radius: 6px;">
                     <input type="checkbox" class="cb-tabela" value="${t}" checked style="width: 18px; height: 18px;">
-                    <span>📊 <strong>${t}</strong></span>
+                    <span><strong>${t}</strong></span>
                 </label>`;
             });
             html += '</div>';

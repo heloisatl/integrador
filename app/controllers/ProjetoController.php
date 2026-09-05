@@ -24,17 +24,29 @@ class ProjetoController extends Controller{
 
 
     public function getDatabases(){
-        
+        if (empty($_SESSION['usuario_logado'])) {
+            echo '<option value="">Sessão expirada. Faça login novamente.</option>';
+            return;
+        }
         $sel = trim($_POST['selecionado'] ?? null);
         echo (new BancoService())->getBancoByUsuario($_SESSION['usuario_logado']->getIdUsuario(),"DB_OPTIONS",$sel);
     }
 
     public function getTabelas(): void {
-        header('Content-Type: application/json');
+        $this->autenticacaoJsonRequired();
+
         $user = trim($_POST['usuario'] ?? '');
         $pass = trim($_POST['senha'] ?? '');
         $server = trim($_POST['servidor'] ?? 'localhost');
         $banco = trim($_POST['banco'] ?? '');
+
+        if (empty($banco)) {
+            echo json_encode([
+                'sucesso' => false,
+                'mensagem' => 'Por favor, selecione um banco de dados antes de continuar.'
+            ]);
+            return;
+        }
 
         try {
             $tabelas = $this->projetoService->getTabelas("mysql:host=$server", $user, $pass, $banco);
@@ -107,18 +119,40 @@ class ProjetoController extends Controller{
     }
 
     public function gerarMvc(): void {
-        header('Content-Type: application/json');
+        $this->autenticacaoJsonRequired();
+
         $bancoService = new BancoService();
         $tabelaService = new TabelaService();
         $atributoService = new AtributoService();
-        $nomeProjeto = trim($_POST['nomeProjeto'] ?? 'meu_projeto');
+
+        $nomeProjeto = trim($_POST['nomeProjeto'] ?? '') ?: 'meu_projeto';
         $user = trim($_POST['usuario'] ?? '');
         $pass = trim($_POST['senha'] ?? '');
         $server = trim($_POST['servidor'] ?? 'localhost');
         $banco = trim($_POST['banco'] ?? '');
         $tabelasSelecionadas = $_POST['tabelas'] ?? [];
+
+        if (preg_match('/\s/', $nomeProjeto)) {
+            echo json_encode(['sucesso' => false, 'mensagem' => 'O nome do projeto não deve conter espaços.']);
+            return;
+        }
+
+        if (empty($banco)) {
+            echo json_encode(['sucesso' => false, 'mensagem' => 'Selecione um banco de dados antes de gerar o sistema.']);
+            return;
+        }
+
+        if (empty($tabelasSelecionadas)) {
+            echo json_encode(['sucesso' => false, 'mensagem' => 'Selecione ao menos uma tabela para gerar o sistema MVC.']);
+            return;
+        }
         
         $bancoSelecionado = $bancoService->getBancoById($banco);
+        if (!$bancoSelecionado) {
+            echo json_encode(['sucesso' => false, 'mensagem' => 'Banco de dados não encontrado.']);
+            return;
+        }
+
         $tabelas = $tabelaService->getTabelasByFk_banco($bancoSelecionado['id_banco']);
         $atributos = [];
         foreach ($tabelas as $tabela) {
