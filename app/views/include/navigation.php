@@ -99,7 +99,7 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
         <a href="<?= URL_BASE ?>/projetos/saida" class="topbar-item <?php echo verificarAtivo('saida', $paginaAtual); ?>">
             Saída </a>
 
-        <a href="<?= URL_BASE ?>/projetos/saida" class="topbar-item <?php echo verificarAtivo('phpmeuamigo', $paginaAtual); ?>">
+        <a href="<?= URL_BASE ?>/projetos/phpmeuamigo" class="topbar-item <?php echo verificarAtivo('phpmeuamigo', $paginaAtual); ?>">
             PHPMeuAmigo </a>
 
         <?php if (defined('URL_BASE') && usuarioEhAdmin()): ?>
@@ -281,6 +281,15 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
 
             <a href="<?= URL_BASE ?>/projetos/saida?tab=baixar" class="sb-item <?php echo verificarAtivo('saida', $paginaAtual, 'tab', 'baixar'); ?>"> <span class="sb-icon"></span> Baixar Tudo
             </a>
+        </div>
+
+        <!-- PHPMeuAmigo -->
+        <div id="sb-titulo-PHPMeuAmigo" class="sb-section">
+            <div class="sb-label">PHPMeuAmigo</div>
+            <a href="<?= URL_BASE ?>/projetos/phpmeuamigo" class="sb-item <?php echo verificarAtivo('phpmeuamigo', $paginaAtual); ?>">
+                <span class="sb-icon"></span> Modelador de Banco
+            </a>
+        </div>
     </aside>
 
   <script src="<?= URL_BASE ?>/assets/js/deslogar.js"></script>

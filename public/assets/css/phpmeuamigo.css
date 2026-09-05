@@ -1,0 +1,477 @@
+/* ==========================================================================
+   PHPmeuamigo - Visual Database Manager Styling (DevStudio Identity)
+   ========================================================================== */
+
+.phpma-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 0 40px;
+}
+
+/* Page Header aligned with DevStudio design (home.css & form-styles.css) */
+.phpma-page-header {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 24px;
+    margin-bottom: 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.phpma-header-tag {
+    color: var(--accent);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    margin: 0 0 6px;
+    text-transform: uppercase;
+}
+
+.phpma-header-title {
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1.1;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.phpma-header-subtitle {
+    color: var(--muted);
+    font-size: 14px;
+    margin: 8px 0 0;
+}
+
+.phpma-badge-ver {
+    font-size: 10px;
+    font-family: 'DM Mono', monospace;
+    padding: 3px 8px;
+    border-radius: 6px;
+    background: rgba(91, 106, 240, 0.15);
+    color: var(--accent);
+    border: 1px solid rgba(91, 106, 240, 0.3);
+}
+
+/* Top Toolbar: Database Selector & Action Buttons */
+.phpma-top-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 18px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.phpma-banco-picker {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.phpma-banco-picker label {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.phpma-select-banco {
+    padding: 8px 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background-color: var(--surface);
+    color: var(--text);
+    font-size: 13px;
+    font-family: 'DM Mono', monospace;
+    outline: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.phpma-select-banco:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(91, 106, 240, 0.15);
+}
+
+/* Grid Layout (Sidebar + Main Panel) */
+.phpma-main-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 24px;
+}
+
+@media (max-width: 900px) {
+    .phpma-main-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Tables Sidebar Panel */
+.phpma-card {
+    background-color: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.phpma-sidebar-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    position: sticky;
+    top: 20px;
+}
+
+.phpma-card-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.phpma-search-input {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background-color: var(--surface);
+    color: var(--text);
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.2s;
+}
+
+.phpma-search-input:focus {
+    border-color: var(--accent);
+}
+
+.phpma-tabelas-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 480px;
+    overflow-y: auto;
+}
+
+.phpma-tabela-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    background: var(--surface);
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+}
+
+.phpma-tabela-btn:hover {
+    border-color: var(--border);
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.phpma-tabela-btn.active {
+    background: rgba(91, 106, 240, 0.12);
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.phpma-tabela-btn .tabela-nome {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.phpma-tabela-btn .tabela-badge {
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    color: var(--muted);
+    background: rgba(0, 0, 0, 0.2);
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+/* Editor Main Panel */
+.phpma-table-editor-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding-bottom: 18px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+}
+
+.phpma-table-name-field {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.phpma-table-name-field label {
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+}
+
+.phpma-input-tabela-nome {
+    font-family: 'DM Mono', monospace;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--accent);
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 14px;
+    outline: none;
+    min-width: 220px;
+    transition: all 0.2s;
+}
+
+.phpma-input-tabela-nome:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(91, 106, 240, 0.15);
+}
+
+/* Attributes Grid Table */
+.phpma-table-responsive {
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background-color: var(--surface);
+}
+
+.phpma-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.phpma-table th {
+    background: var(--panel);
+    padding: 12px 14px;
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+}
+
+.phpma-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+}
+
+.phpma-table tr:last-child td {
+    border-bottom: none;
+}
+
+.phpma-table tr:hover td {
+    background-color: rgba(255, 255, 255, 0.02);
+}
+
+/* Inputs in Attributes Table */
+.phpma-field-text {
+    width: 100%;
+    min-width: 130px;
+    padding: 7px 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background-color: var(--panel);
+    color: var(--text);
+    font-size: 13px;
+    font-family: 'DM Mono', monospace;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.phpma-field-text:focus {
+    border-color: var(--accent);
+}
+
+.phpma-field-select {
+    width: 100%;
+    min-width: 120px;
+    padding: 7px 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background-color: var(--panel);
+    color: var(--text);
+    font-size: 13px;
+    font-family: 'DM Mono', monospace;
+    outline: none;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+.phpma-field-select:focus {
+    border-color: var(--accent);
+}
+
+/* Checkbox Toggle Badges (PK, NN, AI, UQ) aligned with system badges */
+.phpma-flag-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    user-select: none;
+}
+
+.phpma-flag-toggle input[type="checkbox"] {
+    display: none;
+}
+
+.phpma-flag-badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 5px;
+    font-size: 11px;
+    font-weight: 700;
+    font-family: 'DM Mono', monospace;
+    color: var(--muted);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border);
+    transition: all 0.2s ease;
+}
+
+/* Active Badge Colors */
+.phpma-flag-toggle input[type="checkbox"]:checked + .badge-pk {
+    background: rgba(245, 158, 11, 0.18);
+    color: #f59e0b;
+    border-color: rgba(245, 158, 11, 0.4);
+}
+
+.phpma-flag-toggle input[type="checkbox"]:checked + .badge-nn {
+    background: rgba(91, 106, 240, 0.18);
+    color: var(--accent);
+    border-color: rgba(91, 106, 240, 0.4);
+}
+
+.phpma-flag-toggle input[type="checkbox"]:checked + .badge-ai {
+    background: rgba(48, 194, 164, 0.18);
+    color: #30c2a4;
+    border-color: rgba(48, 194, 164, 0.4);
+}
+
+.phpma-flag-toggle input[type="checkbox"]:checked + .badge-uq {
+    background: rgba(168, 85, 247, 0.18);
+    color: #a855f7;
+    border-color: rgba(168, 85, 247, 0.4);
+}
+
+/* Buttons (matching system .btn and .btn-primary) */
+.btn-icon-danger {
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.btn-icon-danger:hover {
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.15);
+}
+
+/* Modal styling matching system modals */
+.phpma-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+
+.phpma-modal-overlay.open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.phpma-modal-content {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    width: 100%;
+    max-width: 520px;
+    padding: 28px;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35);
+}
+
+.phpma-modal-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 14px;
+}
+
+.phpma-modal-head h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    margin: 0;
+}
+
+.phpma-grid-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.phpma-grid-fields .field-full {
+    grid-column: span 2;
+}
+
+.phpma-modal-foot {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+}
