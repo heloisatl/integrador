@@ -124,7 +124,6 @@ class ProjetoController extends Controller{
         $bancoService = new BancoService();
         $tabelaService = new TabelaService();
         $atributoService = new AtributoService();
-
         $nomeProjeto = trim($_POST['nomeProjeto'] ?? '') ?: 'meu_projeto';
         $user = trim($_POST['usuario'] ?? '');
         $pass = trim($_POST['senha'] ?? '');
