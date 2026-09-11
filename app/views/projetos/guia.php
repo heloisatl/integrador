@@ -30,8 +30,8 @@
                 </article>
                 <article class="guia-passo"><span>2</span>
                     <div>
-                        <h4>Configure seu ambiente</h4>
-                        <p>Use <strong>Config. Globais</strong> para informar os dados do MySQL e organizar as configurações usadas pelo gerador.</p>
+                        <h4>Conecte ao seu banco</h4>
+                        <p>No <strong>MVC Creator</strong>, informe as credenciais de acesso ao MySQL para carregar seus bancos de dados.</p>
                     </div>
                 </article>
                 <article class="guia-passo"><span>3</span>
@@ -60,13 +60,7 @@
                 <article class="guia-camada"><span class="guia-icone">⌂</span>
                     <div>
                         <h4>Início</h4>
-                        <p>Mostra uma visão geral do DevStudio e oferece acesso rápido ao MVC Creator, Page Maker e Configurações Globais.</p><a class="guia-link" href="<?= URL_BASE ?>/projetos">Ir para Início →</a>
-                    </div>
-                </article>
-                <article class="guia-camada"><span class="guia-icone">⚙</span>
-                    <div>
-                        <h4>Config. Globais</h4>
-                        <p>Área para definir host, usuário, senha e nome do banco MySQL que serão usados na conexão do projeto.</p><a class="guia-link" href="<?= URL_BASE ?>/projetos/config-global">Abrir configurações →</a>
+                        <p>Mostra uma visão geral do DevStudio e oferece acesso rápido ao MVC Creator e Page Maker.</p><a class="guia-link" href="<?= URL_BASE ?>/projetos">Ir para Início →</a>
                     </div>
                 </article>
                 <article class="guia-camada"><span class="guia-icone">MVC</span>
@@ -110,8 +104,7 @@
                 </div>
             </div>
             <ol class="guia-lista-detalhada">
-                <li><strong>Configure:</strong> abra as configurações globais e confira os dados do MySQL.</li>
-                <li><strong>Conecte:</strong> no MVC Creator, informe o nome do projeto e carregue os bancos disponíveis.</li>
+                <li><strong>Conecte:</strong> no MVC Creator, informe as credenciais e carregue os bancos disponíveis.</li>
                 <li><strong>Detecte tabelas:</strong> escolha o banco e consulte as tabelas encontradas automaticamente.</li>
                 <li><strong>Selecione as opções:</strong> o gerador prepara Model, Controller, Repository/DAO e Views de listagem, cadastro e edição.</li>
                 <li><strong>Veja a estrutura:</strong> confira as pastas e os arquivos antes de executar a geração.</li>

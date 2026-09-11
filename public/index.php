@@ -48,7 +48,6 @@ $router->get("/testeLeitura","ProjetoController@TesteLeituraDeBanco");
 $router->get("/testeInserirBanco","ProjetoController@testeInserirBanco");
 // Páginas do "menu principal" (topbar/sidebar) que já tinham view pronta
 // mas nunca tiveram rota registrada -> por isso davam 404 / não abriam.
-$router->get("/projetos/config-global", "ProjetoController@configGlobal");
 $router->get("/projetos/guia", "ProjetoController@guia");
 $router->get("/projetos/mvc-creator", "ProjetoController@mvcCreator");
 $router->get("/projetos/pagemaker", "ProjetoController@pageMaker");

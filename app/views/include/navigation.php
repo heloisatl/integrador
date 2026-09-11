@@ -80,9 +80,6 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
             Início
         </a>
 
-        <a href="<?= URL_BASE ?>/projetos/config-global" class="topbar-item <?php echo verificarAtivo('config-global', $paginaAtual); ?>">
-            Config. Global
-        </a>
         <a href="<?= URL_BASE ?>/projetos/mvc-creator" class="topbar-item <?php echo verificarAtivo('mvc-creator', $paginaAtual); ?>">
             MVC Creator
         </a>
@@ -137,6 +134,9 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
 
 
                     <?php if (isset($_SESSION['usuario_logado'])): ?>
+                        <a href="<?= URL_BASE ?>/perfil/editar" class="profile-dropdown-item">
+                            <i class="bi bi-pencil-square" aria-hidden="true"></i> Editar Perfil
+                        </a>
                         <a href="<?= URL_BASE ?>/logout" onclick="desfazSessionStorage()" class="profile-dropdown-item profile-dropdown-danger">Sair</a>
                     <?php else: ?>
                         <a href="<?= URL_BASE ?>/login" class="profile-dropdown-item login-link">
@@ -171,10 +171,6 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
 
             <a href="<?= URL_BASE ?>/projetos" class="sb-item <?php echo verificarAtivo('projetos', $paginaAtual); ?>">
                 Visão Geral
-            </a>
-
-            <a href="<?= URL_BASE ?>/projetos/config-global" class="sb-item <?php echo verificarAtivo('config-global', $paginaAtual); ?>">
-                Config. Globais
             </a>
 
             <a href="<?= URL_BASE ?>/projetos/guia" class="sb-item <?php echo verificarAtivo('guia', $paginaAtual); ?>">

@@ -248,11 +248,6 @@ class ProjetoController extends Controller{
         $this->view('projetos/home');
     }
 
-    public function configGlobal(): void {
-        $this->autenticacaoRequired();
-        $this->view('projetos/configGlobal');
-    }
-
     public function guia(): void {
         $this->view('projetos/guia');
     }
