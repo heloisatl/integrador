@@ -62,6 +62,28 @@ class TabelaRepository{
     }
 
 
+    public function getTabelasRawByFk_banco($id_banco){
+        $sql = "SELECT * FROM tabela WHERE fk_banco = ?";
+        $stm = $this->conn->prepare($sql);
+        $stm->execute([$id_banco]);
+        return $stm->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function updateNome($id_tabela, $nome_tabela){
+        $sql = "UPDATE tabela SET nome_tabela = :nome_tabela WHERE id_tabela = :id_tabela;";
+        $stm = $this->conn->prepare($sql);
+        $stm->bindValue(':nome_tabela', $nome_tabela);
+        $stm->bindValue(':id_tabela', $id_tabela);
+        return $stm->execute();
+    }
+
+    public function delete($id_tabela){
+        $sql = "DELETE FROM tabela WHERE id_tabela = :id_tabela;";
+        $stm = $this->conn->prepare($sql);
+        $stm->bindValue(':id_tabela', $id_tabela);
+        return $stm->execute();
+    }
+
     private function mapTabela($tabelas){
         $result = [];
 

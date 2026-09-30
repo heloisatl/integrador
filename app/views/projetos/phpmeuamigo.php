@@ -13,6 +13,14 @@
 
     <div class="phpma-container">
         
+        <!-- Banner Informativo sobre Modelagem Didática -->
+        <div class="phpma-card" style="background: rgba(13, 110, 253, 0.08); border: 1px solid rgba(13, 110, 253, 0.25); margin-bottom: 20px; padding: 14px 18px; display: flex; align-items: center; gap: 14px;">
+            <i class="bi bi-info-circle-fill" style="font-size: 22px; color: var(--accent, #0d6efd); flex-shrink: 0;"></i>
+            <div style="font-size: 13px; color: var(--text); line-height: 1.5;">
+                <strong style="color: var(--text);">Ambiente de Modelagem do DevStudio:</strong> Ao criar ou importar um banco de dados, a estrutura de tabelas e atributos é armazenada no modelo do seu projeto. Quaisquer alterações realizadas aqui (criação, edição ou exclusão de tabelas e campos) <strong style="color: var(--text);">não afetarão</strong> o banco de dados MySQL original da sua máquina local.
+            </div>
+        </div>
+
         <!-- Cabeçalho da Página (DevStudio Identity) -->
         <header class="phpma-page-header">
             <div>
@@ -21,7 +29,10 @@
                 </h2>
             </div>
 
-            <div>
+            <div style="display:flex; gap:10px;">
+                <button type="button" id="phpma-btn-import-sql" class="btn btn-secondary" onclick="window.phpmaOpenImportModal()">
+                    <i class="bi bi-download"></i> Importar Banco Local
+                </button>
                 <button type="button" id="phpma-btn-novo-banco" class="btn btn-primary">
                     <i class="bi bi-plus-lg"></i> Novo Banco
                 </button>
@@ -39,9 +50,12 @@
                 </select>
             </div>
 
-            <div>
+            <div style="display:flex; gap:8px;">
                 <button type="button" id="phpma-btn-config-banco" class="btn btn-secondary" title="Configurações do Banco (Host, Usuário, Senha)">
-                    <i class="bi bi-gear-fill"></i> Configurações do Banco
+                    <i class="bi bi-gear-fill"></i> Configurações
+                </button>
+                <button type="button" id="phpma-btn-excluir-banco" class="btn btn-secondary" style="color:#ff6b6b; border-color:rgba(255,107,107,0.3);" onclick="window.phpmaDeleteBancoActive()" title="Excluir Banco de Dados do DevStudio">
+                    <i class="bi bi-trash"></i> Excluir Banco
                 </button>
             </div>
         </div>
@@ -56,10 +70,6 @@
                     <button type="button" id="phpma-btn-nova-tabela" class="btn btn-primary" style="padding: 4px 10px; font-size: 12px;" title="Criar Nova Tabela">
                         <i class="bi bi-plus-lg"></i> Tabela
                     </button>
-                </div>
-
-                <div>
-                    <input type="text" id="phpma-search-table" class="phpma-search-input" placeholder="Filtrar tabelas...">
                 </div>
 
                 <div id="phpma-list-tabelas" class="phpma-tabelas-list">
@@ -150,6 +160,60 @@
             <div class="phpma-modal-foot">
                 <button type="button" class="btn btn-secondary" onclick="window.phpmaCloseModal()">Cancelar</button>
                 <button type="button" class="btn btn-primary" onclick="window.phpmaSaveBancoModal()">Salvar Alterações</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Importação de Banco de Dados Local (MySQL Local) -->
+    <div id="phpma-modal-import-sql" class="phpma-modal-overlay">
+        <div class="phpma-modal-content">
+            <div class="phpma-modal-head">
+                <h3><i class="bi bi-hdd-network" style="color: var(--accent);"></i> Importar Banco de Dados Local</h3>
+                <button type="button" class="btn-icon-danger" onclick="window.phpmaCloseImportModal()">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+
+            <div class="phpma-grid-fields">
+                <div class="form-group">
+                    <label for="modal-input-import-host">Host</label>
+                    <input type="text" id="modal-input-import-host" value="localhost" placeholder="localhost">
+                </div>
+
+                <div class="form-group">
+                    <label for="modal-input-import-porta">Porta</label>
+                    <input type="text" id="modal-input-import-porta" value="3306" placeholder="3306">
+                </div>
+
+                <div class="form-group">
+                    <label for="modal-input-import-usr">Usuário</label>
+                    <input type="text" id="modal-input-import-usr" value="root" placeholder="root">
+                </div>
+
+                <div class="form-group">
+                    <label for="modal-input-import-pass">Senha</label>
+                    <input type="password" id="modal-input-import-pass" placeholder="••••••••">
+                </div>
+
+                <div class="form-group field-full">
+                    <button type="button" id="phpma-btn-conectar-local" class="btn btn-secondary" style="width:100%;">
+                        <i class="bi bi-arrow-repeat"></i> Conectar e Listar Bancos da Máquina
+                    </button>
+                </div>
+
+                <div id="phpma-wrapper-select-bancos-locais" class="form-group field-full" style="display: none;">
+                    <label for="modal-select-banco-local"><i class="bi bi-database-check" style="color: var(--accent);"></i> Selecione o Banco de Dados para Importar:</label>
+                    <select id="modal-select-banco-local" class="phpma-select-banco" style="width:100%; font-size:14px; padding:8px;">
+                        <!-- Preenchido dinamicamente via JS -->
+                    </select>
+                </div>
+            </div>
+
+            <div class="phpma-modal-foot">
+                <button type="button" class="btn btn-secondary" onclick="window.phpmaCloseImportModal()">Cancelar</button>
+                <button type="button" id="phpma-btn-submit-import-local" class="btn btn-primary" disabled onclick="window.phpmaExecutarImportacaoLocal()">
+                    <i class="bi bi-download"></i> Importar Banco Selecionado
+                </button>
             </div>
         </div>
     </div>

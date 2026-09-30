@@ -53,12 +53,37 @@ class AtributoRepository{
 
 
     
+    public function getAtributosRawByFk_tabela($id_tabela){
+        $sql = "SELECT * FROM atributo WHERE fk_tabela = ?;";
+        $stm = $this->conn->prepare($sql);
+        $stm->execute([$id_tabela]);
+        return $stm->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function update($id_atributo, $fk_atributo, $nome_atributo, $tipo, $PK, $NN, $AI, $UQ){
+        $sql = "UPDATE atributo SET fk_atributo = :fk_atributo, nome_atributo = :nome_atributo, tipo = :tipo, PK = :PK, NN = :NN, AI = :AI, UQ = :UQ WHERE id_atributo = :id_atributo;";
+        $stm = $this->conn->prepare($sql);
+        $stm->bindValue(':fk_atributo', $fk_atributo);
+        $stm->bindValue(':nome_atributo', $nome_atributo);
+        $stm->bindValue(':tipo', $tipo);
+        $stm->bindValue(':PK', $PK);
+        $stm->bindValue(':NN', $NN);
+        $stm->bindValue(':AI', $AI);
+        $stm->bindValue(':UQ', $UQ);
+        $stm->bindValue(':id_atributo', $id_atributo);
+        return $stm->execute();
+    }
+
+    public function delete($id_atributo){
+        $sql = "DELETE FROM atributo WHERE id_atributo = :id_atributo;";
+        $stm = $this->conn->prepare($sql);
+        $stm->bindValue(':id_atributo', $id_atributo);
+        return $stm->execute();
+    }
+
     private function mapAtributo($atributos){
         $result = [];
-        // print_r($atributos);
         foreach($atributos as $key => $atributo){
-            
-                
             $id_atributo = $atributo['id_atributo'];
             $fk_tabela = $atributo['fk_tabela'];
             $fk_atributo = $atributo['fk_atributo'];
@@ -68,15 +93,9 @@ class AtributoRepository{
             $nn = $atributo['NN'];
             $ai = $atributo['AI'];
             $uq = $atributo['UQ'];
-        
-        
+
             $result[] = new Atributo($id_atributo,$fk_tabela,$fk_atributo,$nome_atributo,$tipo,$pk,$nn,$ai,$uq);
-            
         }
-
         return $result;
-        
     }
-
-    
 }

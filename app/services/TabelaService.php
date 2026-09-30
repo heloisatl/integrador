@@ -13,25 +13,19 @@ class TabelaService{
 
     public function insert($nome,$fk_banco){
         $result = null;
-        if($this->tabela_repository->getTabela($nome,'tabela.nome_tabela')){
-            print "A tabela ".$nome." já existe no banco de dados.";
-            $tabelas = $this->tabela_repository->getTabelasByFk_banco($fk_banco);
-            $tabelaJaExiste = 0;
-            foreach($tabelas as $key=>$tabela){
-                if($tabela->getNome_tabela() == $nome){
-                    $tabelaJaExiste++;
-                }
+        $tabelas = $this->tabela_repository->getTabelasByFk_banco($fk_banco);
+        $tabelaJaExiste = false;
+        foreach($tabelas as $tabela){
+            if($tabela->getNome_tabela() == $nome){
+                $tabelaJaExiste = true;
+                break;
             }
-            if((!$tabelaJaExiste)){
-                print "A tabela ".$nome." não existe no banco de dados selecionado. Inserindo a tabela ".$nome." no banco de dados.";
-                $result = $this->tabela_repository->insert($nome,$fk_banco);
-            }
-        }else{
-            print "A tabela ".$nome." não existe no banco de dados. Inserindo a tabela ".$nome." no banco de dados.";
+        }
+        
+        if(!$tabelaJaExiste){
             $result = $this->tabela_repository->insert($nome,$fk_banco);
         }
 
-        
         return $result;
     }
     
@@ -62,5 +56,15 @@ class TabelaService{
         return $result;
     }
 
+    public function getTabelasRawByFk_banco($id_banco){
+        return $this->tabela_repository->getTabelasRawByFk_banco($id_banco);
+    }
 
+    public function updateNome($id_tabela, $nome_tabela){
+        return $this->tabela_repository->updateNome($id_tabela, $nome_tabela);
+    }
+
+    public function delete($id_tabela){
+        return $this->tabela_repository->delete($id_tabela);
+    }
 }
