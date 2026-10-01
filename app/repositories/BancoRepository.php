@@ -71,5 +71,23 @@ class BancoRepository{
         $stm->execute();
         return $stm->fetchAll(PDO::FETCH_NUM);
     }
- 
+
+    public function updateConfig($id_banco, $nome_banco, $usuario_banco, $senha_banco, $host, $porta){
+        $sql = "UPDATE banco SET nome_banco = :nome_banco, usuario_banco = :usuario_banco, senha_banco = :senha_banco, host = :host, porta = :porta WHERE id_banco = :id_banco;";
+        $stm = $this->conn->prepare($sql);
+        $stm->bindValue(':nome_banco', $nome_banco);
+        $stm->bindValue(':usuario_banco', $usuario_banco);
+        $stm->bindValue(':senha_banco', $senha_banco);
+        $stm->bindValue(':host', $host);
+        $stm->bindValue(':porta', $porta);
+        $stm->bindValue(':id_banco', $id_banco);
+        return $stm->execute();
+    }
+
+    public function delete($id_banco){
+        $sql = "DELETE FROM banco WHERE id_banco = :id_banco;";
+        $stm = $this->conn->prepare($sql);
+        $stm->bindValue(':id_banco', $id_banco);
+        return $stm->execute();
+    }
 }

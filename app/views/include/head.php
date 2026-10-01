@@ -6,6 +6,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DevStudio</title>
 
+    <!-- Ícone da Aba (Favicon) com a Logo Oficial do DevStudio -->
+    <?php 
+        $baseUrl = defined('URL_BASE') ? URL_BASE : '';
+        $favIco = $baseUrl . '/favicon.ico?v=5';
+        $favSvg = $baseUrl . '/favicon.svg?v=5';
+    ?>
+    <link rel="icon" type="image/x-icon" href="<?= $favIco ?>">
+    <link rel="shortcut icon" type="image/x-icon" href="<?= $favIco ?>">
+    <link rel="icon" type="image/svg+xml" href="<?= $favSvg ?>">
+    <link rel="apple-touch-icon" href="<?= $favSvg ?>">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@600;700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
