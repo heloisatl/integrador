@@ -26,12 +26,13 @@ class SchemaInspector{
     
 
     public function getAtributos($nomeTabela){
-        $validTable = preg_match('/^[a-zA-Z0-9_]+$/',$nomeTabela) ? $nomeTabela : die('Invalid table name');
-        $sql = "show columns from `$validTable`";
+        if (!preg_match('/^[a-zA-Z0-9_]+$/', $nomeTabela)) {
+            throw new \InvalidArgumentException("Nome de tabela invalido: $nomeTabela");
+        }
+        $sql = "SHOW COLUMNS FROM `$nomeTabela`";
         $stm = $this->specialConn->prepare($sql);
         $stm->execute();
         return $stm->fetchAll(PDO::FETCH_ASSOC);
-        
     }
 
     public function getDatabases($option){
@@ -58,5 +59,35 @@ class SchemaInspector{
         }
     }
 
-    
+    public function getReferenciaFk($nomeTabela, $nomeColuna = null){
+        $sql = "SELECT 
+                    COLUMN_NAME,
+                    REFERENCED_TABLE_NAME,
+                    REFERENCED_COLUMN_NAME,
+                    CONSTRAINT_NAME
+                FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE
+                WHERE TABLE_SCHEMA = DATABASE()
+                  AND TABLE_NAME = :tabela
+                  AND REFERENCED_TABLE_NAME IS NOT NULL
+                  AND REFERENCED_COLUMN_NAME IS NOT NULL";
+
+        if ($nomeColuna !== null) {
+            $sql .= " AND COLUMN_NAME = :coluna";
+            $stm = $this->specialConn->prepare($sql);
+            $stm->execute([
+                ':tabela' => $nomeTabela,
+                ':coluna' => $nomeColuna
+            ]);
+            $res = $stm->fetch(PDO::FETCH_ASSOC);
+            return $res ?: null;
+        }
+
+        $stm = $this->specialConn->prepare($sql);
+        $stm->execute([':tabela' => $nomeTabela]);
+        return $stm->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getFkReferencia($nomeTabela, $nomeColuna = null){
+        return $this->getReferenciaFk($nomeTabela, $nomeColuna);
+    }
 }

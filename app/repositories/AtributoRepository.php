@@ -74,6 +74,14 @@ class AtributoRepository{
         return $stm->execute();
     }
 
+    public function updateFkAtributo($id_atributo, $fk_atributo){
+        $sql = "UPDATE atributo SET fk_atributo = :fk_atributo WHERE id_atributo = :id_atributo;";
+        $stm = $this->conn->prepare($sql);
+        $stm->bindValue(':fk_atributo', $fk_atributo, $fk_atributo === null ? PDO::PARAM_NULL : PDO::PARAM_INT);
+        $stm->bindValue(':id_atributo', $id_atributo, PDO::PARAM_INT);
+        return $stm->execute();
+    }
+
     public function delete($id_atributo){
         $sql = "DELETE FROM atributo WHERE id_atributo = :id_atributo;";
         $stm = $this->conn->prepare($sql);

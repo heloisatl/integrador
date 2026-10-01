@@ -4,228 +4,171 @@ namespace app\services;
 
 use Exception;
 
-/**
- * Class SqlImporterService
- * 
- * Serviço educacional responsável por ler, validar e realizar o parsing de arquivos
- * de dump SQL exportados do phpMyAdmin tradicional.
- * 
- * O parsing é realizado via Leitura em Stream (linha a linha) para maximizar a 
- * eficiência de hardware e memória (evitando carregar arquivos grandes na RAM).
- * 
- * Os dados extraídos são convertidos e salvos na estrutura de metadados do DevStudio
- * (tabelas `banco`, `tabela` e `atributo` da base `mvc_creator`).
- * 
- * @package app\services
- */
-class SqlImporterService
-{
+class SqlImporterService{
     private BancoService $bancoService;
     private TabelaService $tabelaService;
     private AtributoService $atributoService;
 
-    public function __construct()
-    {
-        $this->bancoService = new BancoService();
-        $this->tabelaService = new TabelaService();
+    public function __construct(){
+        $this->bancoService    = new BancoService();
+        $this->tabelaService   = new TabelaService();
         $this->atributoService = new AtributoService();
     }
 
-    /**
-     * Importa um arquivo SQL enviado pelo usuário e popula a estrutura no mvc_creator.
-     * 
-     * @param string $filePath Caminho absoluto do arquivo temporário (.sql)
-     * @param int $idUsuario ID do usuário logado na sessão
-     * @param string|null $nomeBancoManual Nome opcional para o banco de dados
-     * @return array Resumo do resultado da importação
-     * @throws Exception Em caso de erros de validação ou estrutura malformada
-     */
-    public function importarSql(string $filePath, int $idUsuario, ?string $nomeBancoManual = null): array
-    {
+    public function importarSql(string $filePath, int $id_usuario, ?string $nome_banco_manual = null): array{
         if (!file_exists($filePath) || !is_readable($filePath)) {
-            throw new Exception("O arquivo de dump SQL não foi encontrado ou não é legível.");
+            throw new Exception("Arquivo de dump SQL nao encontrado ou sem permissao de leitura.");
         }
 
-        // Validação básica de extensão do arquivo
+        // Valida extensao; se for arquivo temporario sem extensao, verifica o conteudo
         $extensao = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
         if ($extensao !== 'sql') {
-            // Em arquivos temporários de upload sem extensão, verifica o conteúdo inicial
-            $primeirosBytes = file_get_contents($filePath, false, null, 0, 500);
-            if (!preg_match('/CREATE TABLE|INSERT INTO|-- phpMyAdmin/i', $primeirosBytes)) {
-                throw new Exception("O arquivo fornecido não possui um formato SQL válido.");
+            $primeiros_bytes = file_get_contents($filePath, false, null, 0, 500);
+            if (!preg_match('/CREATE TABLE|INSERT INTO|-- phpMyAdmin/i', $primeiros_bytes)) {
+                throw new Exception("Arquivo fornecido nao possui formato SQL valido.");
             }
         }
 
-        // 1. Extrair nome do Banco de Dados ou usar o fornecido
-        $nomeBanco = $nomeBancoManual ? trim($nomeBancoManual) : $this->extrairNomeBancoDoSql($filePath);
-        if (empty($nomeBanco)) {
-            $nomeBanco = 'banco_importado_' . date('Ymd_His');
+        // Usa o nome manual se fornecido, senao tenta extrair do proprio SQL
+        $nome_banco = $nome_banco_manual ? trim($nome_banco_manual) : $this->extrairNomeBanco($filePath);
+        if (empty($nome_banco)) {
+            $nome_banco = 'banco_importado_' . date('Ymd_His');
         }
 
-        // Sanitização do nome do banco
-        $nomeBanco = preg_replace('/[^a-zA-Z0-9_]/', '', $nomeBanco);
+        $nome_banco = preg_replace('/[^a-zA-Z0-9_]/', '', $nome_banco);
 
-        // Insere o novo banco de dados em mvc_creator
-        $this->bancoService->insert($idUsuario, $nomeBanco, 'root', '', 'localhost', '3306');
-        $bancoObj = $this->bancoService->getBancoEspecifico($nomeBanco, 'root', $idUsuario);
+        $this->bancoService->insert($id_usuario, $nome_banco, 'root', '', 'localhost', '3306');
+        $banco_obj = $this->bancoService->getBancoEspecifico($nome_banco, 'root', $id_usuario);
 
-        if (!$bancoObj) {
-            throw new Exception("Erro ao registrar o banco de dados no sistema.");
+        if (!$banco_obj) {
+            throw new Exception("Erro ao registrar o banco no sistema.");
         }
 
-        $idBanco = (int)$bancoObj['id_banco'];
-
-        // 2. Realizar parsing em Stream das tabelas e atributos
-        $tabelasImportadas = $this->parseStreamSql($filePath, $idBanco);
+        $id_banco = (int)$banco_obj['id_banco'];
+        $tabelas_importadas = $this->parseStreamSql($filePath, $id_banco);
 
         return [
-            'sucesso' => true,
-            'id_banco' => $idBanco,
-            'nome_banco' => $nomeBanco,
-            'total_tabelas' => count($tabelasImportadas),
-            'tabelas' => array_keys($tabelasImportadas),
-            'mensagem' => sprintf("Importação concluída com sucesso! %d tabela(s) importada(s).", count($tabelasImportadas))
+            'sucesso'       => true,
+            'id_banco'      => $id_banco,
+            'nome_banco'    => $nome_banco,
+            'total_tabelas' => count($tabelas_importadas),
+            'tabelas'       => array_keys($tabelas_importadas),
+            'mensagem'      => sprintf("Importacao concluida! %d tabela(s) importada(s).", count($tabelas_importadas))
         ];
     }
 
-    /**
-     * Tenta identificar declarações de `CREATE DATABASE` ou `USE` no início do arquivo.
-     */
-    private function extrairNomeBancoDoSql(string $filePath): string
-    {
+    // Tenta encontrar um CREATE DATABASE ou USE no topo do arquivo
+    private function extrairNomeBanco(string $filePath): string{
         $handle = fopen($filePath, 'r');
         if (!$handle) return '';
 
-        $nomeBanco = '';
+        $nome_banco = '';
         while (($line = fgets($handle)) !== false) {
-            // Procura por `CREATE DATABASE `schema_name`` ou `USE `schema_name``
             if (preg_match('/(?:CREATE\s+DATABASE|USE)\s+[`"]?([a-zA-Z0-9_]+)[`"]?/i', $line, $matches)) {
-                $nomeBanco = $matches[1];
+                $nome_banco = $matches[1];
                 break;
             }
         }
         fclose($handle);
-        return $nomeBanco;
+        return $nome_banco;
     }
 
-    /**
-     * Lê o arquivo SQL linha a linha (Stream) e extrai comandos CREATE TABLE.
-     */
-    private function parseStreamSql(string $filePath, int $idBanco): array
-    {
+    // Le o arquivo linha a linha para evitar consumo excessivo de memoria com arquivos grandes
+    private function parseStreamSql(string $filePath, int $id_banco): array{
         $handle = fopen($filePath, 'r');
         if (!$handle) {
             throw new Exception("Falha ao abrir o arquivo para leitura.");
         }
 
-        $tabelasCriadas = [];
-        $insideCreateTable = false;
-        $currentTableContent = '';
+        $tabelas_criadas      = [];
+        $inside_create_table  = false;
+        $current_table_content = '';
 
         while (($line = fgets($handle)) !== false) {
             $trimmed = trim($line);
 
-            // Ignora comentários de linha e linhas vazias
             if (empty($trimmed) || str_starts_with($trimmed, '--') || str_starts_with($trimmed, '/*') || str_starts_with($trimmed, '#')) {
                 continue;
             }
 
-            // Identifica o início de um `CREATE TABLE`
             if (preg_match('/CREATE\s+TABLE\s+(?:IF\s+NOT\s+EXISTS\s+)?[`"]?([a-zA-Z0-9_]+)[`"]?/i', $line, $matches)) {
-                $insideCreateTable = true;
-                $tableName = $matches[1];
-                $currentTableContent = $line;
+                $inside_create_table  = true;
+                $table_name           = $matches[1];
+                $current_table_content = $line;
                 continue;
             }
 
-            // Se está dentro de um CREATE TABLE, acumula o conteúdo até encontrar o fechamento
-            if ($insideCreateTable) {
-                $currentTableContent .= $line;
+            if ($inside_create_table) {
+                $current_table_content .= $line;
 
-                // Fim do bloco CREATE TABLE (geralmente termina com `) ENGINE=...;` ou `;`)
                 if (preg_match('/;\s*$/', $trimmed)) {
-                    $insideCreateTable = false;
-                    
-                    // Processa a tabela acumulada
-                    $this->processarBlocoCreateTable($currentTableContent, $idBanco, $tableName ?? 'tabela');
-                    $tabelasCriadas[$tableName ?? 'tabela'] = true;
-                    $currentTableContent = '';
+                    $inside_create_table = false;
+                    $this->processarBlocoCreateTable($current_table_content, $id_banco, $table_name ?? 'tabela');
+                    $tabelas_criadas[$table_name ?? 'tabela'] = true;
+                    $current_table_content = '';
                 }
             }
         }
 
         fclose($handle);
-        return $tabelasCriadas;
+        return $tabelas_criadas;
     }
 
-    /**
-     * Processa o texto completo de um comando CREATE TABLE e salva no mvc_creator.
-     */
-    private function processarBlocoCreateTable(string $sqlBlock, int $idBanco, string $nomeTabela): void
-    {
-        // 1. Inserir a tabela no mvc_creator
-        $this->tabelaService->insert($nomeTabela, $idBanco);
-        $tabelaObj = $this->tabelaService->getTabelaEspecifica($nomeTabela, $idBanco);
-        if (!$tabelaObj) return;
+    private function processarBlocoCreateTable(string $sql_block, int $id_banco, string $nome_tabela): void{
+        $this->tabelaService->insert($nome_tabela, $id_banco);
+        $tabela_obj = $this->tabelaService->getTabelaEspecifica($nome_tabela, $id_banco);
+        if (!$tabela_obj) return;
 
-        $idTabela = (int)$tabelaObj['id_tabela'];
+        $id_tabela = (int)$tabela_obj['id_tabela'];
 
-        // 2. Extrair linhas de definições internas entre parênteses
-        preg_match('/\((.*)\)[^)]*$/s', $sqlBlock, $matches);
+        preg_match('/\((.*)\)[^)]*$/s', $sql_block, $matches);
         if (empty($matches[1])) return;
 
-        $innerContent = $matches[1];
-        $lines = explode("\n", $innerContent);
+        $inner_content = $matches[1];
+        $lines = explode("\n", $inner_content);
 
-        $primaryKeys = [];
-        $uniqueKeys = [];
-        $atributosDefinidos = [];
+        $primary_keys = [];
+        $unique_keys  = [];
 
-        // Primeira passagem: Identificar PRIMARY KEY e UNIQUE declarados separadamente ao final
+        // Primeira passagem: coleta PKs e UQs declarados em linhas separadas no final do CREATE TABLE
         foreach ($lines as $line) {
-            $lineTrimmed = trim($line, " \t\n\r,");
+            $line_trimmed = trim($line, " \t\n\r,");
 
-            if (preg_match('/PRIMARY\s+KEY\s*\(([^)]+)\)/i', $lineTrimmed, $pkMatch)) {
-                $cols = explode(',', $pkMatch[1]);
-                foreach ($cols as $c) {
-                    $primaryKeys[trim($c, " `\"")] = true;
+            if (preg_match('/PRIMARY\s+KEY\s*\(([^)]+)\)/i', $line_trimmed, $pkMatch)) {
+                foreach (explode(',', $pkMatch[1]) as $c) {
+                    $primary_keys[trim($c, " `\"")] = true;
                 }
             }
 
-            if (preg_match('/UNIQUE\s+(?:KEY\s+)?[`"]?([a-zA-Z0-9_]+)?[`"]?\s*\(([^)]+)\)/i', $lineTrimmed, $uqMatch)) {
-                $cols = explode(',', $uqMatch[2]);
-                foreach ($cols as $c) {
-                    $uniqueKeys[trim($c, " `\"")] = true;
+            if (preg_match('/UNIQUE\s+(?:KEY\s+)?[`"]?([a-zA-Z0-9_]+)?[`"]?\s*\(([^)]+)\)/i', $line_trimmed, $uqMatch)) {
+                foreach (explode(',', $uqMatch[2]) as $c) {
+                    $unique_keys[trim($c, " `\"")] = true;
                 }
             }
         }
 
-        // Segunda passagem: Processar colunas
+        // Segunda passagem: processa cada coluna
         foreach ($lines as $line) {
-            $lineTrimmed = trim($line, " \t\n\r,");
+            $line_trimmed = trim($line, " \t\n\r,");
 
-            // Ignora linhas de declaração de chave isolada
-            if (empty($lineTrimmed) || 
-                preg_match('/^(?:PRIMARY\s+KEY|UNIQUE|KEY|INDEX|CONSTRAINT|FOREIGN\s+KEY)/i', $lineTrimmed)) {
+            if (empty($line_trimmed) ||
+                preg_match('/^(?:PRIMARY\s+KEY|UNIQUE|KEY|INDEX|CONSTRAINT|FOREIGN\s+KEY)/i', $line_trimmed)) {
                 continue;
             }
 
-            // Extrai Nome da Coluna e Tipo
-            if (preg_match('/^[`"]?([a-zA-Z0-9_]+)[`"]?\s+([a-zA-Z0-9_\(\),\'"\s]+)/i', $lineTrimmed, $colMatch)) {
-                $colName = $colMatch[1];
-                $typeAndFlags = $colMatch[2];
+            if (preg_match('/^[`"]?([a-zA-Z0-9_]+)[`"]?\s+([a-zA-Z0-9_()\',"\s]+)/i', $line_trimmed, $colMatch)) {
+                $col_name      = $colMatch[1];
+                $type_and_flags = $colMatch[2];
 
-                // Isola o tipo de dado principal (ex: VARCHAR(60), INT, ENUM('a','b'), DATETIME)
-                preg_match('/^([a-zA-Z0-9_\(\),\'"]+)/', $typeAndFlags, $typeMatch);
-                $tipoDado = strtoupper($typeMatch[1] ?? 'VARCHAR(60)');
+                preg_match('/^([a-zA-Z0-9_()\',\"]+)/', $type_and_flags, $typeMatch);
+                $tipo_dado = strtoupper($typeMatch[1] ?? 'VARCHAR(60)');
 
-                $isPk = isset($primaryKeys[$colName]) || preg_match('/PRIMARY\s+KEY/i', $typeAndFlags) ? 1 : 0;
-                $isNn = preg_match('/NOT\s+NULL/i', $typeAndFlags) ? 1 : 0;
-                $isAi = preg_match('/AUTO_INCREMENT/i', $typeAndFlags) ? 1 : 0;
-                $isUq = isset($uniqueKeys[$colName]) || preg_match('/UNIQUE/i', $typeAndFlags) ? 1 : 0;
+                $isPk = isset($primary_keys[$col_name]) || preg_match('/PRIMARY\s+KEY/i', $type_and_flags) ? 1 : 0;
+                $isNn = preg_match('/NOT\s+NULL/i', $type_and_flags) ? 1 : 0;
+                $isAi = preg_match('/AUTO_INCREMENT/i', $type_and_flags) ? 1 : 0;
+                $isUq = isset($unique_keys[$col_name]) || preg_match('/UNIQUE/i', $type_and_flags) ? 1 : 0;
 
-                // Salva o atributo na tabela atributo do mvc_creator
-                $this->atributoService->insert($idTabela, null, $colName, $tipoDado, $isPk, $isNn, $isAi, $isUq);
+                $this->atributoService->insert($id_tabela, null, $col_name, $tipo_dado, $isPk, $isNn, $isAi, $isUq);
             }
         }
     }
