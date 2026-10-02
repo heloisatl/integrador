@@ -113,7 +113,6 @@ class ProjetoController extends Controller{
         $pass = trim($_POST['senha'] ?? '');
         $server = trim($_POST['servidor'] ?? 'localhost');
         $banco = trim($_POST['banco'] ?? '');
-        $tabelasSelecionadas = $_POST['tabelas'] ?? [];
 
         if (preg_match('/\s/', $nomeProjeto)) {
             echo json_encode(['sucesso' => false, 'mensagem' => 'O nome do projeto não deve conter espaços.']);
@@ -125,10 +124,7 @@ class ProjetoController extends Controller{
             return;
         }
 
-        if (empty($tabelasSelecionadas)) {
-            echo json_encode(['sucesso' => false, 'mensagem' => 'Selecione ao menos uma tabela para gerar o sistema MVC.']);
-            return;
-        }
+        
         
         $bancoSelecionado = $bancoService->getBancoById($banco);
         if (!$bancoSelecionado) {
@@ -140,6 +136,7 @@ class ProjetoController extends Controller{
         $atributos = [];
         foreach ($tabelas as $tabela) {
             $atributos[] = $atributoService->getAtributosByFk_tabela($tabela->getId_tabela());
+           
         }
         if(!$bancoSelecionado){
             echo json_encode(['sucesso' => false, 'mensagem' => 'Banco de dados não encontrado.']);
@@ -150,16 +147,16 @@ class ProjetoController extends Controller{
         //     echo json_encode(['sucesso' => false, 'mensagem' => 'Selecione o banco de dados e ao menos uma tabela.']);
         //     return;
         // }
-
+        
         try {
             // Pasta temporária para compilar o projeto gerado
             $pastaOutput = __DIR__ . '/../../public/temp/' . $nomeProjeto;
             $pastaApp = $pastaOutput . '/app';
 
             $gerenciador = new \app\tools\gerador\GerenciadorGerador();
-
-            foreach ($tabelasSelecionadas as $tabela) {
-                $colunasObj = $this->projetoService->getColunas("mysql:host=$server", $user, $pass, $banco, $tabela);
+            
+            foreach ($tabelas as $tabela) {
+                $colunasObj = $this->projetoService->getColunas("mysql:host=".$bancoSelecionado['host'].":".$bancoSelecionado['porta'], $bancoSelecionado['usuario_banco'], $bancoSelecionado['senha_banco'], $bancoSelecionado['nome_banco'], $tabela->getNome_tabela());
                 $atributos = array_column($colunasObj, 'Field');
                 $chavePrimaria = 'id';
                 foreach ($colunasObj as $col) {
@@ -185,6 +182,7 @@ class ProjetoController extends Controller{
                 $geradorView->salvarViews($tabela, $atributos, $chavePrimaria, $pastaApp . '/views');
                 $geradorCore->salvarCore($pastaApp.'/core');
             }
+            
 
             // Criar arquivo .zip para download
             $pastaZipDestino = __DIR__ . '/../../public/downloads';

@@ -172,7 +172,7 @@ function renderizarTabelasSeExistirem() {
 }
 
 function executarGeracaoMvc() {
-    const URL_BASE = "http://localhost:8080"; // Ajuste conforme necessário
+    const URL_BASE = "http://localhost:8081"; // Ajuste conforme necessário
 
     let usr = sessionStorage.getItem("mvc_usuario") || "root";
     let pass = sessionStorage.getItem("mvc_senha") || "";
