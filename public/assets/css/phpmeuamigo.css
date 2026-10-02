@@ -145,6 +145,13 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 12px;
+}
+
+.phpma-card-title button,
+.phpma-card-title .btn {
+    flex: 0 0 auto !important;
+    width: auto;
 }
 
 .phpma-search-input {
@@ -515,7 +522,7 @@
     font-family: 'DM Sans', sans-serif;
     font-size: 13.5px;
     line-height: 1.5;
-    color: #ffffff;
+    color: var(--text);
     margin: 0;
     word-break: break-word;
 }
@@ -527,4 +534,28 @@
     to {
         opacity: 1;
     }
+}
+
+/* ==========================================================================
+   Aviso Didático Permanente (DevStudio Identity - Tom #5B6AF0)
+   ========================================================================== */
+.phpma-aviso-permanente {
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-top: 28px;
+    margin-bottom: 20px;
+    background: rgba(91, 106, 240, 0.12);
+    border: 1px solid #5B6AF0;
+    box-shadow: none;
+    width: 100%;
+    box-sizing: border-box;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: var(--text);
+}
+
+.phpma-aviso-permanente strong {
+    color: #5B6AF0;
+    font-weight: 600;
 }

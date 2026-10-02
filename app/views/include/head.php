@@ -511,7 +511,7 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            padding: 32px;
+            padding: 32px 32px 0 32px;
             overflow-y: auto;
             background-color: var(--bg);
         }
@@ -523,13 +523,13 @@
 
             .main-content {
                 width: 100%;
-                padding: 20px;
+                padding: 20px 20px 0 20px;
             }
         }
 
         @media (max-width: 640px) {
             .main-content {
-                padding: 16px;
+                padding: 16px 16px 0 16px;
             }
         }
     </style>

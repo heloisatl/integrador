@@ -1,9 +1,7 @@
-<div id="phpmeuamigo">
-
-    <?php
-    include_once(__DIR__ . "/../include/head.php");
-    include_once(__DIR__ . "/../include/navigation.php");
-    ?>
+<?php
+include_once(__DIR__ . "/../include/head.php");
+include_once(__DIR__ . "/../include/navigation.php");
+?>
 
     <!-- Estilos de formulários globais e do PHPmeuamigo -->
     <link rel="stylesheet" href="<?= URL_BASE ?>/assets/css/form-styles.css">
@@ -12,14 +10,6 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
 
     <div class="phpma-container">
-        
-        <!-- Banner Informativo sobre Modelagem Didática -->
-        <div class="phpma-card" style="background: rgba(13, 110, 253, 0.08); border: 1px solid rgba(13, 110, 253, 0.25); margin-bottom: 20px; padding: 14px 18px; display: flex; align-items: center; gap: 14px;">
-            <i class="bi bi-info-circle-fill" style="font-size: 22px; color: var(--accent, #0d6efd); flex-shrink: 0;"></i>
-            <div style="font-size: 13px; color: var(--text); line-height: 1.5;">
-                <strong style="color: var(--text);">Ambiente de Modelagem do DevStudio:</strong> Ao criar ou importar um banco de dados, a estrutura de tabelas e atributos é armazenada no modelo do seu projeto. Quaisquer alterações realizadas aqui (criação, edição ou exclusão de tabelas e campos) <strong style="color: var(--text);">não afetarão</strong> o banco de dados MySQL original da sua máquina local.
-            </div>
-        </div>
 
         <!-- Cabeçalho da Página (DevStudio Identity) -->
         <header class="phpma-page-header">
@@ -58,6 +48,8 @@
                     <i class="bi bi-trash"></i> Excluir Banco
                 </button>
             </div>
+        </div>
+
         <!-- Caixa de Alerta / Mensagens Inline do Sistema (DevStudio - Tom #5B6AF0) -->
         <div id="phpma-inline-alert" class="phpma-inline-alert" style="display: none;" role="alert">
             <div class="phpma-inline-alert-body">
@@ -96,7 +88,7 @@
             </aside>
 
             <!-- Painel Principal: Atributos (Entidade: ATRIBUTO) -->
-            <main class="phpma-card">
+            <section class="phpma-card">
                 
                 <div class="phpma-table-editor-header">
                     <div class="phpma-table-name-field">
@@ -133,7 +125,12 @@
                     </table>
                 </div>
 
-            </main>
+            </section>
+        </div>
+
+        <!-- Aviso Permanente de Modelagem (DevStudio Identity - Tom #5B6AF0) -->
+        <div class="phpma-aviso-permanente" role="note">
+            <strong>Ambiente de Modelagem do DevStudio:</strong> Ao criar ou importar um banco de dados, a estrutura de tabelas e atributos é armazenada no modelo do seu projeto. Quaisquer alterações realizadas aqui (criação, edição ou exclusão de tabelas e campos) <strong>não afetarão</strong> o banco de dados MySQL original da sua máquina local.
         </div>
 
     </div>
@@ -252,7 +249,6 @@
 
     <?php require_once __DIR__ . '/../include/footer.php'; ?>
     </main>
-</div>
 </div>
 
 <!-- Script de interatividade visual -->
