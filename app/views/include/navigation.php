@@ -134,7 +134,7 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
 
 
                     <?php if (isset($_SESSION['usuario_logado'])): ?>
-                        <a href="<?= URL_BASE ?>/perfil/editar" class="profile-dropdown-item">
+                        <a href="<?= URL_BASE ?>/perfil" class="profile-dropdown-item">
                             <i class="bi bi-pencil-square" aria-hidden="true"></i> Editar Perfil
                         </a>
                         <a href="<?= URL_BASE ?>/logout" onclick="desfazSessionStorage()" class="profile-dropdown-item profile-dropdown-danger">Sair</a>
@@ -284,6 +284,14 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
             <div class="sb-label">PHPMeuAmigo</div>
             <a href="<?= URL_BASE ?>/projetos/phpmeuamigo" class="sb-item <?php echo verificarAtivo('phpmeuamigo', $paginaAtual); ?>">
                 <span class="sb-icon"></span> Modelador de Banco
+            </a>
+        </div>
+
+        <!-- Perfil -->
+        <div id="sb-titulo-perfil" class="sb-section">
+            <div class="sb-label">Perfil</div>
+            <a href="<?= URL_BASE ?>/perfil" class="sb-item <?php echo ($paginaAtual === 'perfil') ? 'active' : ''; ?>">
+                <span class="sb-icon"></span> Gerenciar perfil
             </a>
         </div>
     </aside>

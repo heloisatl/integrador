@@ -49,6 +49,10 @@
     display: block;
 }
 
+#perfil #sb-titulo-perfil {
+    display: block;
+}
+
 .mvc-etapa-wrapper {
     max-width: 900px;
     margin: 0 auto;
