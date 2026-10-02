@@ -2,6 +2,7 @@
 namespace app\repositories;
 
 use app\database\ConnectionFactory;
+use app\models\Banco;
 use PDO;
 
 
@@ -106,5 +107,39 @@ class BancoRepository{
         $stm = $this->conn->prepare($sql);
         $stm->bindValue(':id_banco', $id_banco, PDO::PARAM_INT);
         return $stm->execute();
+    }
+
+    public function getBancoObjetoById(int $id): ?Banco {
+        $dados = $this->getBancoById($id);
+        if (!$dados) {
+            return null;
+        }
+        return Banco::arrayParaObjeto($dados);
+    }
+
+    public function insertModel(Banco $banco): bool {
+        return $this->insert(
+            $banco->getFkUsuario(),
+            $banco->getNomeBanco(),
+            $banco->getUsuarioBanco(),
+            $banco->getSenhaBanco(),
+            $banco->getHost(),
+            $banco->getPorta()
+        );
+    }
+
+    public function updateModel(Banco $banco): bool {
+        if ($banco->getIdBanco() === null) {
+            return false;
+        }
+
+        return $this->updateConfig(
+            $banco->getIdBanco(),
+            $banco->getNomeBanco(),
+            $banco->getUsuarioBanco(),
+            $banco->getSenhaBanco(),
+            $banco->getHost(),
+            $banco->getPorta()
+        );
     }
 }
