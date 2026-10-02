@@ -154,57 +154,7 @@
             margin-left: auto;
         }
 
-        @media (max-width: 900px) {
-            .topbar {
-                height: auto;
-                min-height: 60px;
-                flex-wrap: wrap;
-                padding: 12px 16px;
-            }
-
-            .topbar-toggle {
-                display: flex;
-            }
-
-            .topbar-nav {
-                display: none;
-                width: 100%;
-                flex-direction: column;
-                align-items: stretch;
-                padding-top: 8px;
-                gap: 6px;
-            }
-
-            .topbar-nav.open {
-                display: flex;
-            }
-
-            .topbar-item-inicio {
-                margin-left: 0;
-            }
-
-            .topbar-nav .topbar-actions {
-                margin-left: 0;
-                justify-content: flex-end;
-            }
-        }
-
-        @media (max-width: 640px) {
-            .topbar {
-                padding: 10px 12px;
-            }
-
-            .topbar-nav {
-                padding-top: 6px;
-            }
-
-            .topbar-item,
-            .topbar-item-inicio,
-            .profile-btn {
-                width: 100%;
-                justify-content: center;
-            }
-        }
+        /* Responsividade da topbar e navegação gerenciada em style.css */
 
         /* Especifico pra "Inicio" pra ele ficar mais longe da logo DevStudio */
         .topbar-item-inicio {
@@ -447,7 +397,8 @@
         }
 
         .sidebar {
-            width: 15%;
+            width: 240px;
+            flex-shrink: 0;
             background-color: var(--surface);
             border-right: 1px solid var(--border);
             padding: 24px 16px;
@@ -486,8 +437,6 @@
             transition: all 0.2s ease;
         }
 
-
-
         .sb-item:hover {
             background-color: var(--panel);
             color: var(--accent);
@@ -505,10 +454,9 @@
         }
 
         /* Área do Conteúdo da Página */
-        /* TODO: deixar responsiiiveeeeeel aaaa */
         .main-content {
-            width: 75%;
             flex: 1;
+            min-width: 0;
             display: flex;
             flex-direction: column;
             padding: 32px 32px 0 32px;
@@ -518,7 +466,10 @@
 
         @media (max-width: 900px) {
             .sidebar {
-                display: none;
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+                padding: 16px;
             }
 
             .main-content {
@@ -584,8 +535,10 @@
             if (!nav || !toggle) return;
 
             const isOpen = nav.classList.toggle('open');
+            toggle.classList.toggle('open', isOpen);
             toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
             toggle.setAttribute('aria-label', isOpen ? 'Fechar menu' : 'Abrir menu');
+            document.body.classList.toggle('mobile-menu-active', isOpen);
         }
 
         document.addEventListener('click', function(e) {
@@ -599,9 +552,27 @@
             const nav = document.getElementById('topbarNav');
             if (toggle && nav && !toggle.contains(e.target) && !nav.contains(e.target)) {
                 nav.classList.remove('open');
+                toggle.classList.remove('open');
                 toggle.setAttribute('aria-expanded', 'false');
                 toggle.setAttribute('aria-label', 'Abrir menu');
+                document.body.classList.remove('mobile-menu-active');
             }
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.topbar-nav a').forEach(function(link) {
+                link.addEventListener('click', function() {
+                    const nav = document.getElementById('topbarNav');
+                    const toggle = document.getElementById('topbarToggle');
+                    if (nav && toggle && window.innerWidth <= 900) {
+                        nav.classList.remove('open');
+                        toggle.classList.remove('open');
+                        toggle.setAttribute('aria-expanded', 'false');
+                        toggle.setAttribute('aria-label', 'Abrir menu');
+                        document.body.classList.remove('mobile-menu-active');
+                    }
+                });
+            });
         });
     </script>
     <?php
