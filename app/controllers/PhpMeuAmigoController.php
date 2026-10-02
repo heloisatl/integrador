@@ -225,17 +225,41 @@ class PhpMeuAmigoController extends Controller{
 
         $id_tabela = filter_input(INPUT_GET, 'id_tabela', FILTER_VALIDATE_INT)
                   ?: filter_input(INPUT_POST, 'id_tabela', FILTER_VALIDATE_INT);
+        $id_banco  = filter_input(INPUT_GET, 'id_banco', FILTER_VALIDATE_INT)
+                  ?: filter_input(INPUT_POST, 'id_banco', FILTER_VALIDATE_INT);
 
-        if (!$id_tabela) {
+        if (!$id_tabela && !$id_banco) {
             header('Content-Type: application/json; charset=utf-8');
-            echo json_encode(['sucesso' => false, 'mensagem' => 'ID da tabela e obrigatorio.']);
+            echo json_encode(['sucesso' => false, 'mensagem' => 'ID da tabela ou ID do banco e obrigatorio.']);
             return;
         }
 
         try {
-            $atributos = $this->atributoService->getAtributosRawByFk_tabela($id_tabela);
+            if ($id_tabela) {
+                $atributos = $this->atributoService->getAtributosRawByFk_tabela($id_tabela);
+                header('Content-Type: application/json; charset=utf-8');
+                echo json_encode(['sucesso' => true, 'atributos' => $atributos ?? []]);
+                return;
+            }
+
+            // Retorna os atributos de todas as tabelas do banco ativo para alimentar o select didático de FK
+            $tabelas = $this->tabelaService->getTabelasRawByFk_banco($id_banco);
+            $candidatos = [];
+            foreach ($tabelas as $tab) {
+                $attrsTab = $this->atributoService->getAtributosRawByFk_tabela((int)$tab['id_tabela']);
+                foreach ($attrsTab as $a) {
+                    $candidatos[] = [
+                        'id_atributo'   => (int)$a['id_atributo'],
+                        'nome_atributo' => $a['nome_atributo'],
+                        'id_tabela'     => (int)$tab['id_tabela'],
+                        'nome_tabela'   => $tab['nome_tabela'],
+                        'PK'            => (int)($a['PK'] ?? 0)
+                    ];
+                }
+            }
+
             header('Content-Type: application/json; charset=utf-8');
-            echo json_encode(['sucesso' => true, 'atributos' => $atributos ?? []]);
+            echo json_encode(['sucesso' => true, 'atributos_banco' => $candidatos]);
         } catch (\Exception $e) {
             header('Content-Type: application/json; charset=utf-8');
             echo json_encode(['sucesso' => false, 'mensagem' => 'Erro ao listar atributos: ' . $e->getMessage()]);
@@ -247,7 +271,8 @@ class PhpMeuAmigoController extends Controller{
 
         $id_atributo   = filter_input(INPUT_POST, 'id_atributo', FILTER_VALIDATE_INT);
         $id_tabela     = filter_input(INPUT_POST, 'id_tabela', FILTER_VALIDATE_INT);
-        $fk_atributo   = filter_input(INPUT_POST, 'fk_atributo', FILTER_VALIDATE_INT) ?: null;
+        $rawFk         = trim((string)($_POST['fk_atributo'] ?? ''));
+        $fk_atributo   = ($rawFk !== '' && $rawFk !== '0') ? filter_var($rawFk, FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE) : null;
         $nome_atributo = trim($_POST['nome_atributo'] ?? '');
         $tipo          = trim($_POST['tipo'] ?? 'varchar(60)');
         if (is_string($tipo)) {
@@ -270,12 +295,71 @@ class PhpMeuAmigoController extends Controller{
             return;
         }
 
+        // Se informou formato invalido na FK
+        if ($rawFk !== '' && $rawFk !== '0' && $fk_atributo === null) {
+            header('Content-Type: application/json; charset=utf-8');
+            echo json_encode(['sucesso' => false, 'mensagem' => 'O identificador da Foreign Key deve ser um numero inteiro valido.']);
+            return;
+        }
+
+        // Se informou FK, valida existencia da PK de destino e isolamento do mesmo banco
+        if ($fk_atributo !== null) {
+            if ($id_atributo && (int)$fk_atributo === (int)$id_atributo) {
+                header('Content-Type: application/json; charset=utf-8');
+                echo json_encode(['sucesso' => false, 'mensagem' => 'Um atributo nao pode referenciar a si mesmo como Foreign Key.']);
+                return;
+            }
+
+            $attrDestino = $this->atributoService->getAtributoById($fk_atributo);
+            if (!$attrDestino) {
+                header('Content-Type: application/json; charset=utf-8');
+                echo json_encode(['sucesso' => false, 'mensagem' => "A Primary Key / atributo referenciado (ID $fk_atributo) nao existe no sistema."]);
+                return;
+            }
+
+            // Garante que ambos pertencem ao mesmo banco de dados
+            $tabelaOrigemId = $id_tabela;
+            if (!$tabelaOrigemId && $id_atributo) {
+                $attrAtual = $this->atributoService->getAtributoById($id_atributo);
+                $tabelaOrigemId = $attrAtual ? (int)$attrAtual['fk_tabela'] : null;
+            }
+
+            if ($tabelaOrigemId) {
+                $tabOrigem  = $this->tabelaService->getTabelaById($tabelaOrigemId);
+                $tabDestino = $this->tabelaService->getTabelaById((int)$attrDestino['fk_tabela']);
+                if ($tabOrigem && $tabDestino && (int)$tabOrigem['fk_banco'] !== (int)$tabDestino['fk_banco']) {
+                    header('Content-Type: application/json; charset=utf-8');
+                    echo json_encode(['sucesso' => false, 'mensagem' => 'Nao e permitido vincular Foreign Keys entre bancos de dados diferentes.']);
+                    return;
+                }
+            }
+        }
+
         try {
             if ($id_atributo) {
                 $this->atributoService->update($id_atributo, $fk_atributo, $nome_atributo, $tipo, $PK, $NN, $AI, $UQ);
                 $mensagem = 'Atributo atualizado com sucesso!';
             } else {
-                $this->atributoService->insert($id_tabela, $fk_atributo, $nome_atributo, $tipo, $PK, $NN, $AI, $UQ);
+                $inserted = $this->atributoService->insert($id_tabela, $fk_atributo, $nome_atributo, $tipo, $PK, $NN, $AI, $UQ);
+                if (!$inserted) {
+                    // Se houve colisão de nome padrão no banco, busca automaticamente o próximo número disponível
+                    if (preg_match('/^novo_atributo(\d+)$/', $nome_atributo, $matches)) {
+                        $num = (int)$matches[1];
+                        for ($i = $num + 1; $i <= $num + 50; $i++) {
+                            $tentativaNome = 'novo_atributo' . str_pad((string)$i, 2, '0', STR_PAD_LEFT);
+                            $inserted = $this->atributoService->insert($id_tabela, $fk_atributo, $tentativaNome, $tipo, $PK, $NN, $AI, $UQ);
+                            if ($inserted) {
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (!$inserted) {
+                    header('Content-Type: application/json; charset=utf-8');
+                    echo json_encode(['sucesso' => false, 'mensagem' => "Ja existe um atributo com o nome '$nome_atributo' nesta tabela."]);
+                    return;
+                }
                 $mensagem = 'Atributo criado com sucesso!';
             }
 
@@ -447,11 +531,11 @@ class PhpMeuAmigoController extends Controller{
                 $tabelaOrigem = $this->tabelaService->getTabelaEspecifica($nome_tabela_origem, $id_banco);
                 if (!$tabelaOrigem) continue;
 
-                // Carrega atributos atuais da tabela de origem indexados pelo nome
+                // Carrega atributos atuais da tabela de origem indexados pelo nome (em minusculo)
                 $atributosOrigem = $this->atributoService->getAtributosRawByFk_tabela($tabelaOrigem['id_tabela']);
                 $mapOrigem       = [];
                 foreach ($atributosOrigem as $a) {
-                    $mapOrigem[$a['nome_atributo']] = $a;
+                    $mapOrigem[strtolower($a['nome_atributo'])] = $a;
                 }
 
                 // 2.3 Resolve e vincula cada chave estrangeira
@@ -460,12 +544,13 @@ class PhpMeuAmigoController extends Controller{
                     $tabelaDestino = $fk['REFERENCED_TABLE_NAME'];   // Entidade referenciada (ex: cliente)
                     $colunaDestino = $fk['REFERENCED_COLUMN_NAME'];  // Atributo referenciado na entidade destino (ex: id_cliente)
 
+                    $keyOrigem = strtolower($colunaOrigem);
                     // Valida se o atributo de origem existe no sistema
-                    if (!isset($mapOrigem[$colunaOrigem])) {
+                    if (!isset($mapOrigem[$keyOrigem])) {
                         continue;
                     }
 
-                    $attrOrigem = $mapOrigem[$colunaOrigem];
+                    $attrOrigem = $mapOrigem[$keyOrigem];
 
                     // 2.4 Identifica a qual entidade (tabela destino) esse atributo se refere
                     $tabelaDestinoModel = $this->tabelaService->getTabelaEspecifica($tabelaDestino, $id_banco);
@@ -477,7 +562,7 @@ class PhpMeuAmigoController extends Controller{
                     $atributosDestino  = $this->atributoService->getAtributosRawByFk_tabela($tabelaDestinoModel['id_tabela']);
                     $idAtributoDestino = null;
                     foreach ($atributosDestino as $attrDest) {
-                        if ($attrDest['nome_atributo'] === $colunaDestino) {
+                        if (strcasecmp($attrDest['nome_atributo'], $colunaDestino) === 0) {
                             $idAtributoDestino = (int)$attrDest['id_atributo'];
                             break;
                         }

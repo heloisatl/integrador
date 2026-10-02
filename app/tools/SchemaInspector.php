@@ -67,6 +67,7 @@ class SchemaInspector{
                     CONSTRAINT_NAME
                 FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE
                 WHERE TABLE_SCHEMA = DATABASE()
+                  AND REFERENCED_TABLE_SCHEMA = DATABASE()
                   AND TABLE_NAME = :tabela
                   AND REFERENCED_TABLE_NAME IS NOT NULL
                   AND REFERENCED_COLUMN_NAME IS NOT NULL";

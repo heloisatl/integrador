@@ -21,8 +21,6 @@ class AtributoService{
             $result = $this->atributo_repository->insert($fk_tabela,$fk_atributo,$nome_atributo,$tipo,$PK,$NN,$AI,$UQ);
         }
 
-        
-
         return $result;
     }
 

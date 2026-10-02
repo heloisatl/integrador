@@ -8,13 +8,14 @@ let state = {
     activeBancoId: null,
     tabelas: [],
     activeTabelaId: null,
-    atributos: []
+    atributos: [],
+    atributosBanco: []
 };
 
 const TIPOS_DADOS = [
-    'INT', 'VARCHAR(60)', 'VARCHAR(255)', 'TEXT',
-    'MEDIUMTEXT', 'DATETIME', 'TINYINT', 'ENUM',
-    'DECIMAL(10,2)', 'BIGINT'
+    'int', 'varchar(60)', 'varchar(255)', 'text',
+    'mediumtext', 'datetime', 'tinyint', 'enum',
+    'decimal(10,2)', 'bigint'
 ];
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -77,12 +78,33 @@ async function carregarTabelasBackend(targetTabelaId = null) {
             }
 
             renderTabelasSidebar();
+            await carregarCatalogoFkBackend();
             await carregarAtributosBackend();
         } else {
             console.error("Erro ao carregar tabelas:", data.mensagem);
         }
     } catch (err) {
         console.error("Erro na requisicao das tabelas:", err);
+    }
+}
+
+async function carregarCatalogoFkBackend() {
+    if (!state.activeBancoId) {
+        state.atributosBanco = [];
+        return;
+    }
+
+    try {
+        const resp = await fetch(`/phpmeuamigo/atributos?id_banco=${state.activeBancoId}`);
+        const data = await resp.json();
+        if (data.sucesso) {
+            state.atributosBanco = data.atributos_banco || [];
+        } else {
+            state.atributosBanco = [];
+        }
+    } catch (err) {
+        console.error("Erro ao carregar catalogo de FKs:", err);
+        state.atributosBanco = [];
     }
 }
 
@@ -135,7 +157,15 @@ function bindEvents() {
     if (tableNameInput) {
         tableNameInput.addEventListener("change", async function (e) {
             const novoNome = e.target.value.trim();
-            if (!novoNome || !state.activeTabelaId) return;
+            const activeTab = getActiveTabela();
+
+            if (!novoNome) {
+                alert("O nome da tabela é obrigatório e não pode ficar vazio.");
+                if (activeTab) e.target.value = activeTab.nome_tabela;
+                return;
+            }
+
+            if (!state.activeTabelaId) return;
 
             const formData = new FormData();
             formData.append('id_tabela', state.activeTabelaId);
@@ -149,21 +179,65 @@ function bindEvents() {
                     await carregarTabelasBackend(state.activeTabelaId);
                 } else {
                     alert(res.mensagem || "Erro ao salvar tabela.");
+                    if (activeTab) e.target.value = activeTab.nome_tabela;
                 }
             } catch (err) {
                 alert("Erro ao salvar nome da tabela.");
+                if (activeTab) e.target.value = activeTab.nome_tabela;
             }
         });
     }
 
     const btnNovoBanco = document.getElementById("phpma-btn-novo-banco");
     const btnConfigBanco = document.getElementById("phpma-btn-config-banco");
-    const btnNovaTabela = document.getElementById("phpma-btn-nova-tabela");
+    const btnNovaTabela  = document.getElementById("phpma-btn-nova-tabela");
     const btnAddAtributo = document.getElementById("phpma-btn-add-atributo");
+    const wrapperNovaTab = document.getElementById("phpma-wrapper-nova-tabela");
+    const inputNovaTab   = document.getElementById("phpma-input-nova-tabela");
+    const btnConfirmTab  = document.getElementById("phpma-btn-confirm-nova-tabela");
+    const btnCancelTab   = document.getElementById("phpma-btn-cancel-nova-tabela");
 
     if (btnNovoBanco) btnNovoBanco.addEventListener("click", abrirModalNovoBanco);
     if (btnConfigBanco) btnConfigBanco.addEventListener("click", abrirModalConfigBanco);
-    if (btnNovaTabela) btnNovaTabela.addEventListener("click", addNovaTabela);
+
+    // Controle do formulário inline padronizado de criação de tabelas (sem prompt nativo)
+    if (btnNovaTabela && wrapperNovaTab) {
+        btnNovaTabela.addEventListener("click", function () {
+            if (!state.activeBancoId) {
+                alert("Crie ou selecione um Banco de Dados antes de criar uma tabela!");
+                return;
+            }
+            const estaAberto = wrapperNovaTab.style.display !== 'none';
+            wrapperNovaTab.style.display = estaAberto ? 'none' : 'block';
+            if (!estaAberto && inputNovaTab) {
+                inputNovaTab.value = '';
+                inputNovaTab.focus();
+            }
+        });
+    }
+
+    if (btnCancelTab && wrapperNovaTab) {
+        btnCancelTab.addEventListener("click", function () {
+            wrapperNovaTab.style.display = 'none';
+            if (inputNovaTab) inputNovaTab.value = '';
+        });
+    }
+
+    if (btnConfirmTab) {
+        btnConfirmTab.addEventListener("click", addNovaTabela);
+    }
+
+    if (inputNovaTab) {
+        inputNovaTab.addEventListener("keydown", function (e) {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                addNovaTabela();
+            } else if (e.key === "Escape") {
+                if (wrapperNovaTab) wrapperNovaTab.style.display = 'none';
+            }
+        });
+    }
+
     if (btnAddAtributo) btnAddAtributo.addEventListener("click", addNovoAtributo);
 
     const btnConectarLocal = document.getElementById("phpma-btn-conectar-local");
@@ -276,9 +350,26 @@ function renderAtributosGrid() {
     }
 
     tbody.innerHTML = state.atributos.map((attr, idx) => {
+        const currentTipo = (attr.tipo || '').toLowerCase();
         const typesOptions = TIPOS_DADOS.map(td =>
-            `<option value="${td}" ${attr.tipo === td ? 'selected' : ''}>${td}</option>`
+            `<option value="${td}" ${currentTipo === td.toLowerCase() ? 'selected' : ''}>${td}</option>`
         ).join('');
+
+        // Monta o <select> didático com os atributos exclusivamente do banco ativo
+        const fkOptions = [
+            `<option value="">-- Nenhuma (NULL) --</option>`
+        ];
+
+        (state.atributosBanco || []).forEach(item => {
+            // Não permite que o atributo aponte para si mesmo
+            if (item.id_atributo === attr.id_atributo) return;
+
+            const isSelected = parseInt(attr.fk_atributo) === item.id_atributo;
+            const pkTag = item.PK === 1 ? ' [PK]' : '';
+            fkOptions.push(
+                `<option value="${item.id_atributo}" ${isSelected ? 'selected' : ''}>${escapeHtml(item.nome_tabela)} &rarr; ${escapeHtml(item.nome_atributo)}${pkTag}</option>`
+            );
+        });
 
         return `
             <tr data-attr-id="${attr.id_atributo}">
@@ -292,7 +383,9 @@ function renderAtributosGrid() {
                     </select>
                 </td>
                 <td>
-                    <input type="text" class="phpma-field-text" style="color:var(--accent);" value="${attr.fk_atributo || ''}" placeholder="ID FK" onchange="window.phpmaUpdateAttr(${attr.id_atributo}, 'fk_atributo', this.value)">
+                    <select class="phpma-field-select" style="color:var(--accent); font-size:12px; max-width: 180px;" onchange="window.phpmaUpdateAttr(${attr.id_atributo}, 'fk_atributo', this.value)">
+                        ${fkOptions.join('')}
+                    </select>
                 </td>
                 <td style="text-align:center;">
                     <label class="phpma-flag-toggle">
@@ -394,6 +487,7 @@ window.phpmaDeleteAttr = async function (idAttr) {
         const resp = await fetch('/phpmeuamigo/atributos/excluir', { method: 'POST', body: formData });
         const res = await resp.json();
         if (res.sucesso) {
+            await carregarCatalogoFkBackend();
             await carregarAtributosBackend();
         } else {
             alert(res.mensagem || "Erro ao excluir atributo.");
@@ -409,12 +503,19 @@ async function addNovaTabela() {
         return;
     }
 
-    const nome = prompt("Informe o nome da nova tabela:", "nova_tabela");
-    if (!nome || !nome.trim()) return;
+    const inputNovaTab   = document.getElementById("phpma-input-nova-tabela");
+    const wrapperNovaTab = document.getElementById("phpma-wrapper-nova-tabela");
+    const nome           = inputNovaTab ? inputNovaTab.value.trim() : '';
+
+    if (!nome) {
+        alert("Informe o nome da nova tabela!");
+        if (inputNovaTab) inputNovaTab.focus();
+        return;
+    }
 
     const formData = new FormData();
     formData.append('id_banco', state.activeBancoId);
-    formData.append('nome_tabela', nome.trim());
+    formData.append('nome_tabela', nome);
 
     try {
         const resp = await fetch('/phpmeuamigo/tabelas/salvar', { method: 'POST', body: formData });
@@ -428,6 +529,8 @@ async function addNovaTabela() {
         }
 
         if (res.sucesso) {
+            if (inputNovaTab) inputNovaTab.value = '';
+            if (wrapperNovaTab) wrapperNovaTab.style.display = 'none';
             await carregarTabelasBackend(res.id_tabela);
         } else {
             alert(res.mensagem || "Erro ao criar tabela.");
@@ -443,10 +546,23 @@ async function addNovoAtributo() {
         return;
     }
 
+    // Identifica todos os nomes já usados para sugerir o próximo sequencialmente: novo_atributo01, novo_atributo02, etc.
+    const nomesExistentes = new Set([
+        ...(state.atributos || []).map(a => (a.nome_atributo || '').toLowerCase()),
+        ...(state.atributosBanco || []).map(a => (a.nome_atributo || '').toLowerCase())
+    ]);
+
+    let num = 1;
+    let nomeSugerido = `novo_atributo${String(num).padStart(2, '0')}`;
+    while (nomesExistentes.has(nomeSugerido.toLowerCase())) {
+        num++;
+        nomeSugerido = `novo_atributo${String(num).padStart(2, '0')}`;
+    }
+
     const formData = new FormData();
     formData.append('id_tabela', state.activeTabelaId);
-    formData.append('nome_atributo', 'novo_campo');
-    formData.append('tipo', 'VARCHAR(60)');
+    formData.append('nome_atributo', nomeSugerido);
+    formData.append('tipo', 'varchar(60)');
     formData.append('PK', 0);
     formData.append('NN', 0);
     formData.append('AI', 0);
@@ -457,6 +573,7 @@ async function addNovoAtributo() {
         const res = await resp.json();
 
         if (res.sucesso) {
+            await carregarCatalogoFkBackend();
             await carregarAtributosBackend();
         } else {
             alert(res.mensagem || "Erro ao criar atributo.");

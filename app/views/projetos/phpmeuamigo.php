@@ -72,6 +72,19 @@
                     </button>
                 </div>
 
+                <!-- Formulário inline padronizado para criação de tabela (substitui o prompt) -->
+                <div id="phpma-wrapper-nova-tabela" style="display: none; padding: 4px 0 8px;">
+                    <div style="display: flex; gap: 6px; align-items: center;">
+                        <input type="text" id="phpma-input-nova-tabela" class="phpma-search-input" placeholder="nome_tabela" style="font-size: 12px; padding: 6px 10px;">
+                        <button type="button" id="phpma-btn-confirm-nova-tabela" class="btn btn-primary" style="padding: 5px 10px; font-size: 12px;" title="Confirmar Criação">
+                            <i class="bi bi-check-lg"></i>
+                        </button>
+                        <button type="button" id="phpma-btn-cancel-nova-tabela" class="btn btn-secondary" style="padding: 5px 8px; font-size: 12px;" title="Cancelar">
+                            <i class="bi bi-x-lg"></i>
+                        </button>
+                    </div>
+                </div>
+
                 <div id="phpma-list-tabelas" class="phpma-tabelas-list">
                     <!-- Lista renderizada dinamicamente via JS -->
                 </div>
