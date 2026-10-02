@@ -58,6 +58,11 @@
                     <i class="bi bi-trash"></i> Excluir Banco
                 </button>
             </div>
+        <!-- Caixa de Alerta / Mensagens Inline do Sistema (DevStudio - Tom #5B6AF0) -->
+        <div id="phpma-inline-alert" class="phpma-inline-alert" style="display: none;" role="alert">
+            <div class="phpma-inline-alert-body">
+                <div id="phpma-alert-msg" class="phpma-inline-alert-msg"></div>
+            </div>
         </div>
 
         <!-- Layout em Grid (Sidebar de Tabelas + Editor de Atributos) -->
@@ -143,6 +148,13 @@
                 </button>
             </div>
 
+            <!-- Alerta inline interno do modal -->
+            <div id="phpma-modal-banco-alert" class="phpma-inline-alert" style="display: none; margin-bottom: 16px;">
+                <div class="phpma-inline-alert-body">
+                    <div class="phpma-inline-alert-msg"></div>
+                </div>
+            </div>
+
             <div class="phpma-grid-fields">
                 <div class="form-group field-full">
                     <label for="modal-input-nome-banco">Nome do Banco (`nome_banco`)</label>
@@ -185,6 +197,13 @@
                 <button type="button" class="btn-icon-danger" onclick="window.phpmaCloseImportModal()">
                     <i class="bi bi-x-lg"></i>
                 </button>
+            </div>
+
+            <!-- Alerta inline interno do modal de importação -->
+            <div id="phpma-modal-import-alert" class="phpma-inline-alert" style="display: none; margin-bottom: 16px;">
+                <div class="phpma-inline-alert-body">
+                    <div class="phpma-inline-alert-msg"></div>
+                </div>
             </div>
 
             <div class="phpma-grid-fields">

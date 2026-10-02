@@ -481,3 +481,50 @@
     padding-top: 16px;
     border-top: 1px solid var(--border);
 }
+
+/* ==========================================================================
+   Caixa de Alerta Inline na Página (DevStudio Identity - Tom #5B6AF0)
+   ========================================================================== */
+.phpma-inline-alert {
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    background: rgba(91, 106, 240, 0.12);
+    border: 1px solid #5B6AF0;
+    box-shadow: none;
+    animation: phpmaAlertFadeIn 0.2s ease-out forwards;
+    position: relative;
+    width: 100%;
+    box-sizing: border-box;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.phpma-inline-alert:hover {
+    background: rgba(91, 106, 240, 0.18);
+}
+
+.phpma-inline-alert-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.phpma-inline-alert-msg {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: #ffffff;
+    margin: 0;
+    word-break: break-word;
+}
+
+@keyframes phpmaAlertFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}

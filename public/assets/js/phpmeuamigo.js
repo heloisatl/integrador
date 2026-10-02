@@ -18,6 +18,68 @@ const TIPOS_DADOS = [
     'decimal(10,2)', 'bigint'
 ];
 
+// --- SISTEMA DE ALERTA INLINE VISUAL (DevStudio) ---
+
+let alertTimer = null;
+
+function phpmaShowAlert(message, type = 'error', title = null) {
+    // Verifica se algum modal está aberto para exibir o alerta dentro do modal ativo
+    const modalBanco = document.getElementById("phpma-modal-banco");
+    const modalImport = document.getElementById("phpma-modal-import-sql");
+
+    let alertEl = document.getElementById("phpma-inline-alert");
+    if (modalBanco && modalBanco.classList.contains("open")) {
+        alertEl = document.getElementById("phpma-modal-banco-alert") || alertEl;
+    } else if (modalImport && modalImport.classList.contains("open")) {
+        alertEl = document.getElementById("phpma-modal-import-alert") || alertEl;
+    }
+
+    if (!alertEl) return;
+
+    alertEl.className = 'phpma-inline-alert';
+
+    alertEl.innerHTML = `
+        <div class="phpma-inline-alert-body">
+            <div class="phpma-inline-alert-msg">${escapeHtml(message)}</div>
+        </div>
+    `;
+
+    alertEl.style.display = 'flex';
+    alertEl.onclick = () => window.phpmaDismissAlert(alertEl);
+
+    if (alertTimer) clearTimeout(alertTimer);
+
+    // Auto-dispensa após 6.5 segundos
+    alertTimer = setTimeout(() => {
+        window.phpmaDismissAlert(alertEl);
+    }, 6500);
+
+    // Rola suavemente até o alerta caso esteja fora da visão
+    if ((!modalBanco || !modalBanco.classList.contains("open")) && 
+        (!modalImport || !modalImport.classList.contains("open"))) {
+        alertEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+}
+
+window.phpmaDismissAlert = function (target = null) {
+    if (alertTimer) clearTimeout(alertTimer);
+
+    if (target && target instanceof HTMLElement) {
+        const box = target.closest('.phpma-inline-alert');
+        if (box) {
+            box.style.display = 'none';
+            return;
+        }
+    }
+
+    document.querySelectorAll('.phpma-inline-alert').forEach(el => {
+        el.style.display = 'none';
+    });
+};
+
+window.phpmaAlert = phpmaShowAlert;
+window.phpmaToast = phpmaShowAlert; // Roteamento transparente de compatibilidade
+
 document.addEventListener("DOMContentLoaded", function () {
     bindEvents();
     carregarBancosBackend();
@@ -160,7 +222,7 @@ function bindEvents() {
             const activeTab = getActiveTabela();
 
             if (!novoNome) {
-                alert("O nome da tabela é obrigatório e não pode ficar vazio.");
+                phpmaToast("O nome da tabela é obrigatório e não pode ficar vazio.", "warning");
                 if (activeTab) e.target.value = activeTab.nome_tabela;
                 return;
             }
@@ -178,11 +240,11 @@ function bindEvents() {
                 if (res.sucesso) {
                     await carregarTabelasBackend(state.activeTabelaId);
                 } else {
-                    alert(res.mensagem || "Erro ao salvar tabela.");
+                    phpmaToast(res.mensagem || "Erro ao salvar tabela.", "error");
                     if (activeTab) e.target.value = activeTab.nome_tabela;
                 }
             } catch (err) {
-                alert("Erro ao salvar nome da tabela.");
+                phpmaToast("Erro ao salvar nome da tabela.", "error");
                 if (activeTab) e.target.value = activeTab.nome_tabela;
             }
         });
@@ -204,7 +266,7 @@ function bindEvents() {
     if (btnNovaTabela && wrapperNovaTab) {
         btnNovaTabela.addEventListener("click", function () {
             if (!state.activeBancoId) {
-                alert("Crie ou selecione um Banco de Dados antes de criar uma tabela!");
+                phpmaToast("Crie ou selecione um Banco de Dados antes de criar uma tabela!", "warning");
                 return;
             }
             const estaAberto = wrapperNovaTab.style.display !== 'none';
@@ -267,12 +329,12 @@ function bindEvents() {
                     document.getElementById("phpma-wrapper-select-bancos-locais").style.display = 'block';
                     document.getElementById("phpma-btn-submit-import-local").disabled = false;
                 } else {
-                    alert(res.mensagem || "Nenhum banco disponivel encontrado no MySQL local.");
+                    phpmaToast(res.mensagem || "Nenhum banco disponivel encontrado no MySQL local.", "warning");
                     document.getElementById("phpma-wrapper-select-bancos-locais").style.display = 'none';
                     document.getElementById("phpma-btn-submit-import-local").disabled = true;
                 }
             } catch (err) {
-                alert("Falha na conexao com o MySQL local: " + err.message);
+                phpmaToast("Falha na conexao com o MySQL local: " + err.message, "error");
             } finally {
                 btnConectarLocal.disabled = false;
                 btnConectarLocal.innerHTML = `<i class="bi bi-arrow-repeat"></i> Conectar e Listar Bancos da Maquina`;
@@ -424,6 +486,7 @@ function renderAtributosGrid() {
 // --- ACOES DE TABELA E ATRIBUTO ---
 
 window.phpmaSelectTabela = async function (idTabela) {
+    window.phpmaDismissAlert();
     state.activeTabelaId = idTabela;
     renderTabelasSidebar();
     await carregarAtributosBackend();
@@ -442,10 +505,10 @@ window.phpmaDeleteTabela = async function (idTabela) {
             if (state.activeTabelaId === idTabela) state.activeTabelaId = null;
             await carregarTabelasBackend();
         } else {
-            alert(res.mensagem || "Erro ao excluir tabela.");
+            phpmaToast(res.mensagem || "Erro ao excluir tabela.", "error");
         }
     } catch (err) {
-        alert("Erro ao excluir tabela.");
+        phpmaToast("Erro ao excluir tabela.", "error");
     }
 };
 
@@ -471,7 +534,7 @@ window.phpmaUpdateAttr = async function (idAttr, field, value) {
         const res = await resp.json();
 
         console.log("[Backend -> Frontend] Resposta salvar atributo:", res);
-        if (!res.sucesso) alert(res.mensagem || "Erro ao atualizar atributo.");
+        if (!res.sucesso) phpmaToast(res.mensagem || "Erro ao atualizar atributo.", "error");
     } catch (err) {
         console.error("Erro ao salvar atributo:", err);
     }
@@ -490,16 +553,16 @@ window.phpmaDeleteAttr = async function (idAttr) {
             await carregarCatalogoFkBackend();
             await carregarAtributosBackend();
         } else {
-            alert(res.mensagem || "Erro ao excluir atributo.");
+            phpmaToast(res.mensagem || "Erro ao excluir atributo.", "error");
         }
     } catch (err) {
-        alert("Erro ao excluir atributo.");
+        phpmaToast("Erro ao excluir atributo.", "error");
     }
 };
 
 async function addNovaTabela() {
     if (!state.activeBancoId) {
-        alert("Crie ou selecione um Banco de Dados antes de criar uma tabela!");
+        phpmaToast("Crie ou selecione um Banco de Dados antes de criar uma tabela!", "warning");
         return;
     }
 
@@ -508,7 +571,7 @@ async function addNovaTabela() {
     const nome           = inputNovaTab ? inputNovaTab.value.trim() : '';
 
     if (!nome) {
-        alert("Informe o nome da nova tabela!");
+        phpmaToast("Informe o nome da nova tabela!", "warning");
         if (inputNovaTab) inputNovaTab.focus();
         return;
     }
@@ -524,7 +587,7 @@ async function addNovaTabela() {
         try {
             res = JSON.parse(text);
         } catch (parseErr) {
-            alert("Erro no servidor: " + text);
+            phpmaToast("Erro no servidor: " + text, "error");
             return;
         }
 
@@ -533,16 +596,16 @@ async function addNovaTabela() {
             if (wrapperNovaTab) wrapperNovaTab.style.display = 'none';
             await carregarTabelasBackend(res.id_tabela);
         } else {
-            alert(res.mensagem || "Erro ao criar tabela.");
+            phpmaToast(res.mensagem || "Erro ao criar tabela.", "error");
         }
     } catch (err) {
-        alert("Erro ao criar tabela: " + err.message);
+        phpmaToast("Erro ao criar tabela: " + err.message, "error");
     }
 }
 
 async function addNovoAtributo() {
     if (!state.activeTabelaId) {
-        alert("Selecione uma tabela primeiro!");
+        phpmaToast("Selecione uma tabela primeiro!", "warning");
         return;
     }
 
@@ -576,16 +639,17 @@ async function addNovoAtributo() {
             await carregarCatalogoFkBackend();
             await carregarAtributosBackend();
         } else {
-            alert(res.mensagem || "Erro ao criar atributo.");
+            phpmaToast(res.mensagem || "Erro ao criar atributo.", "error");
         }
     } catch (err) {
-        alert("Erro ao criar atributo.");
+        phpmaToast("Erro ao criar atributo.", "error");
     }
 }
 
 // --- MODAIS ---
 
 function abrirModalNovoBanco() {
+    window.phpmaDismissAlert();
     document.getElementById("modal-input-nome-banco").value = "";
     document.getElementById("modal-input-usr-banco").value = "root";
     document.getElementById("modal-input-pass-banco").value = "";
@@ -596,6 +660,7 @@ function abrirModalNovoBanco() {
 }
 
 function abrirModalConfigBanco() {
+    window.phpmaDismissAlert();
     const activeBanco = state.bancos.find(b => b.id_banco == state.activeBancoId);
     if (activeBanco) {
         document.getElementById("modal-input-nome-banco").value = activeBanco.nome_banco;
@@ -609,14 +674,17 @@ function abrirModalConfigBanco() {
 }
 
 window.phpmaCloseModal = function () {
+    window.phpmaDismissAlert();
     document.getElementById("phpma-modal-banco").classList.remove("open");
 };
 
 window.phpmaOpenImportModal = function () {
+    window.phpmaDismissAlert();
     document.getElementById("phpma-modal-import-sql").classList.add("open");
 };
 
 window.phpmaCloseImportModal = function () {
+    window.phpmaDismissAlert();
     document.getElementById("phpma-modal-import-sql").classList.remove("open");
 };
 
@@ -629,7 +697,7 @@ window.phpmaSaveBancoModal = async function () {
     const porta = document.getElementById("modal-input-porta-banco").value.trim() || '3306';
 
     if (!nome) {
-        alert("O nome do banco e obrigatorio!");
+        phpmaToast("O nome do banco é obrigatório!", "warning");
         return;
     }
 
@@ -647,12 +715,13 @@ window.phpmaSaveBancoModal = async function () {
 
         if (res.sucesso) {
             phpmaCloseModal();
+            phpmaToast(res.mensagem || "Banco salvo com sucesso!", "success");
             await carregarBancosBackend(res.id_banco);
         } else {
-            alert(res.mensagem || "Erro ao salvar banco de dados.");
+            phpmaToast(res.mensagem || "Erro ao salvar banco de dados.", "error");
         }
     } catch (err) {
-        alert("Erro ao salvar banco de dados.");
+        phpmaToast("Erro ao salvar banco de dados.", "error");
     }
 };
 
@@ -661,7 +730,7 @@ window.phpmaExecutarImportacaoLocal = async function () {
     const bancoSelecionado = selectLocal ? selectLocal.value : '';
 
     if (!bancoSelecionado) {
-        alert("Selecione um banco de dados na lista para importar!");
+        phpmaToast("Selecione um banco de dados na lista para importar!", "warning");
         return;
     }
 
@@ -689,14 +758,14 @@ window.phpmaExecutarImportacaoLocal = async function () {
         console.log("[Backend -> Frontend] Resposta importar-banco-local:", res);
 
         if (res.sucesso) {
-            alert(res.mensagem);
+            phpmaToast(res.mensagem, "success");
             window.phpmaCloseImportModal();
             await carregarBancosBackend(res.id_banco);
         } else {
-            alert("Erro ao importar banco: " + res.mensagem);
+            phpmaToast("Erro ao importar banco: " + res.mensagem, "error");
         }
     } catch (err) {
-        alert("Erro de conexao durante a importacao.");
+        phpmaToast("Erro de conexao durante a importacao.", "error");
     } finally {
         if (btnSubmit) {
             btnSubmit.disabled = false;
@@ -707,7 +776,7 @@ window.phpmaExecutarImportacaoLocal = async function () {
 
 window.phpmaDeleteBancoActive = async function () {
     if (!state.activeBancoId) {
-        alert("Selecione um banco de dados primeiro!");
+        phpmaToast("Selecione um banco de dados primeiro!", "warning");
         return;
     }
 
@@ -726,14 +795,14 @@ window.phpmaDeleteBancoActive = async function () {
         const res = await resp.json();
 
         if (res.sucesso) {
-            alert(res.mensagem);
+            phpmaToast(res.mensagem, "success");
             state.activeBancoId = null;
             await carregarBancosBackend();
         } else {
-            alert("Erro ao excluir banco: " + res.mensagem);
+            phpmaToast("Erro ao excluir banco: " + res.mensagem, "error");
         }
     } catch (err) {
-        alert("Erro de conexao ao tentar excluir banco de dados.");
+        phpmaToast("Erro de conexao ao tentar excluir banco de dados.", "error");
     }
 };
 
