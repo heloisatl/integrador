@@ -30,6 +30,16 @@ class Controller {
         return true;
     }
 
+    public function autenticacaoJsonRequired(): bool {
+        if (!isset($_SESSION['usuario_logado'])) {
+            header('Content-Type: application/json');
+            echo json_encode(['sucesso' => false, 'mensagem' => 'Sessão expirada. Faça login novamente.']);
+            exit();
+        }
+
+        return true;
+    }
+
     public function adminRequired(): bool {
         $this->autenticacaoRequired();
 

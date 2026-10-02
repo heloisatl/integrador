@@ -10,4 +10,6 @@ function desfazSessionStorage(){
     sessionStorage.removeItem("mvc_usuario");
     sessionStorage.removeItem("mvc_senha");
     sessionStorage.removeItem("mvc_banco");
+    sessionStorage.removeItem("mvc_tabelas");
+    sessionStorage.removeItem("mvc_tabelasDisabled");
 }

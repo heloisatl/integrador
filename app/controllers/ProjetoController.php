@@ -10,8 +10,7 @@ use app\services\ProjetoService;
 use app\services\BancoService;
 use app\services\TabelaService;
 use app\services\AtributoService;
-use app\tools\gerador\GerenciadorGerador;
-use app\tools\gerador\GeradorZip;
+
 use app\tools\SchemaInspector;
 use app\services\UsuarioService;
 
@@ -24,20 +23,26 @@ class ProjetoController extends Controller{
 
 
     public function getDatabases(){
-        
+        if (empty($_SESSION['usuario_logado'])) {
+            echo '<option value="">Sessão expirada. Faça login novamente.</option>';
+            return;
+        }
         $sel = trim($_POST['selecionado'] ?? null);
         echo (new BancoService())->getBancoByUsuario($_SESSION['usuario_logado']->getIdUsuario(),"DB_OPTIONS",$sel);
     }
 
     public function getTabelas(): void {
-        header('Content-Type: application/json');
+        $this->autenticacaoJsonRequired();
+
         $user = trim($_POST['usuario'] ?? '');
         $pass = trim($_POST['senha'] ?? '');
         $server = trim($_POST['servidor'] ?? 'localhost');
         $banco = trim($_POST['banco'] ?? '');
 
+
         try {
-            $tabelas = $this->projetoService->getTabelas("mysql:host=$server", $user, $pass, $banco);
+            $tabelaService = new TabelaService();
+            $tabelas = $tabelaService->getTabelasByFk_banco($banco,'prox_etap');
             echo json_encode(['sucesso' => true, 'tabelas' => $tabelas]);
         } catch (\Exception $e) {
             echo json_encode(['sucesso' => false, 'mensagem' => $e->getMessage()]);
@@ -58,15 +63,7 @@ class ProjetoController extends Controller{
         }
         
         
-        foreach($atributos as $atributo){
-            foreach($atributo as $att){
-                // print_r($att);
-            }
-        }
-
-        // print_r($bancoSelecionado);
-        // print_r($tabelas);
-        // print_r($atributos);
+        
     }
 
     public function testeInserirBanco(){
@@ -94,37 +91,56 @@ class ProjetoController extends Controller{
             print "Inserindo a tabela ".$value[0]." do banco ".$nome_banco."<br>";
             $tabelaService->insert($value[0],$bancoEspecifico['id_banco']);
             $tabelaEspecifica = $tabelaService->getTabelaEspecifica($value[0],$bancoEspecifico['id_banco']);
-            // print_r($tabelaEspecifica);
-            // print_r($schema->getAtributos($value[0]));
+            
             foreach($schema->getAtributos($value[0]) as $att){
                 $pk = $att['Key']=="PRI" ? 1 : 0;
                 $nn = $att['Null']=="NO" ? 1 : 0;
                 print $tabelaEspecifica['id_tabela']." - ".$att['Field']." - ".$att['Type']." - ".$pk." - ".$nn."<br>";
                 $atributoService->insert($tabelaEspecifica['id_tabela'],null,$att['Field'],$att['Type'],$pk,$nn,0,0);
-                }
-                }
-                print "O Banco ".$nome_banco. " foi inserido com sucesso!";
+            }
+        }
+            print "O Banco ".$nome_banco. " foi inserido com sucesso!";
     }
 
     public function gerarMvc(): void {
-        header('Content-Type: application/json');
+        $this->autenticacaoJsonRequired();
+
         $bancoService = new BancoService();
         $tabelaService = new TabelaService();
         $atributoService = new AtributoService();
-        $nomeProjeto = trim($_POST['nomeProjeto'] ?? 'meu_projeto');
+        $nomeProjeto = trim($_POST['nomeProjeto'] ?? '') ?: 'meu_projeto';
         $user = trim($_POST['usuario'] ?? '');
         $pass = trim($_POST['senha'] ?? '');
         $server = trim($_POST['servidor'] ?? 'localhost');
         $banco = trim($_POST['banco'] ?? '');
         $tabelasSelecionadas = $_POST['tabelas'] ?? [];
+
+        if (preg_match('/\s/', $nomeProjeto)) {
+            echo json_encode(['sucesso' => false, 'mensagem' => 'O nome do projeto não deve conter espaços.']);
+            return;
+        }
+
+        if (empty($banco)) {
+            echo json_encode(['sucesso' => false, 'mensagem' => 'Selecione um banco de dados antes de gerar o sistema.']);
+            return;
+        }
+
+        if (empty($tabelasSelecionadas)) {
+            echo json_encode(['sucesso' => false, 'mensagem' => 'Selecione ao menos uma tabela para gerar o sistema MVC.']);
+            return;
+        }
         
         $bancoSelecionado = $bancoService->getBancoById($banco);
+        if (!$bancoSelecionado) {
+            echo json_encode(['sucesso' => false, 'mensagem' => 'Banco de dados não encontrado.']);
+            return;
+        }
+
         $tabelas = $tabelaService->getTabelasByFk_banco($bancoSelecionado['id_banco']);
         $atributos = [];
         foreach ($tabelas as $tabela) {
             $atributos[] = $atributoService->getAtributosByFk_tabela($tabela->getId_tabela());
         }
-        // print_r($bancoSelecionado);
         if(!$bancoSelecionado){
             echo json_encode(['sucesso' => false, 'mensagem' => 'Banco de dados não encontrado.']);
             return;
@@ -140,106 +156,7 @@ class ProjetoController extends Controller{
             $pastaOutput = __DIR__ . '/../../public/temp/' . $nomeProjeto;
             $pastaApp = $pastaOutput . '/app';
 
-            $gerenciador = new GerenciadorGerador();
-
-            foreach ($tabelas as $tabela) {
-                
-                
-                
-    
-                // Desativado a geração direta no app/ do projeto ativo:
-                // $gerenciador->gerarTudo($tabela, $atributos, $chavePrimaria);
-
-                // Copiar também para a pasta de exportação ZIP
-                $geradorModel = new \app\tools\gerador\GeradorModel();
-                $geradorRepo = new \app\tools\gerador\GeradorRepositorio();
-                $geradorCtrl = new \app\tools\gerador\GeradorController();
-                $geradorView = new \app\tools\gerador\GeradorView();
-
-                $geradorModel->salvarModel($tabela, $atributos, $pastaApp . '/models');
-                $geradorRepo->salvarRepositorio($tabela, $atributos, 'id', $pastaApp . '/repositories');
-                $geradorCtrl->salvarController($tabela, $atributos, 'id', $pastaApp . '/controllers');
-                $geradorView->salvarViews($tabela, $atributos, 'id', $pastaApp . '/views');
-            }
-
-            // Criar arquivo .zip para download
-            $pastaZipDestino = __DIR__ . '/../../public/downloads';
-            if (!is_dir($pastaZipDestino)) {
-                mkdir($pastaZipDestino, 0777, true);
-            }
-            $arquivoZip = $pastaZipDestino . '/' . $nomeProjeto . '.zip';
-
-            $geradorZip = new GeradorZip();
-            $geradorZip->compactarPasta($pastaOutput, $arquivoZip);
-
-            // Apaga a pasta temporária de compilação após gerar o ZIP
-            $this->excluirDiretorioRecursivo($pastaOutput);
-
-            $downloadUrl = URL_BASE . '/projetos/downloadZip?file=' . urlencode($nomeProjeto . '.zip');
-
-            echo json_encode([
-                'sucesso' => true,
-                'mensagem' => 'Sistema MVC gerado com sucesso!',
-                'downloadUrl' => $downloadUrl
-            ]);
-        } catch (\Exception $e) {
-            echo json_encode(['sucesso' => false, 'mensagem' => $e->getMessage()]);
-        }
-    }
-
-    private function excluirDiretorioRecursivo(string $dir): void {
-        if (!file_exists($dir)) return;
-        $items = array_diff(scandir($dir), ['.', '..']);
-        foreach ($items as $item) {
-            $path = $dir . '/' . $item;
-            is_dir($path) ? $this->excluirDiretorioRecursivo($path) : unlink($path);
-        }
-        rmdir($dir);
-    }
-
-    public function downloadZip(): void {
-        $nomeZip = basename($_GET['file'] ?? '');
-        $caminhoZip = __DIR__ . '/../../public/downloads/' . $nomeZip;
-
-        $geradorZip = new GeradorZip();
-        $geradorZip->enviarDownload($caminhoZip, $nomeZip);
-    }
-
-    public function getTabelas(): void {
-        header('Content-Type: application/json');
-        $user = trim($_POST['usuario'] ?? '');
-        $pass = trim($_POST['senha'] ?? '');
-        $server = trim($_POST['servidor'] ?? 'localhost');
-        $banco = trim($_POST['banco'] ?? '');
-
-        try {
-            $tabelas = $this->projetoService->getTabelas("mysql:host=$server", $user, $pass, $banco);
-            echo json_encode(['sucesso' => true, 'tabelas' => $tabelas]);
-        } catch (\Exception $e) {
-            echo json_encode(['sucesso' => false, 'mensagem' => $e->getMessage()]);
-        }
-    }
-
-    public function gerarMvc(): void {
-        header('Content-Type: application/json');
-        $nomeProjeto = trim($_POST['nomeProjeto'] ?? 'meu_projeto');
-        $user = trim($_POST['usuario'] ?? '');
-        $pass = trim($_POST['senha'] ?? '');
-        $server = trim($_POST['servidor'] ?? 'localhost');
-        $banco = trim($_POST['banco'] ?? '');
-        $tabelasSelecionadas = $_POST['tabelas'] ?? [];
-
-        if (empty($banco) || empty($tabelasSelecionadas)) {
-            echo json_encode(['sucesso' => false, 'mensagem' => 'Selecione o banco de dados e ao menos uma tabela.']);
-            return;
-        }
-
-        try {
-            // Pasta temporária para compilar o projeto gerado
-            $pastaOutput = __DIR__ . '/../../public/temp/' . $nomeProjeto;
-            $pastaApp = $pastaOutput . '/app';
-
-            $gerenciador = new GerenciadorGerador();
+            $gerenciador = new \app\tools\gerador\GerenciadorGerador();
 
             foreach ($tabelasSelecionadas as $tabela) {
                 $colunasObj = $this->projetoService->getColunas("mysql:host=$server", $user, $pass, $banco, $tabela);
@@ -260,11 +177,13 @@ class ProjetoController extends Controller{
                 $geradorRepo = new \app\tools\gerador\GeradorRepositorio();
                 $geradorCtrl = new \app\tools\gerador\GeradorController();
                 $geradorView = new \app\tools\gerador\GeradorView();
+                $geradorCore = new \app\tools\gerador\GeradorCore();
 
                 $geradorModel->salvarModel($tabela, $atributos, $pastaApp . '/models');
                 $geradorRepo->salvarRepositorio($tabela, $atributos, $chavePrimaria, $pastaApp . '/repositories');
                 $geradorCtrl->salvarController($tabela, $atributos, $chavePrimaria, $pastaApp . '/controllers');
                 $geradorView->salvarViews($tabela, $atributos, $chavePrimaria, $pastaApp . '/views');
+                $geradorCore->salvarCore($pastaApp.'/core');
             }
 
             // Criar arquivo .zip para download
@@ -274,7 +193,7 @@ class ProjetoController extends Controller{
             }
             $arquivoZip = $pastaZipDestino . '/' . $nomeProjeto . '.zip';
 
-            $geradorZip = new GeradorZip();
+            $geradorZip = new \app\tools\gerador\GeradorZip();
             $geradorZip->compactarPasta($pastaOutput, $arquivoZip);
 
             // Apaga a pasta temporária de compilação após gerar o ZIP
@@ -306,19 +225,12 @@ class ProjetoController extends Controller{
         $nomeZip = basename($_GET['file'] ?? '');
         $caminhoZip = __DIR__ . '/../../public/downloads/' . $nomeZip;
 
-        $geradorZip = new GeradorZip();
+        $geradorZip = new \app\tools\gerador\GeradorZip();
         $geradorZip->enviarDownload($caminhoZip, $nomeZip);
     }
-
-
     public function index(): void {
         $this->autenticacaoRequired();
         $this->view('projetos/home');
-    }
-
-    public function configGlobal(): void {
-        $this->autenticacaoRequired();
-        $this->view('projetos/configGlobal');
     }
 
     public function guia(): void {
@@ -332,14 +244,11 @@ class ProjetoController extends Controller{
         $usuarioService = new UsuarioService();
         $bancoService = new BancoService();
         $usuario = $usuarioService->getUsuarioPorEmail($_SESSION['usuario_logado']->getEmail());
-        // print_r($usuario);
         $bancos = $bancoService->getBancoByUsuario($usuario->getIdUsuario());
-        // print_r($bancos);
         $bancoOpts = '';
         foreach($bancos as $banco){
             $bancoOpts .= '<option value="' . $banco['id_banco'] . '">' . $banco['nome_banco'] . '</option>';
         }
-        // print $bancoOpts;
         $this->view('projetos/mvcCreator', ['bancoOpts' => $bancoOpts]);
     }
 
@@ -386,7 +295,6 @@ class ProjetoController extends Controller{
         $banco  = $_POST['mvc-banco'];
         $this->obrigatorios($validador,$nome,$server,$user,$pass,$banco);
         $data = ["nome"=>$nome,"server"=>$server,"user"=>$user,"pass"=>$pass,'banco'=>$banco];
-        // print_r($_POST);
         $this->view("projetos/projeto_bools",$data);
     }
 
@@ -399,7 +307,6 @@ class ProjetoController extends Controller{
     }
 
     public function criar(){
-        // var_dump($_POST);
         $validador = new Validador();
         $nome   = trim($_POST['nome']);
         $server = trim($_POST['server']);

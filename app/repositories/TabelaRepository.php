@@ -23,12 +23,22 @@ class TabelaRepository{
         return $stm->execute();
     }
 
-    public function getTabelasByFk_banco($id_banco){
+    public function getTabelasByFk_banco($id_banco,$option = "DEFAULT"){
         $sql = "SELECT tabela.* FROM tabela WHERE tabela.fk_banco = ?";
         $stm = $this->conn->prepare($sql);
         $stm->execute([$id_banco]);
         $result = $stm->fetchAll(PDO::FETCH_ASSOC);
-        return $this->mapTabela($result);
+        switch(strtolower($option)){
+            case'prox_etapa':
+
+            return $id_banco;
+            
+            case 'default':
+            default:
+                
+            return $this->mapTabela($result);
+        }
+
     }
 
     public function getTabelaEspecifica($nome_tabela,$fk_banco){

@@ -45,6 +45,10 @@
     display: block;
 }
 
+#phpmeuamigo #sb-titulo-PHPMeuAmigo {
+    display: block;
+}
+
 .mvc-etapa-wrapper {
     max-width: 900px;
     margin: 0 auto;

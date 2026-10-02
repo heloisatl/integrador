@@ -7,6 +7,8 @@ class Usuario {
     private string $nome;
     private string $email;
     private string $senhaUsuario;
+    private string $usuarioBanco;
+    private string $servidor;
     private string $tipoPerfil;
 
     public function __construct(
@@ -14,14 +16,16 @@ class Usuario {
         string $nome,
         string $email,
         string $senhaUsuario,
-        string $tipoPerfil
+        string $usuarioBanco = '',
+        string $servidor = 'localhost',
+        string $tipoPerfil = 'usuario'
     ) {
         $this->idUsuario    = $idUsuario;
         $this->nome         = $nome;
         $this->email        = $email;
         $this->senhaUsuario = $senhaUsuario;
-        $this->usuarioBanco = $usuarioBanco ?? '';
-        $this->servidor     = $servidor ?? 'localhost';
+        $this->usuarioBanco = $usuarioBanco;
+        $this->servidor     = $servidor;
         $this->tipoPerfil   = $tipoPerfil;
     }
 
@@ -42,11 +46,11 @@ class Usuario {
     }
 
     public function getUsuarioBanco(): string {
-        return $this->usuarioBanco ?? '';
+        return $this->usuarioBanco;
     }
 
     public function getServidor(): string {
-        return $this->servidor ?? 'localhost';
+        return $this->servidor;
     }
 
     public function getTipoPerfil(): string {
@@ -65,3 +69,4 @@ class Usuario {
         );
     }
 }
+

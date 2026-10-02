@@ -80,9 +80,6 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
             Início
         </a>
 
-        <a href="<?= URL_BASE ?>/projetos/config-global" class="topbar-item <?php echo verificarAtivo('config-global', $paginaAtual); ?>">
-            Config. Global
-        </a>
         <a href="<?= URL_BASE ?>/projetos/mvc-creator" class="topbar-item <?php echo verificarAtivo('mvc-creator', $paginaAtual); ?>">
             MVC Creator
         </a>
@@ -99,7 +96,7 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
         <a href="<?= URL_BASE ?>/projetos/saida" class="topbar-item <?php echo verificarAtivo('saida', $paginaAtual); ?>">
             Saída </a>
 
-        <a href="<?= URL_BASE ?>/projetos/saida" class="topbar-item <?php echo verificarAtivo('phpmeuamigo', $paginaAtual); ?>">
+        <a href="<?= URL_BASE ?>/projetos/phpmeuamigo" class="topbar-item <?php echo verificarAtivo('phpmeuamigo', $paginaAtual); ?>">
             PHPMeuAmigo </a>
 
         <?php if (defined('URL_BASE') && usuarioEhAdmin()): ?>
@@ -137,6 +134,9 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
 
 
                     <?php if (isset($_SESSION['usuario_logado'])): ?>
+                        <a href="<?= URL_BASE ?>/perfil/editar" class="profile-dropdown-item">
+                            <i class="bi bi-pencil-square" aria-hidden="true"></i> Editar Perfil
+                        </a>
                         <a href="<?= URL_BASE ?>/logout" onclick="desfazSessionStorage()" class="profile-dropdown-item profile-dropdown-danger">Sair</a>
                     <?php else: ?>
                         <a href="<?= URL_BASE ?>/login" class="profile-dropdown-item login-link">
@@ -171,10 +171,6 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
 
             <a href="<?= URL_BASE ?>/projetos" class="sb-item <?php echo verificarAtivo('projetos', $paginaAtual); ?>">
                 Visão Geral
-            </a>
-
-            <a href="<?= URL_BASE ?>/projetos/config-global" class="sb-item <?php echo verificarAtivo('config-global', $paginaAtual); ?>">
-                Config. Globais
             </a>
 
             <a href="<?= URL_BASE ?>/projetos/guia" class="sb-item <?php echo verificarAtivo('guia', $paginaAtual); ?>">
@@ -281,6 +277,15 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
 
             <a href="<?= URL_BASE ?>/projetos/saida?tab=baixar" class="sb-item <?php echo verificarAtivo('saida', $paginaAtual, 'tab', 'baixar'); ?>"> <span class="sb-icon"></span> Baixar Tudo
             </a>
+        </div>
+
+        <!-- PHPMeuAmigo -->
+        <div id="sb-titulo-PHPMeuAmigo" class="sb-section">
+            <div class="sb-label">PHPMeuAmigo</div>
+            <a href="<?= URL_BASE ?>/projetos/phpmeuamigo" class="sb-item <?php echo verificarAtivo('phpmeuamigo', $paginaAtual); ?>">
+                <span class="sb-icon"></span> Modelador de Banco
+            </a>
+        </div>
     </aside>
 
   <script src="<?= URL_BASE ?>/assets/js/deslogar.js"></script>
