@@ -85,9 +85,26 @@ class BancoRepository{
     }
 
     public function delete($id_banco){
+        /**
+         * Como funciona e o que faz:
+         * 1. A tabela `atributo` possui uma constraint de auto-relacionamento (`fk_atributo_atributo`) 
+         *    configurada com 'ON DELETE RESTRICT'.
+         * 2. Quando o banco é excluído, o MySQL tenta excluir em cascata: banco -> tabela -> atributo.
+         * 3. Se houver algum atributo referenciando outro (ex: Foreign Key apontando para uma Primary Key),
+         *    o MySQL bloqueia a exclusão com o erro 1451 (Integrity constraint violation).
+         * 4. Para evitar esse bloqueio, desvinculamos previamente as Foreign Keys (`fk_atributo = NULL`)
+         *    de todos os atributos pertencentes às tabelas deste banco. Com isso, os registros ficam livres
+         *    para que o MySQL realize a exclusão em cascata completa e com total integridade.
+         */
+        $sqlCleanFks = "UPDATE atributo SET fk_atributo = NULL 
+                        WHERE fk_tabela IN (SELECT id_tabela FROM tabela WHERE fk_banco = :id_banco)";
+        $stmClean = $this->conn->prepare($sqlCleanFks);
+        $stmClean->bindValue(':id_banco', $id_banco, PDO::PARAM_INT);
+        $stmClean->execute();
+
         $sql = "DELETE FROM banco WHERE id_banco = :id_banco;";
         $stm = $this->conn->prepare($sql);
-        $stm->bindValue(':id_banco', $id_banco);
+        $stm->bindValue(':id_banco', $id_banco, PDO::PARAM_INT);
         return $stm->execute();
     }
 }

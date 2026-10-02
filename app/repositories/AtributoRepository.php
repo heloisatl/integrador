@@ -86,9 +86,19 @@ class AtributoRepository{
     }
 
     public function delete($id_atributo){
+        /**
+         * Como funciona e o que faz:
+         * 1. Desvincula qualquer atributo filho que referencie este atributo como Foreign Key (`fk_atributo = NULL`).
+         * 2. Evita o erro 1451 ao excluir atributos que sirvam de chave primária para outras tabelas.
+         */
+        $sqlClean = "UPDATE atributo SET fk_atributo = NULL WHERE fk_atributo = :id_atributo;";
+        $stmClean = $this->conn->prepare($sqlClean);
+        $stmClean->bindValue(':id_atributo', $id_atributo, PDO::PARAM_INT);
+        $stmClean->execute();
+
         $sql = "DELETE FROM atributo WHERE id_atributo = :id_atributo;";
         $stm = $this->conn->prepare($sql);
-        $stm->bindValue(':id_atributo', $id_atributo);
+        $stm->bindValue(':id_atributo', $id_atributo, PDO::PARAM_INT);
         return $stm->execute();
     }
 
