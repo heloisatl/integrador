@@ -1,9 +1,31 @@
 document.addEventListener("DOMContentLoaded", function () {
-    salvarConfiguracoesSession();
     restaurarValoresFormulario();
     renderizarTabelasSeExistirem();
     checarCamadas();
     carregarBanco();
+    salvarConfiguracoesSession();
+
+    let banco = document.getElementById("banco");
+    if(banco){
+        banco.addEventListener("change", function () {
+            let nomeProjeto = document.getElementById("nomeProjeto") ? document.getElementById("nomeProjeto").value : "";
+            let srv = document.getElementById("servidor") ? document.getElementById("servidor").value : "localhost";
+            let usr = document.getElementById("usuario") ? document.getElementById("usuario").value : "root";
+            let pass = document.getElementById("senha") ? document.getElementById("senha").value : "";
+            let banco = document.getElementById("banco") ? document.getElementById("banco").value : "";
+
+            if (nomeProjeto) sessionStorage.setItem("mvc_nomeProjeto", nomeProjeto);
+            if (srv) sessionStorage.setItem("mvc_servidor", srv);
+            if (usr) sessionStorage.setItem("mvc_usuario", usr);
+            if (pass !== undefined) sessionStorage.setItem("mvc_senha", pass);
+            if (banco){
+                sessionStorage.setItem("mvc_banco", banco);
+            }else{
+                sessionStorage.removeItem("mvc_banco");
+            }
+            carregarTabelas(false);
+        });
+    }
 });
 
 globalThis.URL_BASE = new URL("../..", document.currentScript.src).href.replace(/\/$/, "");
@@ -21,6 +43,7 @@ function salvarConfiguracoesSession() {
     if (usr) sessionStorage.setItem("mvc_usuario", usr);
     if (pass !== undefined) sessionStorage.setItem("mvc_senha", pass);
     if (banco) sessionStorage.setItem("mvc_banco", banco);
+    if (sessionStorage.getItem("mvc_tabelas")=="[]") sessionStorage.removeItem("mvc_banco");
     carregarTabelas(false);
 }
 
@@ -55,9 +78,11 @@ function carregarBanco() {
         if (xhr.readyState == 4 && xhr.status == 200) {
             let elBanco = document.getElementById("banco");
             if (elBanco) {
-                elBanco.innerHTML = xhr.responseText;
+                elBanco.innerHTML = "<option value=''>Selecione um banco</option>" + xhr.responseText;
+                
                 if (sessionStorage.getItem("mvc_banco")) {
                     elBanco.value = sessionStorage.getItem("mvc_banco");
+                    sessionStorage.setItem("mvc_banco", elBanco.value);
                 }
             }
         }
@@ -83,23 +108,17 @@ function salvarSessionCamadas(){
     for(const element of camadas){
         !element.checked ? camadasDesativadas.push({"gerador": element.value,"checked":element.checked}) : null;
     }
-    console.log(camadas);
-    console.log(camadasDesativadas);
+    // console.log(camadas);
+    // console.log(camadasDesativadas);
     sessionStorage.setItem("mvc_camadasDisabled",JSON.stringify(camadasDesativadas));
 }
 
 function carregarTabelas(salvarConfig = true) {
     salvarConfig ? salvarConfiguracoesSession() : null;
     sessionStorage.getItem('mvc_tabelasDisabled')==null ? sessionStorage.setItem('mvc_tabelasDisabled',[]) :  null ;
-    let usr =  "root";
-    let pass = "bancodedados";
-    let srv = "localhost";
     let banco = sessionStorage.getItem("mvc_banco") || (document.getElementById("banco") ? document.getElementById("banco").value : "");
 
     const data = new FormData();
-    data.append('usuario', usr);
-    data.append('senha', pass);
-    data.append('servidor', srv);
     data.append('banco', banco);
 
     let xhr = new XMLHttpRequest();
@@ -141,10 +160,10 @@ function renderizarTabelasSeExistirem() {
     if (!container) return;
 
     let tabelasJson = sessionStorage.getItem("mvc_tabelas");
-    if (tabelasJson) {
+    if (sessionStorage.getItem("mvc_banco")) {
         try {
             let tabelas = JSON.parse(tabelasJson);
-            console.log(tabelas);
+            // console.log(tabelas);
             if (tabelas.length === 0 ) {
                 container.innerHTML = '<p style="height:4vh;display:flex;align-items:center;background-color: #ff4949;color: #320000;border-color: #140000;border-radius: 8px;border-width:2px;border-style: solid;">Nenhuma tabela encontrada neste banco de dados.</p>';
                 return;
@@ -172,7 +191,7 @@ function renderizarTabelasSeExistirem() {
 }
 
 function executarGeracaoMvc() {
-    const URL_BASE = "http://localhost:8081"; // Ajuste conforme necessário
+    const URL_BASE = "http://localhost:8080"; // Ajuste conforme necessário
 
     let usr = sessionStorage.getItem("mvc_usuario") || "root";
     let pass = sessionStorage.getItem("mvc_senha") || "";

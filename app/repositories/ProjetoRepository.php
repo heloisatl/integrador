@@ -14,11 +14,11 @@ class ProjetoRepository{
 
 
     public function insert(Projeto $projeto){
-        $sql = "INSERT INTO `mvc_creator`.`projeto`(id_usuario,fk_banco,fk_estilo,nome_projeto,data_criacao,status_permanencia,caminho_armazenamento,comentarios,views,ultimo_download)
+        $sql = "INSERT INTO `mvc_creator`.`projeto`(id_usuario,fk_banco,fk_estilo,nome_projeto,data_criacao,prazo_de_vida,caminho_armazenamento,comentarios,views,ultimo_download)
          VALUES (?,?,?,?,?,?,?,?,?,?);";
         $stm = $this->conn->prepare($sql);
-
-        return $stm->execute($this->projetoParams($projeto));
+        $stm->execute($this->projetoParams($projeto));
+        return $this->conn->lastInsertId() ? $this->conn->lastInsertId() : false;
     }
 
     public function getById(int $id){

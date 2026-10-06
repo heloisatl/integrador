@@ -74,13 +74,8 @@ PHP;
 
     /**
      * Gera a view de Cadastro (create.php)
-     *
-     * @param Tabela $tabela
-     * @param array $atributos
-     * @param string $chavePrimaria
-     * @return string
      */
-    public function gerarCreateView(Tabela $tabela, array $atributos, string $chavePrimaria = 'id'): string {
+    public function gerarCreateView(Tabela $tabela, array $atributos): string {
         $nomeClasse = $tabela->getNome_tabelaUC();
         $varPlural = strtolower($tabela->getNome_tabela()) . 's';
 
@@ -132,13 +127,7 @@ PHP;
             foreach($atributo as $campo){
                 if ($campo->getPk()) continue;
                 $label = $campo->getNome_atributo();
-                $camposForm .= <<<HTML
-                    <div class="form-group">
-                        <label for="{$campo->getNome_atributo()}">{$label}</label>
-                        <input type="text" name="{$campo->getNome_atributo()}" id="{$campo->getNome_atributo()}" value="<?= htmlspecialchars(\${$varSingular}['{$campo->getNome_atributo()}'] ?? '') ?>" class="form-control" required>
-                    </div>
-
-                HTML;
+                $camposForm .= $atributo->getInput();
 
             }
         }

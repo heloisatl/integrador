@@ -132,40 +132,61 @@ class ProjetoController extends Controller{
             return;
         }
 
-        $tabelas = $tabelaService->getTabelasByFk_banco($bancoSelecionado['id_banco']);
-        $atributos = [];
-        foreach ($tabelas as $tabela) {
-            $atributos[] = $atributoService->getAtributosByFk_tabela($tabela->getId_tabela());
-           
-        }
-        if(!$bancoSelecionado){
-            echo json_encode(['sucesso' => false, 'mensagem' => 'Banco de dados não encontrado.']);
+        if (empty($_SESSION['usuario_logado'])) {
+            echo json_encode(['sucesso' => false, 'mensagem' => 'Sessão expirada. Faça login novamente.']);
             return;
         }
 
-        // if (empty($banco) || empty($tabelasSelecionadas)) {
-        //     echo json_encode(['sucesso' => false, 'mensagem' => 'Selecione o banco de dados e ao menos uma tabela.']);
-        //     return;
-        // }
-        
+        $projeto = new Projeto(
+            $_SESSION['usuario_logado']->getIdUsuario(),
+            (int) $bancoSelecionado['id_banco'],
+            null,
+            $nomeProjeto,
+            date('Y-m-d H:i:s'),
+            ['comentarios' => 0, 'views' => 0],
+            null
+        );
+
+        $resultadoInsert = $this->projetoService->insert($projeto);
+        if (!$resultadoInsert) {
+            echo json_encode(['sucesso' => false, 'mensagem' => 'Não foi possível salvar o projeto no banco de dados.']);
+            return;
+        }
+
+        $tabelas = $tabelaService->getTabelasByFk_banco($bancoSelecionado['id_banco']);
+        $pastaOutput = __DIR__ . '/../projetos/temp/' . $nomeProjeto;
+        if(!is_dir($pastaOutput)){
+            mkdir($pastaOutput, 0755, true);
+        }
+        $pastaApp = $pastaOutput . '/app';
+        if(!is_dir($pastaApp)){
+            mkdir($pastaApp, 0755, true);
+        }
+        $pastaPublic = $pastaOutput . '/public';
+        if(!is_dir($pastaPublic)){
+            mkdir($pastaPublic, 0755, true);
+        }
+        $nomeZip = $nomeProjeto .'-' . $resultadoInsert .'.zip';
+        $pastaDownloads = __DIR__ . '/../projetos/downloads/';
+        if(!is_dir($pastaDownloads)){
+            mkdir($pastaDownloads, 0755, true);
+        }
+        $arquivoZip = $pastaDownloads . $nomeZip;
         try {
-            // Pasta temporária para compilar o projeto gerado
-            $pastaOutput = __DIR__ . '/../../public/temp/' . $nomeProjeto;
-            $pastaApp = $pastaOutput . '/app';
+            
 
             $gerenciador = new \app\tools\gerador\GerenciadorGerador();
             
             foreach ($tabelas as $tabela) {
-                $colunasObj = $this->projetoService->getColunas("mysql:host=".$bancoSelecionado['host'].":".$bancoSelecionado['porta'], $bancoSelecionado['usuario_banco'], $bancoSelecionado['senha_banco'], $bancoSelecionado['nome_banco'], $tabela->getNome_tabela());
-                $atributos = array_column($colunasObj, 'Field');
-                $chavePrimaria = 'id';
-                foreach ($colunasObj as $col) {
-                    if (isset($col['Key']) && $col['Key'] === 'PRI') {
-                        $chavePrimaria = $col['Field'];
-                        break;
+                $atributos = $atributoService->getAtributosByFk_tabela($tabela->getId_tabela());
+                foreach($atributos as $key => $att){
+                   
+                    if($att->getPk()){
+                        $chavePrimaria = $att->getNome_atributo();
+                        break ; // Sai dos dois loops
                     }
+                    
                 }
-
                 // Desativado a geração direta no app/ do projeto ativo:
                 // $gerenciador->gerarTudo($tabela, $atributos, $chavePrimaria);
 
@@ -175,29 +196,27 @@ class ProjetoController extends Controller{
                 $geradorCtrl = new \app\tools\gerador\GeradorController();
                 $geradorView = new \app\tools\gerador\GeradorView();
                 $geradorCore = new \app\tools\gerador\GeradorCore();
+                $geradorIndex = new \app\tools\gerador\geradorIndex();
+                $geradorConfig = new \app\tools\gerador\GeradorConfig();
 
                 $geradorModel->salvarModel($tabela, $atributos, $pastaApp . '/models');
                 $geradorRepo->salvarRepositorio($tabela, $atributos, $chavePrimaria, $pastaApp . '/repositories');
                 $geradorCtrl->salvarController($tabela, $atributos, $chavePrimaria, $pastaApp . '/controllers');
                 $geradorView->salvarViews($tabela, $atributos, $chavePrimaria, $pastaApp . '/views');
                 $geradorCore->salvarCore($pastaApp.'/core');
+
             }
             
+            $geradorIndex->salvarIndex($tabelas, $pastaPublic);
 
             // Criar arquivo .zip para download
-            $pastaZipDestino = __DIR__ . '/../../public/downloads';
-            if (!is_dir($pastaZipDestino)) {
-                mkdir($pastaZipDestino, 0777, true);
-            }
-            $arquivoZip = $pastaZipDestino . '/' . $nomeProjeto . '.zip';
-
             $geradorZip = new \app\tools\gerador\GeradorZip();
             $geradorZip->compactarPasta($pastaOutput, $arquivoZip);
 
             // Apaga a pasta temporária de compilação após gerar o ZIP
             $this->excluirDiretorioRecursivo($pastaOutput);
 
-            $downloadUrl = URL_BASE . '/projetos/downloadZip?file=' . urlencode($nomeProjeto . '.zip');
+            $downloadUrl = URL_BASE . '/projetos/downloadZip?file=' . urlencode($nomeZip);
 
             echo json_encode([
                 'sucesso' => true,
@@ -221,8 +240,7 @@ class ProjetoController extends Controller{
 
     public function downloadZip(): void {
         $nomeZip = basename($_GET['file'] ?? '');
-        $caminhoZip = __DIR__ . '/../../public/downloads/' . $nomeZip;
-
+        $caminhoZip = __DIR__ . '/../projetos/downloads/' . $nomeZip;   
         $geradorZip = new \app\tools\gerador\GeradorZip();
         $geradorZip->enviarDownload($caminhoZip, $nomeZip);
     }

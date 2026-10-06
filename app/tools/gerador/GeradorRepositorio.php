@@ -7,43 +7,39 @@ use app\models\Atributo;
 class GeradorRepositorio {
     /**
      * Gera o repositório/DAO respeitando ConnectionFactory e o namespace app\repositories.
-     *
-     * @param Tabela $tabela
-     * @param array $atributos
-     * @param string $chavePrimaria
-     * @return string
      */
-    public function gerarRepositorio(Tabela $tabela, array $atributos, string $chavePrimaria = 'id'): string {
+    public function gerarRepositorio(Tabela $tabela, array $atributos): string {
         $nomeClasse = $tabela->getNome_tabelaUC();
         $nomeRepositorio = "{$nomeClasse}Repository";
-
+        $campos = [];
         // Filtra atributos excluindo a chave primária para inserção
-        foreach ($atributos as $key => $atributo) {
-            foreach($atributo as $att){
-                if ($att->getPK()) {
-                    $chavePrimaria = $att->getNome_atributo();
-                    unset($atributos[$key]);
-                }
+        foreach ($atributos as $key => $att) {
+   
+            if($att->getPk()){
+                $chavePrimaria = $att->getNome_atributo();
+                unset($atributos[$key]);
+            }else{
+                $campos[] = $att->getNome_atributo();
             }
+            
         }
-        $camposInserir = array_values(array_filter($atributos));
+        $camposInserir = array_values(array_filter($campos));
         $sqlCols = implode(', ', $camposInserir);
         $placeholders = implode(', ', array_fill(0, count($camposInserir), '?'));
 
         $atribuicoesMetodos = "";
         $vetAtributos = [];
-        foreach ($camposInserir as $campo) {
+        $setCampos = [];
+        foreach ($atributos as $campo) {
             $metodo = ucfirst($campo->getNome_atributo());
             $atribuicoesMetodos .= "        \${$campo->getNome_atributo()} = \$obj->get{$metodo}();\n";
             $vetAtributos[] = "\${$campo->getNome_atributo()}";
-        }
-        $atributosParams = implode(', ', $vetAtributos);
-
-        $setCampos = [];
-        foreach ($camposInserir as $campo) {
             $setCampos[] = "{$campo->getNome_atributo()} = ?";
         }
+        $atributosParams = implode(', ', $vetAtributos);
         $sqlSet = implode(', ', $setCampos);
+
+        
 
         return <<<PHP
 <?php
