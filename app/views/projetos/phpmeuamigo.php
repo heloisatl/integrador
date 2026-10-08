@@ -1,7 +1,9 @@
-<?php
-include_once(__DIR__ . "/../include/head.php");
-include_once(__DIR__ . "/../include/navigation.php");
-?>
+<div id="phpmeuamigo">
+
+    <?php
+    include_once(__DIR__ . "/../include/head.php");
+    include_once(__DIR__ . "/../include/navigation.php");
+    ?>
 
     <!-- Estilos de formulários globais e do PHPmeuamigo -->
     <link rel="stylesheet" href="<?= URL_BASE ?>/assets/css/form-styles.css">
@@ -10,7 +12,7 @@ include_once(__DIR__ . "/../include/navigation.php");
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
 
     <div class="phpma-container">
-
+        
         <!-- Cabeçalho da Página (DevStudio Identity) -->
         <header class="phpma-page-header">
             <div>
@@ -19,10 +21,7 @@ include_once(__DIR__ . "/../include/navigation.php");
                 </h2>
             </div>
 
-            <div style="display:flex; gap:10px;">
-                <button type="button" id="phpma-btn-import-sql" class="btn btn-secondary" onclick="window.phpmaOpenImportModal()">
-                    <i class="bi bi-download"></i> Importar Banco Local
-                </button>
+            <div>
                 <button type="button" id="phpma-btn-novo-banco" class="btn btn-primary">
                     <i class="bi bi-plus-lg"></i> Novo Banco
                 </button>
@@ -40,12 +39,9 @@ include_once(__DIR__ . "/../include/navigation.php");
                 </select>
             </div>
 
-            <div style="display:flex; gap:8px;">
+            <div>
                 <button type="button" id="phpma-btn-config-banco" class="btn btn-secondary" title="Configurações do Banco (Host, Usuário, Senha)">
-                    <i class="bi bi-gear-fill"></i> Configurações
-                </button>
-                <button type="button" id="phpma-btn-excluir-banco" class="btn btn-secondary" style="color:#ff6b6b; border-color:rgba(255,107,107,0.3);" onclick="window.phpmaDeleteBancoActive()" title="Excluir Banco de Dados do DevStudio">
-                    <i class="bi bi-trash"></i> Excluir Banco
+                    <i class="bi bi-gear-fill"></i> Configurações do Banco
                 </button>
             </div>
         </div>
@@ -88,7 +84,7 @@ include_once(__DIR__ . "/../include/navigation.php");
             </aside>
 
             <!-- Painel Principal: Atributos (Entidade: ATRIBUTO) -->
-            <section class="phpma-card">
+            <main class="phpma-card">
                 
                 <div class="phpma-table-editor-header">
                     <div class="phpma-table-name-field">
@@ -125,12 +121,7 @@ include_once(__DIR__ . "/../include/navigation.php");
                     </table>
                 </div>
 
-            </section>
-        </div>
-
-        <!-- Aviso Permanente de Modelagem (DevStudio Identity - Tom #5B6AF0) -->
-        <div class="phpma-aviso-permanente" role="note">
-            <strong>Ambiente de Modelagem do DevStudio:</strong> Ao criar ou importar um banco de dados, a estrutura de tabelas e atributos é armazenada no modelo do seu projeto. Quaisquer alterações realizadas aqui (criação, edição ou exclusão de tabelas e campos) <strong>não afetarão</strong> o banco de dados MySQL original da sua máquina local.
+            </main>
         </div>
 
     </div>
@@ -143,13 +134,6 @@ include_once(__DIR__ . "/../include/navigation.php");
                 <button type="button" class="btn-icon-danger" onclick="window.phpmaCloseModal()">
                     <i class="bi bi-x-lg"></i>
                 </button>
-            </div>
-
-            <!-- Alerta inline interno do modal -->
-            <div id="phpma-modal-banco-alert" class="phpma-inline-alert" style="display: none; margin-bottom: 16px;">
-                <div class="phpma-inline-alert-body">
-                    <div class="phpma-inline-alert-msg"></div>
-                </div>
             </div>
 
             <div class="phpma-grid-fields">

@@ -1,0 +1,72 @@
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+form {
+    background-color: black;
+    color: #cef8ff;
+    border-color: #cef8ff;
+    padding: 20px 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px #cef8ff;
+    width: 300px;
+}
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+label {
+    display: block;
+    margin-bottom: 5px;
+    margin-top: 15px;
+}
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+}
+button {
+    margin-top: 20px;
+    width: 100%;
+    padding: 10px;
+    background-color: rgb(34, 34, 34);
+    border: none;
+    color: #cef8ff;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+button:hover {
+    background-color: #1a1a1a;
+}
+.erro {
+    background-color: #ffe0e0;
+    color: #a70000;
+    border: 1px solid #ffaaaa;
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+.sucesso{
+    background-color: #00ffbb;
+    color:  rgb(1, 32, 26);
+    border: 1px solid #79ffa8;
+    padding: 10px 0px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+.mvc{
+    color: rgb(223, 0, 0);
+}

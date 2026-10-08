@@ -7,11 +7,6 @@ use app\models\Atributo;
 class GeradorController {
     /**
      * Gera a classe Controller extendendo app\core\Controller e namespace app\controllers.
-     *
-     * @param string $nomeTabela
-     * @param array $atributos
-     * @param string $chavePrimaria
-     * @return string
      */
     public function gerarController(Tabela $tabela, array $atributos, string $chavePrimaria = 'id'): string {
         $nomeClasse = ucfirst($tabela->getNome_tabelaUC());
@@ -67,7 +62,7 @@ class {$nomeController} extends Controller {
     }
 
     public function editar(): void {
-        if (!isset(\$_GET['id'])) {
+        if (!\$this->repository->buscarPorId(\$id)) {
             \$this->redirect(URL_BASE . '/{$varPlural}');
         }
 
@@ -110,12 +105,6 @@ PHP;
 
     /**
      * Salva o Controller em app/controllers/
-     *
-     * @param Tabela $tabela
-     * @param array $atributos
-     * @param string $chavePrimaria
-     * @param string $caminhoBase
-     * @return string
      */
     public function salvarController(Tabela $tabela, array $atributos, string $chavePrimaria = 'id', string $caminhoBase = __DIR__ . '/../../controllers'): string {
         $nomeClasse = ucfirst($tabela->getNome_tabelaUC());

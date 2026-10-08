@@ -30,8 +30,8 @@ class TabelaService{
     }
     
 
-    public function getTabelasByFk_banco($id_banco){
-        $result = $this->tabela_repository->getTabelasByFk_banco($id_banco);
+    public function getTabelasByFk_banco($id_banco,$option = "DEFAULT"){
+        $result = $this->tabela_repository->getTabelasByFk_banco($id_banco,$option);
         return $result;
     }
 
