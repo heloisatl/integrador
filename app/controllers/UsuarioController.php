@@ -99,4 +99,19 @@ class UsuarioController extends Controller {
             $this->redirect(URL_BASE . '/usuarios/editar?id=' . $id);
         }
     }
+
+    public function perfil(): void {
+        $dados = [];
+        if (isset($_SESSION['usuario_logado']) && method_exists($_SESSION['usuario_logado'], 'getNome')) {
+            $dados['nomeExibicao'] = strtoupper($_SESSION['usuario_logado']->getNome());
+            $dados['nomeUsuario']  = $_SESSION['usuario_logado']->getNome();
+            $dados['emailUsuario'] = $_SESSION['usuario_logado']->getEmail();
+        } else {
+            $dados['nomeExibicao'] = 'FULANO';
+            $dados['nomeUsuario']  = 'Fulano da Silva';
+            $dados['emailUsuario'] = 'fulano@devstudio.com';
+        }
+
+        $this->view('usuarios/perfil', $dados);
+    }
 }

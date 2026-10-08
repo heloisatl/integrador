@@ -46,6 +46,13 @@
             </div>
         </div>
 
+        <!-- Caixa de Alerta / Mensagens Inline do Sistema (DevStudio - Tom #5B6AF0) -->
+        <div id="phpma-inline-alert" class="phpma-inline-alert" style="display: none;" role="alert">
+            <div class="phpma-inline-alert-body">
+                <div id="phpma-alert-msg" class="phpma-inline-alert-msg"></div>
+            </div>
+        </div>
+
         <!-- Layout em Grid (Sidebar de Tabelas + Editor de Atributos) -->
         <div class="phpma-main-layout">
             
@@ -58,8 +65,17 @@
                     </button>
                 </div>
 
-                <div>
-                    <input type="text" id="phpma-search-table" class="phpma-search-input" placeholder="Filtrar tabelas...">
+                <!-- Formulário inline padronizado para criação de tabela (substitui o prompt) -->
+                <div id="phpma-wrapper-nova-tabela" style="display: none; padding: 4px 0 8px;">
+                    <div style="display: flex; gap: 6px; align-items: center;">
+                        <input type="text" id="phpma-input-nova-tabela" class="phpma-search-input" placeholder="nome_tabela" style="font-size: 12px; padding: 6px 10px;">
+                        <button type="button" id="phpma-btn-confirm-nova-tabela" class="btn btn-primary" style="padding: 5px 10px; font-size: 12px;" title="Confirmar Criação">
+                            <i class="bi bi-check-lg"></i>
+                        </button>
+                        <button type="button" id="phpma-btn-cancel-nova-tabela" class="btn btn-secondary" style="padding: 5px 8px; font-size: 12px;" title="Cancelar">
+                            <i class="bi bi-x-lg"></i>
+                        </button>
+                    </div>
                 </div>
 
                 <div id="phpma-list-tabelas" class="phpma-tabelas-list">
@@ -154,9 +170,69 @@
         </div>
     </div>
 
+    <!-- Modal de Importação de Banco de Dados Local (MySQL Local) -->
+    <div id="phpma-modal-import-sql" class="phpma-modal-overlay">
+        <div class="phpma-modal-content">
+            <div class="phpma-modal-head">
+                <h3><i class="bi bi-hdd-network" style="color: var(--accent);"></i> Importar Banco de Dados Local</h3>
+                <button type="button" class="btn-icon-danger" onclick="window.phpmaCloseImportModal()">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+
+            <!-- Alerta inline interno do modal de importação -->
+            <div id="phpma-modal-import-alert" class="phpma-inline-alert" style="display: none; margin-bottom: 16px;">
+                <div class="phpma-inline-alert-body">
+                    <div class="phpma-inline-alert-msg"></div>
+                </div>
+            </div>
+
+            <div class="phpma-grid-fields">
+                <div class="form-group">
+                    <label for="modal-input-import-host">Host</label>
+                    <input type="text" id="modal-input-import-host" value="localhost" placeholder="localhost">
+                </div>
+
+                <div class="form-group">
+                    <label for="modal-input-import-porta">Porta</label>
+                    <input type="text" id="modal-input-import-porta" value="3306" placeholder="3306">
+                </div>
+
+                <div class="form-group">
+                    <label for="modal-input-import-usr">Usuário</label>
+                    <input type="text" id="modal-input-import-usr" value="root" placeholder="root">
+                </div>
+
+                <div class="form-group">
+                    <label for="modal-input-import-pass">Senha</label>
+                    <input type="password" id="modal-input-import-pass" placeholder="••••••••">
+                </div>
+
+                <div class="form-group field-full">
+                    <button type="button" id="phpma-btn-conectar-local" class="btn btn-secondary" style="width:100%;">
+                        <i class="bi bi-arrow-repeat"></i> Conectar e Listar Bancos da Máquina
+                    </button>
+                </div>
+
+                <div id="phpma-wrapper-select-bancos-locais" class="form-group field-full" style="display: none;">
+                    <label for="modal-select-banco-local"><i class="bi bi-database-check" style="color: var(--accent);"></i> Selecione o Banco de Dados para Importar:</label>
+                    <select id="modal-select-banco-local" class="phpma-select-banco" style="width:100%; font-size:14px; padding:8px;">
+                        <!-- Preenchido dinamicamente via JS -->
+                    </select>
+                </div>
+            </div>
+
+            <div class="phpma-modal-foot">
+                <button type="button" class="btn btn-secondary" onclick="window.phpmaCloseImportModal()">Cancelar</button>
+                <button type="button" id="phpma-btn-submit-import-local" class="btn btn-primary" disabled onclick="window.phpmaExecutarImportacaoLocal()">
+                    <i class="bi bi-download"></i> Importar Banco Selecionado
+                </button>
+            </div>
+        </div>
+    </div>
+
     <?php require_once __DIR__ . '/../include/footer.php'; ?>
     </main>
-</div>
 </div>
 
 <!-- Script de interatividade visual -->

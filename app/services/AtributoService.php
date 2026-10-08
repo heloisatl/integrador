@@ -21,8 +21,6 @@ class AtributoService{
             $result = $this->atributo_repository->insert($fk_tabela,$fk_atributo,$nome_atributo,$tipo,$PK,$NN,$AI,$UQ);
         }
 
-        
-
         return $result;
     }
 
@@ -50,5 +48,19 @@ class AtributoService{
         return $result;
     }
 
+    public function getAtributosRawByFk_tabela($id_tabela){
+        return $this->atributo_repository->getAtributosRawByFk_tabela($id_tabela);
+    }
 
+    public function update($id_atributo, $fk_atributo, $nome_atributo, $tipo, $PK, $NN, $AI, $UQ){
+        return $this->atributo_repository->update($id_atributo, $fk_atributo, $nome_atributo, $tipo, $PK, $NN, $AI, $UQ);
+    }
+
+    public function updateFkAtributo($id_atributo, $fk_atributo){
+        return $this->atributo_repository->updateFkAtributo($id_atributo, $fk_atributo);
+    }
+
+    public function delete($id_atributo){
+        return $this->atributo_repository->delete($id_atributo);
+    }
 }

@@ -8,6 +8,24 @@ require_once __DIR__ . '/../app/config/Config.php';
 
 use app\core\Router;
 
+// Servir arquivos estáticos solicitados na raiz (como /favicon.svg, /favicon.ico)
+$uriPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
+if ($uriPath !== '/' && file_exists(__DIR__ . $uriPath) && is_file(__DIR__ . $uriPath)) {
+    $ext = strtolower(pathinfo($uriPath, PATHINFO_EXTENSION));
+    $mimes = [
+        'svg' => 'image/svg+xml',
+        'ico' => 'image/x-icon',
+        'png' => 'image/png',
+        'css' => 'text/css',
+        'js'  => 'text/javascript'
+    ];
+    if (isset($mimes[$ext])) {
+        header('Content-Type: ' . $mimes[$ext]);
+        readfile(__DIR__ . $uriPath);
+        exit;
+    }
+}
+
 $router = new Router();
 
 $router->get("/projetos",'ProjetoController@index');
@@ -31,6 +49,8 @@ $router->get('/usuarios/cadastrar', 'UsuarioController@cadastrar');
 $router->post('/usuarios/salvar', 'UsuarioController@salvar');
 $router->get('/usuarios/editar', 'UsuarioController@editar');
 $router->post('/usuarios/atualizar', 'UsuarioController@atualizar');
+$router->get('/perfil', 'UsuarioController@perfil');
+$router->get('/perfil/editar', 'UsuarioController@perfil');
 
 
 
@@ -52,6 +72,20 @@ $router->get("/projetos/mvc-creator", "ProjetoController@mvcCreator");
 $router->get("/projetos/pagemaker", "ProjetoController@pageMaker");
 $router->get("/projetos/historico", "ProjetoController@historico");
 $router->get("/projetos/saida", "ProjetoController@saida");
-$router->get("/projetos/phpmeuamigo", "ProjetoController@phpmeuamigo");
+$router->get("/projetos/phpmeuamigo", "PhpMeuAmigoController@index");
+
+// Rotas de API AJAX do módulo PHPMeuAmigo
+$router->get("/phpmeuamigo/bancos", "PhpMeuAmigoController@listarBancos");
+$router->post("/phpmeuamigo/bancos/salvar", "PhpMeuAmigoController@salvarBanco");
+$router->post("/phpmeuamigo/bancos/excluir", "PhpMeuAmigoController@excluirBanco");
+$router->get("/phpmeuamigo/tabelas", "PhpMeuAmigoController@listarTabelas");
+$router->post("/phpmeuamigo/tabelas/salvar", "PhpMeuAmigoController@salvarTabela");
+$router->post("/phpmeuamigo/tabelas/excluir", "PhpMeuAmigoController@excluirTabela");
+$router->get("/phpmeuamigo/atributos", "PhpMeuAmigoController@listarAtributos");
+$router->post("/phpmeuamigo/atributos/salvar", "PhpMeuAmigoController@salvarAtributo");
+$router->post("/phpmeuamigo/atributos/excluir", "PhpMeuAmigoController@excluirAtributo");
+$router->post("/phpmeuamigo/importar-sql", "PhpMeuAmigoController@importarSql");
+$router->post("/phpmeuamigo/conectar-mysql-local", "PhpMeuAmigoController@conectarMysqlLocal");
+$router->post("/phpmeuamigo/importar-banco-local", "PhpMeuAmigoController@importarBancoLocal");
 
 $router->run();

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <defs>
+    <linearGradient id="ds-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#67e8f9"/>
+      <stop offset="58%" stop-color="#2563eb"/>
+      <stop offset="100%" stop-color="#172554"/>
+    </linearGradient>
+  </defs>
+  <rect width="32" height="32" rx="9" fill="url(#ds-grad)"/>
+  <rect x="10" y="10" width="12" height="12" rx="3" fill="none" stroke="#ffffff" stroke-width="2.5"/>
+</svg>

@@ -16,27 +16,22 @@
             <header class="cabecalho-inicial">
                 <p class="etiqueta-inicial">Plataforma de desenvolvimento</p>
                 <h2>DevStudio</h2>
-                <p class="subtitulo-inicial">Plataforma integrada: gere sistemas PHP MVC e crie páginas HTML visuais.</p>
+                <p class="subtitulo-inicial">Plataforma integrada: gere sistemas PHP MVC, crie páginas HTML visuais e gerencie Bancos de Dados.</p>
             </header>
 
             <section class="secao-metricas" aria-labelledby="titulo-metricas">
                 <div class="cabecalho-secao">
                     <p class="etiqueta-inicial">Visão geral</p>
-                    <h3 id="titulo-metricas">Tudo pronto para começar</h3>
                 </div>
 
                 <div class="grade-metricas">
                     <div class="cartao-metrica">
-                        <strong>2</strong>
+                        <strong>3</strong>
                         <span>Ferramentas integradas</span>
                     </div>
                     <div class="cartao-metrica">
                         <strong>5</strong>
                         <span>Camadas MVC geradas</span>
-                    </div>
-                    <div class="cartao-metrica">
-                        <strong>100%</strong>
-                        <span>Código pronto para uso</span>
                     </div>
                 </div>
             </section>
@@ -44,7 +39,6 @@
             <section class="secao-ferramentas" aria-labelledby="titulo-ferramentas">
                 <div class="cabecalho-secao">
                     <p class="etiqueta-inicial">Ferramentas</p>
-                    <h3 id="titulo-ferramentas">Escolha por onde começar</h3>
                 </div>
 
                 <div class="grade-ferramentas">
@@ -60,6 +54,13 @@
                         <h4>PageMaker — Criador HTML</h4>
                         <p>Configure cabeçalho, links, conteúdo e imagens visualmente. Gere HTML e CSS prontos para download com prévia em tempo real.</p>
                         <a class="botao-ferramenta botao-pagemaker" href="<?= URL_BASE ?>/projetos/pagemaker">Abrir <span aria-hidden="true">→</span></a>
+                    </article>
+
+                    <article class="cartao-ferramenta">
+                        <span class="icone-ferramenta icone-phpma" aria-hidden="true"><i class="bi bi-database"></i></span>
+                        <h4>PHPMeuAmigo — Modelador</h4>
+                        <p>Modele bancos visualmente, gerencie tabelas e atributos, configure chaves estrangeiras didáticas ou importe bancos locais.</p>
+                        <a class="botao-ferramenta botao-phpma" href="<?= URL_BASE ?>/projetos/phpmeuamigo">Abrir <span aria-hidden="true">→</span></a>
                     </article>
 
                     <article class="cartao-ferramenta">

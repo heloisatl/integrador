@@ -56,4 +56,12 @@ class BancoService{
 
         return $result;
     }
+
+    public function updateConfig($id_banco, $nome_banco, $usuario_banco, $senha_banco, $host, $porta){
+        return $this->banco_repository->updateConfig($id_banco, $nome_banco, $usuario_banco, $senha_banco, $host, $porta);
+    }
+
+    public function delete($id_banco){
+        return $this->banco_repository->delete($id_banco);
+    }
 }

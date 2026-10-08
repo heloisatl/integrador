@@ -34,35 +34,40 @@ class Atributo{
 
 
     private function inputs(){
+        $tipo = $this->tipo ?? '';
+        if (is_string($tipo)) {
+            $tipo = strtolower(trim($tipo));
+        }
+
         switch(true){
-            case $this->tipo=='int':
-            case substr($this->tipo,0,3)=='int':
+            case $tipo=='int':
+            case substr($tipo,0,3)=='int':
                 return "<input type='number' name='{$this->nome_atributo}' id='{$this->nome_atributo}' value='<?= \$obj?\$obj['{$this->nome_atributo}']:''?>'><br>\n";
             break;
-            case substr($this->tipo,0,7)=='decimal':
+            case substr($tipo,0,7)=='decimal':
                 return "<input type='number' step='0.01' name='{$this->nome_atributo}' id='{$this->nome_atributo}' value='<?= \$obj?\$obj['{$this->nome_atributo}']:''?>'><br>\n";
             break;
             
-            case $this->tipo =='text':
-            case substr($this->tipo,0,4) =='char':
-            case substr($this->tipo,0,7) == 'varchar':
+            case $tipo =='text':
+            case substr($tipo,0,4) =='char':
+            case substr($tipo,0,7) == 'varchar':
                 return "<input type='text' name='{$this->nome_atributo}' id='{$this->nome_atributo}' value='<?= \$obj?\$obj['{$this->nome_atributo}']:''?>'><br>\n";
             break;
             
-            case $this->tipo=='date':
+            case $tipo=='date':
                 return "<input type='date' name='{$this->nome_atributo}' id='{$this->nome_atributo}' value='<?= \$obj?\$obj['{$this->nome_atributo}']:''?>'><br>\n";
             break;
 
-            case $this->tipo=='year':
+            case $tipo=='year':
                 return "<input type=\"number\" min=\"0\" max=\"2077\" step=\"1\" value=\"2000\" name='{$this->nome_atributo}' id='{$this->nome_atributo}' value='<?= \$obj?\$obj['{$this->nome_atributo}']:''?>'>";
             break;
 
-            case substr($this->tipo,0,4)=='enum':
-                $tipoString = str_ireplace(['enum(',')',"'",'"'],'',$this->tipo);
+            case substr($tipo,0,4)=='enum':
+                $tipoString = str_ireplace(['enum(',')',"'",'"'],'',$tipo);
                 $result = "<select name=\"{$this->nome_atributo}\" id=\"{$this->nome_atributo}\">\n";
                 $result .= "<option value=\"\"><b>--</b></option>\n";
-                foreach(explode(',',$tipoString) as $tipo){
-                    $result .= "<option value=\"$tipo\" <?= \$obj? (\$obj['{$this->nome_atributo}']=='{$tipo}' ? 'selected' : null) : null ?> ><b>$tipo</b></option>\n";
+                foreach(explode(',',$tipoString) as $t){
+                    $result .= "<option value=\"$t\" <?= \$obj? (\$obj['{$this->nome_atributo}']=='{$t}' ? 'selected' : null) : null ?> ><b>$t</b></option>\n";
                 }
                 $result .= "</select>\n";
 

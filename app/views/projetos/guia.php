@@ -10,7 +10,7 @@
     <section class="guia-pagina">
         <header class="guia-cabecalho">
             <p class="guia-etiqueta">Guia Rápido</p>
-            <h2> tudo o que o DevStudio oferece</h2>
+            <h2> Tudo o que o DevStudio oferece</h2>
             <p>Use as ferramentas do DevStudio para configurar seu projeto, gerar sistemas PHP, criar páginas visuais e organizar os arquivos produzidos.</p>
         </header>
 
@@ -87,6 +87,12 @@
                         <p>Ajuda a acompanhar os projetos e atividades recentes, facilitando a retomada do trabalho.</p><a class="guia-link" href="<?= URL_BASE ?>/projetos/historico">Ver histórico →</a>
                     </div>
                 </article>
+                <article class="guia-camada"><span class="guia-icone">DB</span>
+                    <div>
+                        <h4>PHPMeuAmigo</h4>
+                        <p>Modelador visual de banco: crie tabelas, configure atributos, tipos, chaves estrangeiras ou importe bancos locais.</p><a class="guia-link" href="<?= URL_BASE ?>/projetos/phpmeuamigo">Abrir PHPMeuAmigo →</a>
+                    </div>
+                </article>
                 <article class="guia-camada"><span class="guia-icone">PER</span>
                     <div>
                         <h4>Perfil e tema</h4>
@@ -132,6 +138,24 @@
 
         <section class="guia-bloco">
             <div class="guia-titulo-bloco"><span class="guia-numero">05</span>
+                <div>
+                    <p class="guia-etiqueta">Modelador de banco</p>
+                    <h3>Como usar o PHPMeuAmigo</h3>
+                </div>
+            </div>
+            <ol class="guia-lista-detalhada">
+                <li><strong>Crie ou importe um banco:</strong> cadastre um novo banco de dados no DevStudio ou importe um banco de dados da sua máquina local.</li>
+                <li><strong>Gerencie tabelas:</strong> crie novas tabelas com nome padronizado diretamente no painel lateral.</li>
+                <li><strong>Configure atributos e tipos:</strong> adicione campos, defina o tipo de dado (INT, VARCHAR, etc.) e configure flags como PK, NN, AI e UQ.</li>
+                <li><strong>Vincule Foreign Keys didáticas:</strong> utilize o seletor visual para apontar uma coluna diretamente para a chave primária de outra tabela do mesmo banco.</li>
+                <li><strong>Integração com o MVC:</strong> o banco modelado fica disponível no MVC Creator para gerar todo o código do sistema.</li>
+            </ol>
+            <div class="guia-aviso"><strong>Ambiente Isolado:</strong> toda a modelagem feita no PHPMeuAmigo é gravada exclusivamente no DevStudio e não altera a estrutura dos seus bancos originais do MySQL.</div>
+            <a class="guia-botao" href="<?= URL_BASE ?>/projetos/phpmeuamigo">Experimentar PHPMeuAmigo</a>
+        </section>
+
+        <section class="guia-bloco">
+            <div class="guia-titulo-bloco"><span class="guia-numero">06</span>
                 <div>
                     <p class="guia-etiqueta">Depois de gerar</p>
                     <h3>O que fazer com o resultado</h3>

@@ -110,13 +110,148 @@
 /* Grid Layout (Sidebar + Main Panel) */
 .phpma-main-layout {
     display: grid;
-    grid-template-columns: 280px 1fr;
+    grid-template-columns: 280px minmax(0, 1fr);
     gap: 24px;
 }
 
 @media (max-width: 900px) {
     .phpma-main-layout {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 16px;
+    }
+
+    .phpma-sidebar-panel {
+        position: static;
+    }
+}
+
+@media (max-width: 640px) {
+    .phpma-container {
+        padding: 0 0 20px;
+    }
+
+    .phpma-page-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 14px;
+        padding-bottom: 16px;
+        margin-bottom: 20px;
+    }
+
+    .phpma-page-header > div:last-child {
+        flex-direction: column;
+        width: 100%;
+        gap: 8px;
+    }
+
+    .phpma-page-header .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .phpma-header-title {
+        font-size: 24px;
+    }
+
+    .phpma-top-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 14px;
+        padding: 14px;
+        border-radius: 10px;
+    }
+
+    .phpma-banco-picker {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+        width: 100%;
+    }
+
+    .phpma-select-banco {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .phpma-top-bar > div:last-child {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        gap: 8px;
+    }
+
+    .phpma-top-bar > div:last-child .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .phpma-table-editor-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .phpma-table-name-field {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+    }
+
+    .phpma-input-tabela-nome {
+        width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+    }
+
+    .phpma-table-editor-header button {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .phpma-card {
+        padding: 16px;
+        border-radius: 10px;
+    }
+
+    .phpma-table-responsive {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .phpma-table {
+        min-width: 620px;
+    }
+
+    .phpma-aviso-permanente {
+        padding: 14px 16px;
+        font-size: 13px;
+        margin-top: 18px;
+        margin-bottom: 20px;
+    }
+
+    .phpma-modal-content {
+        padding: 20px 16px;
+        max-width: calc(100vw - 32px);
+    }
+
+    .phpma-grid-fields {
         grid-template-columns: 1fr;
+    }
+
+    .phpma-grid-fields .field-full {
+        grid-column: span 1;
+    }
+
+    .phpma-modal-foot {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .phpma-modal-foot .btn {
+        width: 100%;
+        justify-content: center;
     }
 }
 
@@ -145,6 +280,13 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 12px;
+}
+
+.phpma-card-title button,
+.phpma-card-title .btn {
+    flex: 0 0 auto !important;
+    width: auto;
 }
 
 .phpma-search-input {
@@ -189,7 +331,7 @@
 
 .phpma-tabela-btn:hover {
     border-color: var(--border);
-    background: rgba(255, 255, 255, 0.04);
+    background: rgba(125, 125, 125, 0.08);
 }
 
 .phpma-tabela-btn.active {
@@ -208,7 +350,7 @@
     font-size: 11px;
     font-family: 'DM Mono', monospace;
     color: var(--muted);
-    background: rgba(0, 0, 0, 0.2);
+    background: rgba(125, 125, 125, 0.12);
     padding: 2px 6px;
     border-radius: 4px;
 }
@@ -296,7 +438,13 @@
 }
 
 .phpma-table tr:hover td {
-    background-color: rgba(255, 255, 255, 0.02);
+    background-color: rgba(125, 125, 125, 0.05);
+}
+
+.phpma-select-banco option,
+.phpma-field-select option {
+    background-color: var(--panel);
+    color: var(--text);
 }
 
 /* Inputs in Attributes Table */
@@ -474,4 +622,75 @@
     margin-top: 24px;
     padding-top: 16px;
     border-top: 1px solid var(--border);
+}
+
+/* ==========================================================================
+   Caixa de Alerta Inline na Página (DevStudio Identity - Tom #5B6AF0)
+   ========================================================================== */
+.phpma-inline-alert {
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    background: rgba(91, 106, 240, 0.12);
+    border: 1px solid #5B6AF0;
+    box-shadow: none;
+    animation: phpmaAlertFadeIn 0.2s ease-out forwards;
+    position: relative;
+    width: 100%;
+    box-sizing: border-box;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.phpma-inline-alert:hover {
+    background: rgba(91, 106, 240, 0.18);
+}
+
+.phpma-inline-alert-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.phpma-inline-alert-msg {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: var(--text);
+    margin: 0;
+    word-break: break-word;
+}
+
+@keyframes phpmaAlertFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* ==========================================================================
+   Aviso Didático Permanente (DevStudio Identity - Tom #5B6AF0)
+   ========================================================================== */
+.phpma-aviso-permanente {
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-top: 28px;
+    margin-bottom: 20px;
+    background: rgba(91, 106, 240, 0.12);
+    border: 1px solid #5B6AF0;
+    box-shadow: none;
+    width: 100%;
+    box-sizing: border-box;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: var(--text);
+}
+
+.phpma-aviso-permanente strong {
+    color: #5B6AF0;
+    font-weight: 600;
 }
