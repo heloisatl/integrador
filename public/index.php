@@ -49,6 +49,8 @@ $router->get('/usuarios/cadastrar', 'UsuarioController@cadastrar');
 $router->post('/usuarios/salvar', 'UsuarioController@salvar');
 $router->get('/usuarios/editar', 'UsuarioController@editar');
 $router->post('/usuarios/atualizar', 'UsuarioController@atualizar');
+$router->get('/perfil', 'UsuarioController@perfil');
+$router->get('/perfil/editar', 'UsuarioController@perfil');
 
 
 

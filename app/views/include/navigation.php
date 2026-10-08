@@ -76,44 +76,69 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
     </button>
 
     <div class="topbar-nav" id="topbarNav">
-        <a href="<?= URL_BASE ?>/projetos" class="topbar-item-inicio <?php echo verificarAtivo('projetos', $paginaAtual); ?>">
-            Início
-        </a>
+        <div class="mobile-nav-group">
+            <span class="mobile-section-label">Ferramentas & Páginas</span>
+            <a href="<?= URL_BASE ?>/projetos" class="topbar-item-inicio <?php echo verificarAtivo('projetos', $paginaAtual); ?>">
+                <i class="bi bi-house nav-icon"></i>
+                <span class="nav-text">Início</span>
+                <i class="bi bi-chevron-right nav-arrow"></i>
+            </a>
 
-        <a href="<?= URL_BASE ?>/projetos/mvc-creator" class="topbar-item <?php echo verificarAtivo('mvc-creator', $paginaAtual); ?>">
-            MVC Creator
-        </a>
-        <a href="<?= URL_BASE ?>/projetos/pagemaker" class="topbar-item <?php echo verificarAtivo('pagemaker', $paginaAtual); ?>">
-            Page Maker </a>
+            <a href="<?= URL_BASE ?>/projetos/mvc-creator" class="topbar-item <?php echo verificarAtivo('mvc-creator', $paginaAtual); ?>">
+                <i class="bi bi-cpu nav-icon"></i>
+                <span class="nav-text">MVC Creator</span>
+                <i class="bi bi-chevron-right nav-arrow"></i>
+            </a>
 
-        <?php if (isset($_SESSION['usuario_logado'])):
-                        $usuarioLogado = $_SESSION['usuario_logado'];
-                    ?>
-                    <a href="<?= URL_BASE ?>/projetos/historico" class="topbar-item <?php echo verificarAtivo('historico', $paginaAtual); ?>">
-            Histórico </a>
+            <a href="<?= URL_BASE ?>/projetos/pagemaker" class="topbar-item <?php echo verificarAtivo('pagemaker', $paginaAtual); ?>">
+                <i class="bi bi-file-earmark-code nav-icon"></i>
+                <span class="nav-text">Page Maker</span>
+                <i class="bi bi-chevron-right nav-arrow"></i>
+            </a>
+
+            <?php if (isset($_SESSION['usuario_logado'])):
+                $usuarioLogado = $_SESSION['usuario_logado'];
+            ?>
+                <a href="<?= URL_BASE ?>/projetos/historico" class="topbar-item <?php echo verificarAtivo('historico', $paginaAtual); ?>">
+                    <i class="bi bi-clock-history nav-icon"></i>
+                    <span class="nav-text">Histórico</span>
+                    <i class="bi bi-chevron-right nav-arrow"></i>
+                </a>
             <?php endif; ?>
 
-        <a href="<?= URL_BASE ?>/projetos/saida" class="topbar-item <?php echo verificarAtivo('saida', $paginaAtual); ?>">
-            Saída </a>
-
-        <a href="<?= URL_BASE ?>/projetos/phpmeuamigo" class="topbar-item <?php echo verificarAtivo('phpmeuamigo', $paginaAtual); ?>">
-            PHPMeuAmigo </a>
-
-        <?php if (defined('URL_BASE') && usuarioEhAdmin()): ?>
-            <a href="<?= URL_BASE ?>/usuarios" class="topbar-item <?php echo $paginaAtual === 'usuarios' ? 'active' : ''; ?>">
-                Usuários
+            <a href="<?= URL_BASE ?>/projetos/saida" class="topbar-item <?php echo verificarAtivo('saida', $paginaAtual); ?>">
+                <i class="bi bi-box-arrow-up-right nav-icon"></i>
+                <span class="nav-text">Saída</span>
+                <i class="bi bi-chevron-right nav-arrow"></i>
             </a>
-        <?php endif; ?>
+
+            <a href="<?= URL_BASE ?>/projetos/phpmeuamigo" class="topbar-item <?php echo verificarAtivo('phpmeuamigo', $paginaAtual); ?>">
+                <i class="bi bi-database nav-icon"></i>
+                <span class="nav-text">PHPMeuAmigo</span>
+                <i class="bi bi-chevron-right nav-arrow"></i>
+            </a>
+
+            <?php if (defined('URL_BASE') && usuarioEhAdmin()): ?>
+                <a href="<?= URL_BASE ?>/usuarios" class="topbar-item <?php echo $paginaAtual === 'usuarios' ? 'active' : ''; ?>">
+                    <i class="bi bi-people nav-icon"></i>
+                    <span class="nav-text">Usuários</span>
+                    <i class="bi bi-chevron-right nav-arrow"></i>
+                </a>
+            <?php endif; ?>
+        </div>
 
         <div class="topbar-actions">
+            <span class="mobile-section-label mobile-only-label">Preferências & Conta</span>
 
             <button type="button" class="profile-dropdown-item theme-toggle" onclick="toggleGlobalTheme()">
-                Alternar Tema
-                <i class="bi bi-brightness-high-fill" aria-hidden="true"></i>
-                <i class="bi bi-moon-fill" aria-hidden="true"></i>
+                <span class="theme-toggle-text">Alternar Tema</span>
+                <span class="theme-toggle-icons">
+                    <i class="bi bi-brightness-high-fill" aria-hidden="true"></i>
+                    <i class="bi bi-moon-fill" aria-hidden="true"></i>
+                </span>
             </button>
 
-
+            <!-- Menu de Perfil tradicional (Desktop) -->
             <div class="profile-dropdown-container">
                 <button type="button" class="profile-btn" id="profileDropdownBtn" onclick="toggleProfileMenu(event)">
                     <i class="bi bi-person"></i>
@@ -129,12 +154,7 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
                             <div class="profile-user-email"><?= htmlspecialchars($usuarioLogado->getEmail()) ?></div>
                         </div>
                         <div class="profile-dropdown-divider"></div>
-                    <?php endif; ?>
-
-
-
-                    <?php if (isset($_SESSION['usuario_logado'])): ?>
-                        <a href="<?= URL_BASE ?>/perfil/editar" class="profile-dropdown-item">
+                        <a href="<?= URL_BASE ?>/perfil" class="profile-dropdown-item">
                             <i class="bi bi-pencil-square" aria-hidden="true"></i> Editar Perfil
                         </a>
                         <a href="<?= URL_BASE ?>/logout" onclick="desfazSessionStorage()" class="profile-dropdown-item profile-dropdown-danger">Sair</a>
@@ -147,13 +167,44 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
                         <a href="<?= URL_BASE ?>/cadastro" class="profile-dropdown-item register-link">
                             <i class="bi bi-person-plus" aria-hidden="true"></i>
                             <i class="bi bi-person-plus-fill" aria-hidden="true"></i>
-
                             Cadastrar
                         </a>
-
-
                     <?php endif; ?>
                 </div>
+            </div>
+
+            <!-- Card ergonômico de conta e acesso rápido no Mobile -->
+            <div class="mobile-user-card">
+                <?php if (isset($_SESSION['usuario_logado'])):
+                    $usuarioLogado = $_SESSION['usuario_logado'];
+                ?>
+                    <div class="mobile-user-info">
+                        <div class="mobile-user-avatar">
+                            <i class="bi bi-person-fill"></i>
+                        </div>
+                        <div class="mobile-user-meta">
+                            <strong class="mobile-user-name"><?= htmlspecialchars($usuarioLogado->getNome()) ?></strong>
+                            <span class="mobile-user-email"><?= htmlspecialchars($usuarioLogado->getEmail()) ?></span>
+                        </div>
+                    </div>
+                    <div class="mobile-user-actions">
+                        <a href="<?= URL_BASE ?>/perfil" class="btn-mobile-profile">
+                            <i class="bi bi-person-gear"></i> Ver Perfil
+                        </a>
+                        <a href="<?= URL_BASE ?>/logout" onclick="desfazSessionStorage()" class="btn-mobile-logout" title="Sair da conta">
+                            <i class="bi bi-box-arrow-right"></i>
+                        </a>
+                    </div>
+                <?php else: ?>
+                    <div class="mobile-guest-actions">
+                        <a href="<?= URL_BASE ?>/login" class="btn-mobile-login">
+                            <i class="bi bi-box-arrow-in-right"></i> Entrar
+                        </a>
+                        <a href="<?= URL_BASE ?>/cadastro" class="btn-mobile-register">
+                            <i class="bi bi-person-plus"></i> Criar Conta
+                        </a>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
     </div>
@@ -284,6 +335,14 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
             <div class="sb-label">PHPMeuAmigo</div>
             <a href="<?= URL_BASE ?>/projetos/phpmeuamigo" class="sb-item <?php echo verificarAtivo('phpmeuamigo', $paginaAtual); ?>">
                 <span class="sb-icon"></span> Modelador de Banco
+            </a>
+        </div>
+
+        <!-- Perfil -->
+        <div id="sb-titulo-perfil" class="sb-section">
+            <div class="sb-label">Perfil</div>
+            <a href="<?= URL_BASE ?>/perfil" class="sb-item <?php echo ($paginaAtual === 'perfil') ? 'active' : ''; ?>">
+                <span class="sb-icon"></span> Gerenciar perfil
             </a>
         </div>
     </aside>

@@ -1,9 +1,7 @@
-<div id="phpmeuamigo">
-
-    <?php
-    include_once(__DIR__ . "/../include/head.php");
-    include_once(__DIR__ . "/../include/navigation.php");
-    ?>
+<?php
+include_once(__DIR__ . "/../include/head.php");
+include_once(__DIR__ . "/../include/navigation.php");
+?>
 
     <!-- Estilos de formulários globais e do PHPmeuamigo -->
     <link rel="stylesheet" href="<?= URL_BASE ?>/assets/css/form-styles.css">
@@ -12,14 +10,6 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
 
     <div class="phpma-container">
-        
-        <!-- Banner Informativo sobre Modelagem Didática -->
-        <div class="phpma-card" style="background: rgba(13, 110, 253, 0.08); border: 1px solid rgba(13, 110, 253, 0.25); margin-bottom: 20px; padding: 14px 18px; display: flex; align-items: center; gap: 14px;">
-            <i class="bi bi-info-circle-fill" style="font-size: 22px; color: var(--accent, #0d6efd); flex-shrink: 0;"></i>
-            <div style="font-size: 13px; color: var(--text); line-height: 1.5;">
-                <strong style="color: var(--text);">Ambiente de Modelagem do DevStudio:</strong> Ao criar ou importar um banco de dados, a estrutura de tabelas e atributos é armazenada no modelo do seu projeto. Quaisquer alterações realizadas aqui (criação, edição ou exclusão de tabelas e campos) <strong style="color: var(--text);">não afetarão</strong> o banco de dados MySQL original da sua máquina local.
-            </div>
-        </div>
 
         <!-- Cabeçalho da Página (DevStudio Identity) -->
         <header class="phpma-page-header">
@@ -60,6 +50,13 @@
             </div>
         </div>
 
+        <!-- Caixa de Alerta / Mensagens Inline do Sistema (DevStudio - Tom #5B6AF0) -->
+        <div id="phpma-inline-alert" class="phpma-inline-alert" style="display: none;" role="alert">
+            <div class="phpma-inline-alert-body">
+                <div id="phpma-alert-msg" class="phpma-inline-alert-msg"></div>
+            </div>
+        </div>
+
         <!-- Layout em Grid (Sidebar de Tabelas + Editor de Atributos) -->
         <div class="phpma-main-layout">
             
@@ -72,13 +69,26 @@
                     </button>
                 </div>
 
+                <!-- Formulário inline padronizado para criação de tabela (substitui o prompt) -->
+                <div id="phpma-wrapper-nova-tabela" style="display: none; padding: 4px 0 8px;">
+                    <div style="display: flex; gap: 6px; align-items: center;">
+                        <input type="text" id="phpma-input-nova-tabela" class="phpma-search-input" placeholder="nome_tabela" style="font-size: 12px; padding: 6px 10px;">
+                        <button type="button" id="phpma-btn-confirm-nova-tabela" class="btn btn-primary" style="padding: 5px 10px; font-size: 12px;" title="Confirmar Criação">
+                            <i class="bi bi-check-lg"></i>
+                        </button>
+                        <button type="button" id="phpma-btn-cancel-nova-tabela" class="btn btn-secondary" style="padding: 5px 8px; font-size: 12px;" title="Cancelar">
+                            <i class="bi bi-x-lg"></i>
+                        </button>
+                    </div>
+                </div>
+
                 <div id="phpma-list-tabelas" class="phpma-tabelas-list">
                     <!-- Lista renderizada dinamicamente via JS -->
                 </div>
             </aside>
 
             <!-- Painel Principal: Atributos (Entidade: ATRIBUTO) -->
-            <main class="phpma-card">
+            <section class="phpma-card">
                 
                 <div class="phpma-table-editor-header">
                     <div class="phpma-table-name-field">
@@ -115,7 +125,12 @@
                     </table>
                 </div>
 
-            </main>
+            </section>
+        </div>
+
+        <!-- Aviso Permanente de Modelagem (DevStudio Identity - Tom #5B6AF0) -->
+        <div class="phpma-aviso-permanente" role="note">
+            <strong>Ambiente de Modelagem do DevStudio:</strong> Ao criar ou importar um banco de dados, a estrutura de tabelas e atributos é armazenada no modelo do seu projeto. Quaisquer alterações realizadas aqui (criação, edição ou exclusão de tabelas e campos) <strong>não afetarão</strong> o banco de dados MySQL original da sua máquina local.
         </div>
 
     </div>
@@ -128,6 +143,13 @@
                 <button type="button" class="btn-icon-danger" onclick="window.phpmaCloseModal()">
                     <i class="bi bi-x-lg"></i>
                 </button>
+            </div>
+
+            <!-- Alerta inline interno do modal -->
+            <div id="phpma-modal-banco-alert" class="phpma-inline-alert" style="display: none; margin-bottom: 16px;">
+                <div class="phpma-inline-alert-body">
+                    <div class="phpma-inline-alert-msg"></div>
+                </div>
             </div>
 
             <div class="phpma-grid-fields">
@@ -172,6 +194,13 @@
                 <button type="button" class="btn-icon-danger" onclick="window.phpmaCloseImportModal()">
                     <i class="bi bi-x-lg"></i>
                 </button>
+            </div>
+
+            <!-- Alerta inline interno do modal de importação -->
+            <div id="phpma-modal-import-alert" class="phpma-inline-alert" style="display: none; margin-bottom: 16px;">
+                <div class="phpma-inline-alert-body">
+                    <div class="phpma-inline-alert-msg"></div>
+                </div>
             </div>
 
             <div class="phpma-grid-fields">
@@ -220,7 +249,6 @@
 
     <?php require_once __DIR__ . '/../include/footer.php'; ?>
     </main>
-</div>
 </div>
 
 <!-- Script de interatividade visual -->

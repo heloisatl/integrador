@@ -52,11 +52,17 @@
     margin: 0;
 }
 
-.grade-metricas,
+.grade-metricas {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 680px;
+}
+
 .grade-ferramentas {
     display: grid;
     gap: 16px;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
 }
 
 .cartao-metrica,
@@ -124,6 +130,11 @@
     color: #30c2a4;
 }
 
+.icone-phpma {
+    background: rgba(245, 158, 11, 0.16);
+    color: #f59e0b;
+}
+
 .icone-saida {
     background: rgba(148, 163, 184, 0.16);
     color: #94a3b8;
@@ -171,6 +182,10 @@
 
 .botao-pagemaker {
     background: #249d88;
+}
+
+.botao-phpma {
+    background: #ea580c;
 }
 
 .botao-saida {

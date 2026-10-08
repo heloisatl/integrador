@@ -1,7 +1,6 @@
 <?php
 namespace app\models;
 
-use app\repositories\ProjetoRepository;
 use Throwable;
 
 class Tabela{
@@ -16,7 +15,6 @@ class Tabela{
 
     public function __construct($id_tabela,$fk_banco,$nomeTabela){
         try{
-            $projetoRepository = new ProjetoRepository();
             $this->id_tabela = $id_tabela;
             $this->fk_banco = $fk_banco;
             $this->nome_tabela = $nomeTabela;

@@ -17,7 +17,7 @@
                 <div class="mvc-botoes-banco">
                     <button type="button" onclick="carregarBanco();"  class="mvc-etapa-botao mvc-etapa-botao-secundario mvc-btn-icon" title="Atualizar"><span class="material-symbols-outlined">refresh</span></button>
                     <button type="button" onclick="carregarTabelas();" class="mvc-etapa-botao">Próxima Etapa →</button>
-                    <button type="button" onclick="" class="mvc-etapa-botao">Criar novo banco</button>
+                    <button type="button" onclick="window.location.href='<?= URL_BASE ?>/projetos/phpmeuamigo'" class="mvc-etapa-botao">Criar novo banco</button>
                 </div>
             </div>
         </div>

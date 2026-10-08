@@ -16,7 +16,8 @@ class AtributoRepository{
     public function insert($fk_tabela,$fk_atributo,$nome_atributo,$tipo,$PK,$NN,$AI,$UQ){
         $sql = "INSERT INTO atributo(fk_tabela,fk_atributo,nome_atributo,tipo,PK,NN,AI,UQ) VALUES (?,?,?,?,?,?,?,?)";
         $stm = $this->conn->prepare($sql);
-        return $stm->execute([$fk_tabela,$fk_atributo,
+        $fk = (empty($fk_atributo) || $fk_atributo === '0') ? null : (int)$fk_atributo;
+        return $stm->execute([$fk_tabela,$fk,
                               $nome_atributo,$tipo,
                               $PK,$NN,$AI,$UQ]);
     }
@@ -63,21 +64,41 @@ class AtributoRepository{
     public function update($id_atributo, $fk_atributo, $nome_atributo, $tipo, $PK, $NN, $AI, $UQ){
         $sql = "UPDATE atributo SET fk_atributo = :fk_atributo, nome_atributo = :nome_atributo, tipo = :tipo, PK = :PK, NN = :NN, AI = :AI, UQ = :UQ WHERE id_atributo = :id_atributo;";
         $stm = $this->conn->prepare($sql);
-        $stm->bindValue(':fk_atributo', $fk_atributo);
+        $fk = (empty($fk_atributo) || $fk_atributo === '0') ? null : (int)$fk_atributo;
+        $stm->bindValue(':fk_atributo', $fk, $fk === null ? PDO::PARAM_NULL : PDO::PARAM_INT);
         $stm->bindValue(':nome_atributo', $nome_atributo);
         $stm->bindValue(':tipo', $tipo);
         $stm->bindValue(':PK', $PK);
         $stm->bindValue(':NN', $NN);
         $stm->bindValue(':AI', $AI);
         $stm->bindValue(':UQ', $UQ);
-        $stm->bindValue(':id_atributo', $id_atributo);
+        $stm->bindValue(':id_atributo', $id_atributo, PDO::PARAM_INT);
+        return $stm->execute();
+    }
+
+    public function updateFkAtributo($id_atributo, $fk_atributo){
+        $sql = "UPDATE atributo SET fk_atributo = :fk_atributo WHERE id_atributo = :id_atributo;";
+        $stm = $this->conn->prepare($sql);
+        $fk = (empty($fk_atributo) || $fk_atributo === '0') ? null : (int)$fk_atributo;
+        $stm->bindValue(':fk_atributo', $fk, $fk === null ? PDO::PARAM_NULL : PDO::PARAM_INT);
+        $stm->bindValue(':id_atributo', $id_atributo, PDO::PARAM_INT);
         return $stm->execute();
     }
 
     public function delete($id_atributo){
+        /**
+         * Como funciona e o que faz:
+         * 1. Desvincula qualquer atributo filho que referencie este atributo como Foreign Key (`fk_atributo = NULL`).
+         * 2. Evita o erro 1451 ao excluir atributos que sirvam de chave primária para outras tabelas.
+         */
+        $sqlClean = "UPDATE atributo SET fk_atributo = NULL WHERE fk_atributo = :id_atributo;";
+        $stmClean = $this->conn->prepare($sqlClean);
+        $stmClean->bindValue(':id_atributo', $id_atributo, PDO::PARAM_INT);
+        $stmClean->execute();
+
         $sql = "DELETE FROM atributo WHERE id_atributo = :id_atributo;";
         $stm = $this->conn->prepare($sql);
-        $stm->bindValue(':id_atributo', $id_atributo);
+        $stm->bindValue(':id_atributo', $id_atributo, PDO::PARAM_INT);
         return $stm->execute();
     }
 
