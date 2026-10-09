@@ -76,22 +76,13 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
     </button>
 
     <div class="topbar-nav" id="topbarNav">
-        <a href="<?= URL_BASE ?>/projetos" class="topbar-item-inicio <?php echo verificarAtivo('projetos', $paginaAtual); ?>">
-            Início
-        </a>
-
-        <a href="<?= URL_BASE ?>/projetos/mvc-creator" class="topbar-item <?php echo verificarAtivo('mvc-creator', $paginaAtual); ?>">
-            MVC Creator
-        </a>
-        <a href="<?= URL_BASE ?>/projetos/pagemaker" class="topbar-item <?php echo verificarAtivo('pagemaker', $paginaAtual); ?>">
-            Page Maker </a>
-
-        <?php if (isset($_SESSION['usuario_logado'])):
-                        $usuarioLogado = $_SESSION['usuario_logado'];
-                    ?>
-                    <a href="<?= URL_BASE ?>/projetos/historico" class="topbar-item <?php echo verificarAtivo('historico', $paginaAtual); ?>">
-            Histórico </a>
-            <?php endif; ?>
+        <div class="mobile-nav-group">
+            <span class="mobile-section-label">Ferramentas & Páginas</span>
+            <a href="<?= URL_BASE ?>/projetos" class="topbar-item-inicio <?php echo verificarAtivo('projetos', $paginaAtual); ?>">
+                <i class="bi bi-house nav-icon"></i>
+                <span class="nav-text">Início</span>
+                <i class="bi bi-chevron-right nav-arrow"></i>
+            </a>
 
             <a href="<?= URL_BASE ?>/projetos/mvc-creator" class="topbar-item <?php echo verificarAtivo('mvc-creator', $paginaAtual); ?>">
                 <i class="bi bi-cpu nav-icon"></i>
