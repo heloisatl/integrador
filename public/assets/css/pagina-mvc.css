@@ -13,44 +13,59 @@
 }
 
 /* Mostra apenas o que deve aparecer em cada página */
-#home #sb-principal {
-    display: block;
+#home #sb-principal,
+#projetos #sb-principal,
+body#home #sb-principal,
+body#projetos #sb-principal {
+    display: flex;
 }
 
-#config-global #sb-principal {
-    display: block;
+
+#config-global #sb-principal,
+body#config-global #sb-principal {
+    display: flex;
 }
 
-#guia #sb-principal {
-    display: block;
+#guia #sb-principal,
+body#guia #sb-principal {
+    display: flex;
 }
 
-#mvc-creator #sb-titulo-MVC {
-    display: block;
+#mvc-creator #sb-titulo-MVC,
+#mvcCreator #sb-titulo-MVC,
+body#mvc-creator #sb-titulo-MVC {
+    display: flex;
 }
 
-#pagemaker #sb-titulo-PageMaker {
-    display: block;
+#pagemaker #sb-titulo-PageMaker,
+#pageMaker #sb-titulo-PageMaker,
+body#pagemaker #sb-titulo-PageMaker {
+    display: flex;
 }
 
-#historico #sb-titulo-historico {
-    display: block;
+#historico #sb-titulo-historico,
+body#historico #sb-titulo-historico {
+    display: flex;
 }
 
-#saida #sb-titulo-saida {
-    display: block;
+#saida #sb-titulo-saida,
+body#saida #sb-titulo-saida {
+    display: flex;
 }
 
-#usuarios #sb-titulo-usuarios {
-    display: block;
+#usuarios #sb-titulo-usuarios,
+body#usuarios #sb-titulo-usuarios {
+    display: flex;
 }
 
-#phpmeuamigo #sb-titulo-PHPMeuAmigo {
-    display: block;
+#phpmeuamigo #sb-titulo-PHPMeuAmigo,
+body#phpmeuamigo #sb-titulo-PHPMeuAmigo {
+    display: flex;
 }
 
-#perfil #sb-titulo-perfil {
-    display: block;
+#perfil #sb-titulo-perfil,
+body#perfil #sb-titulo-perfil {
+    display: flex;
 }
 
 .mvc-etapa-wrapper {
