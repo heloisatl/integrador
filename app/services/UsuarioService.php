@@ -28,6 +28,46 @@ class UsuarioService {
         return $this->repository->updateSenhaPorEmail($email, $senha);
     }
 
+    public function atualizarPerfil(int $id, string $emailAtual, array $dados): array {
+        $nome = trim((string) ($dados['nome'] ?? ''));
+        $email = strtolower(trim((string) ($dados['email'] ?? '')));
+        $senhaAtual = (string) ($dados['senha_atual'] ?? '');
+        $senhaNova = (string) ($dados['senha_nova'] ?? '');
+        $confirmarSenha = (string) ($dados['confirmar_senha'] ?? '');
+        $alterarSenha = $senhaAtual !== '' || $senhaNova !== '' || $confirmarSenha !== '';
+
+        if ($nome === '' || (function_exists('mb_strlen') ? mb_strlen($nome) : strlen($nome)) > 60) {
+            return ['sucesso' => false, 'mensagem' => 'Informe um nome válido com até 60 caracteres.'];
+        }
+        if ($email === '' || (function_exists('mb_strlen') ? mb_strlen($email) : strlen($email)) > 60 || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return ['sucesso' => false, 'mensagem' => 'Informe um e-mail válido com até 60 caracteres.'];
+        }
+        if ($this->repository->emailExiste($email, $id)) {
+            return ['sucesso' => false, 'mensagem' => 'Este e-mail já está sendo usado por outra conta.'];
+        }
+
+        $senhaParaSalvar = null;
+        if ($alterarSenha) {
+            $usuarioAtual = $this->repository->getUsuarioByEmail($emailAtual);
+            if (!$usuarioAtual || !password_verify($senhaAtual, $usuarioAtual->getSenhaUsuario())) {
+                return ['sucesso' => false, 'mensagem' => 'A senha atual está incorreta.'];
+            }
+            if ($senhaNova !== $confirmarSenha) {
+                return ['sucesso' => false, 'mensagem' => 'A nova senha e a confirmação não correspondem.'];
+            }
+            if (strlen($senhaNova) < 10 || !preg_match('/[a-z]/', $senhaNova) || !preg_match('/[A-Z]/', $senhaNova) || !preg_match('/[0-9]/', $senhaNova) || !preg_match('/[^a-zA-Z0-9]/', $senhaNova)) {
+                return ['sucesso' => false, 'mensagem' => 'A nova senha deve ter ao menos 10 caracteres, incluindo maiúscula, minúscula, número e símbolo.'];
+            }
+            $senhaParaSalvar = $senhaNova;
+        }
+
+        if (!$this->repository->updatePerfil($id, $nome, $email, $senhaParaSalvar)) {
+            return ['sucesso' => false, 'mensagem' => 'Não foi possível salvar as alterações. Tente novamente.'];
+        }
+
+        return ['sucesso' => true, 'mensagem' => 'Perfil atualizado com sucesso.'];
+    }
+
     public function deleteUsuario(int $id): bool {
         $usuario = $this->repository->getUsuarioById($id);
 

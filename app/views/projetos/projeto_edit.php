@@ -8,28 +8,29 @@
 <form action="/projetos/cadastrar/opcoes" method="POST">
     <div class="form-container">
         <div id="mvc-s1">
-        <div class="card">
-        <div class="card-title"><span class="step-badge">1</span> Editar Projeto</div>
-        
-        <div class="field-row">
-            <div class="field">
-            <label>Nome do Projeto <span class="tip">Sem espaços</span></label>
-            <input value="<?= $nome ?? '' ?>" type="text" name="nome" id="nome" placeholder="sistema_oficina">
+            <div class="card">
+                <div class="card-title"><span class="step-badge">1</span> Editar Projeto</div>
+
+                <div class="field-row">
+                    <div class="field">
+                        <label>Nome do Projeto <span class="tip">Sem espaços</span></label>
+                        <input value="<?= $nome ?? '' ?>" type="text" name="nome" id="nome" placeholder="sistema_oficina">
+                    </div>
+
+                </div>
+                <div id="mvc-s1-msg"></div>
+                <div class="btn-row">
+                    <button class="btn btn-primary">Avançar</button>
+                </div>
             </div>
-            
         </div>
-        <div id="mvc-s1-msg"></div>
-        <div class="btn-row">
-            <button class="btn btn-primary">Avançar</button>
-        </div>
-        </div>
-    </div>
     </div>
 </form>
+<?php require_once __DIR__ . '/../include/footer.php'; ?>
 </main>
 </div>
 
-    <script src="/assets/js/mvcLoad.js"></script>
+<script src="/assets/js/mvcLoad.js"></script>
 </body>
-</html>
 
+</html>

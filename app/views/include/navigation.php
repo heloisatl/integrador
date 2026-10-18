@@ -11,6 +11,14 @@ if ($paginaAtual === '' || $paginaAtual === 'index.php') {
 $currentSection = $_GET['section'] ?? '';
 $currentTab = $_GET['tab'] ?? '';
 $currentStep = $_GET['step'] ?? '';
+$avatarNavbarUrl = null;
+if (isset($_SESSION['usuario_logado']) && method_exists($_SESSION['usuario_logado'], 'getIdUsuario')) {
+    $idUsuarioNavbar = (int) $_SESSION['usuario_logado']->getIdUsuario();
+    $arquivosAvatarNavbar = glob(dirname(__DIR__, 2) . '/projetos/avatars/' . $idUsuarioNavbar . '_*.*') ?: [];
+    if (!empty($arquivosAvatarNavbar)) {
+        $avatarNavbarUrl = URL_BASE . '/perfil/avatar?v=' . filemtime($arquivosAvatarNavbar[0]);
+    }
+}
 
 function usuarioEhAdmin(): bool
 {
@@ -62,6 +70,7 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
 }
 ?>
 
+
 <header class="topbar">
     <div class="topbar-logo">
         <span class="logo"></span>
@@ -75,34 +84,62 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
     </button>
 
     <div class="topbar-nav" id="topbarNav">
-        <a href="<?= URL_BASE ?>/projetos" class="topbar-item-inicio <?php echo verificarAtivo('projetos', $paginaAtual); ?>">
-            Início
-        </a>
-
-        <a href="<?= URL_BASE ?>/projetos/config-global" class="topbar-item <?php echo verificarAtivo('config-global', $paginaAtual); ?>">
-            Config. Global
-        </a>
-        <a href="<?= URL_BASE ?>/projetos/mvc-creator" class="topbar-item <?php echo verificarAtivo('mvc-creator', $paginaAtual); ?>">
-            MVC Creator
-        </a>
-        <a href="<?= URL_BASE ?>/projetos/pagemaker" class="topbar-item <?php echo verificarAtivo('pagemaker', $paginaAtual); ?>">
-            Page Maker </a>
-
-        <a href="<?= URL_BASE ?>/projetos/historico" class="topbar-item <?php echo verificarAtivo('historico', $paginaAtual); ?>">
-            Histórico </a>
-
-        <a href="<?= URL_BASE ?>/projetos/saida" class="topbar-item <?php echo verificarAtivo('saida', $paginaAtual); ?>">
-            Saída </a>
-
-        <?php if (defined('URL_BASE') && usuarioEhAdmin()): ?>
-            <a href="<?= URL_BASE ?>/usuarios" class="topbar-item <?php echo $paginaAtual === 'usuarios' ? 'active' : ''; ?>">
-                Usuários
+        <div class="mobile-nav-group">
+            <span class="mobile-section-label">Ferramentas & Páginas</span>
+            <a href="<?= URL_BASE ?>/projetos" class="topbar-item-inicio <?php echo verificarAtivo('projetos', $paginaAtual); ?>">
+                Início
             </a>
-        <?php endif; ?>
+
+            <a href="<?= URL_BASE ?>/projetos/mvc-creator" class="topbar-item <?php echo verificarAtivo('mvc-creator', $paginaAtual); ?>">
+                MVC Creator
+            </a>
+
+            <a href="<?= URL_BASE ?>/projetos/pagemaker" class="topbar-item <?php echo verificarAtivo('pagemaker', $paginaAtual); ?>">
+                Page Maker
+            </a>
+
+            <?php if (isset($_SESSION['usuario_logado'])):
+                $usuarioLogado = $_SESSION['usuario_logado'];
+            ?>
+                <a href="<?= URL_BASE ?>/projetos/historico" class="topbar-item <?php echo verificarAtivo('historico', $paginaAtual); ?>">
+                    Histórico
+                </a>
+            <?php endif; ?>
+
+            <a href="<?= URL_BASE ?>/projetos/saida" class="topbar-item <?php echo verificarAtivo('saida', $paginaAtual); ?>">
+                Saída
+            </a>
+
+            <a href="<?= URL_BASE ?>/projetos/phpmeuamigo" class="topbar-item <?php echo verificarAtivo('phpmeuamigo', $paginaAtual); ?>">
+                PHPMeuAmigo
+            </a>
+
+            <?php if (defined('URL_BASE') && usuarioEhAdmin()): ?>
+                <a href="<?= URL_BASE ?>/usuarios" class="topbar-item <?php echo $paginaAtual === 'usuarios' ? 'active' : ''; ?>">
+                    Usuários
+                </a>
+            <?php endif; ?>
+        </div>
 
         <div class="topbar-actions">
+            <span class="mobile-section-label mobile-only-label">Preferências & Conta</span>
+
+            <button type="button" class="profile-dropdown-item theme-toggle" onclick="toggleGlobalTheme()">
+                <span class="theme-toggle-text">Alternar Tema</span>
+                <span class="theme-toggle-icons">
+                    <i class="bi bi-brightness-high-fill" aria-hidden="true"></i>
+                    <i class="bi bi-moon-fill" aria-hidden="true"></i>
+                </span>
+            </button>
+
+            <!-- Menu de Perfil tradicional (Desktop) -->
             <div class="profile-dropdown-container">
                 <button type="button" class="profile-btn" id="profileDropdownBtn" onclick="toggleProfileMenu(event)">
+                    <?php if ($avatarNavbarUrl): ?>
+                        <img class="profile-btn-avatar" src="<?= htmlspecialchars($avatarNavbarUrl, ENT_QUOTES, 'UTF-8') ?>" alt="" aria-hidden="true">
+                    <?php else: ?>
+                        <i class="bi bi-person-fill profile-btn-placeholder" aria-hidden="true"></i>
+                    <?php endif; ?>
                     Perfil
                 </button>
                 <div class="profile-dropdown-menu" id="profileDropdownMenu">
@@ -116,16 +153,64 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
                         <div class="profile-dropdown-divider"></div>
                     <?php endif; ?>
 
-                    <button type="button" class="profile-dropdown-item" onclick="toggleGlobalTheme()">
-                        Alternar Tema
-                    </button>
+
 
                     <?php if (isset($_SESSION['usuario_logado'])): ?>
-                        <a href="<?= URL_BASE ?>/logout" class="profile-dropdown-item profile-dropdown-danger">Sair</a>
+                        <a href="<?= URL_BASE ?>/perfil/editar" class="profile-dropdown-item">
+                            <i class="bi bi-pencil-square" aria-hidden="true"></i> Editar Perfil
+                        </a>
+                        <a href="<?= URL_BASE ?>/logout" onclick="desfazSessionStorage()" class="profile-dropdown-item profile-dropdown-danger">Sair</a>
                     <?php else: ?>
-                        <a href="<?= URL_BASE ?>/login" class="profile-dropdown-item">Entrar</a>
+                        <a href="<?= URL_BASE ?>/login" class="profile-dropdown-item login-link">
+                            <i class="bi bi-door-closed" aria-hidden="true"></i>
+                            <i class="bi bi-door-open-fill" aria-hidden="true"></i>
+                            Entrar
+                        </a>
+                        <a href="<?= URL_BASE ?>/cadastro" class="profile-dropdown-item register-link">
+                            <i class="bi bi-person-plus" aria-hidden="true"></i>
+                            <i class="bi bi-person-plus-fill" aria-hidden="true"></i>
+                            Cadastre-se
+                        </a>
                     <?php endif; ?>
                 </div>
+            </div>
+
+            <!-- Card ergonômico de conta e acesso rápido no Mobile -->
+            <div class="mobile-user-card">
+                <?php if (isset($_SESSION['usuario_logado'])):
+                    $usuarioLogado = $_SESSION['usuario_logado'];
+                ?>
+                    <div class="mobile-user-info">
+                        <div class="mobile-user-avatar">
+                            <?php if ($avatarNavbarUrl): ?>
+                                <img class="mobile-user-avatar-image" src="<?= htmlspecialchars($avatarNavbarUrl, ENT_QUOTES, 'UTF-8') ?>" alt="">
+                            <?php else: ?>
+                                <i class="bi bi-person-fill" aria-hidden="true"></i>
+                            <?php endif; ?>
+                        </div>
+                        <div class="mobile-user-meta">
+                            <strong class="mobile-user-name"><?= htmlspecialchars($usuarioLogado->getNome()) ?></strong>
+                            <span class="mobile-user-email"><?= htmlspecialchars($usuarioLogado->getEmail()) ?></span>
+                        </div>
+                    </div>
+                    <div class="mobile-user-actions">
+                        <a href="<?= URL_BASE ?>/perfil" class="btn-mobile-profile">
+                            <i class="bi bi-person-gear"></i> Ver Perfil
+                        </a>
+                        <a href="<?= URL_BASE ?>/logout" onclick="desfazSessionStorage()" class="btn-mobile-logout" title="Sair da conta">
+                            <i class="bi bi-box-arrow-right"></i>
+                        </a>
+                    </div>
+                <?php else: ?>
+                    <div class="mobile-guest-actions">
+                        <a href="<?= URL_BASE ?>/login" class="btn-mobile-login">
+                            <i class="bi bi-box-arrow-in-right"></i> Entrar
+                        </a>
+                        <a href="<?= URL_BASE ?>/cadastro" class="btn-mobile-register">
+                            <i class="bi bi-person-plus"></i> Cadastre-se
+                        </a>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
     </div>
@@ -143,10 +228,6 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
 
             <a href="<?= URL_BASE ?>/projetos" class="sb-item <?php echo verificarAtivo('projetos', $paginaAtual); ?>">
                 Visão Geral
-            </a>
-
-            <a href="<?= URL_BASE ?>/projetos/config-global" class="sb-item <?php echo verificarAtivo('config-global', $paginaAtual); ?>">
-                Config. Globais
             </a>
 
             <a href="<?= URL_BASE ?>/projetos/guia" class="sb-item <?php echo verificarAtivo('guia', $paginaAtual); ?>">
@@ -179,8 +260,7 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
         <div id="sb-titulo-PageMaker" class="sb-section">
             <div class="sb-label">Page Maker</div>
 
-            <a href="<?= URL_BASE ?>/projetos/pagemaker?step=cabecalho" class="sb-item <?php echo verificarAtivo('pagemaker', $paginaAtual, 'step', 'cabecalho'); ?>"> Cabeçalho
-            </a>
+
 
             <a href="<?= URL_BASE ?>/projetos/pagemaker?section=cabecalho" class="sb-item <?php echo verificarAtivo('pagemaker', $paginaAtual, 'section', 'cabecalho'); ?>"> <span class="sb-icon"></span> Cabeçalho
             </a>
@@ -215,18 +295,6 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
         <?php endif; ?>
 
 
-        <!-- Projetos -->
-        <?php if (defined('URL_BASE')): ?>
-            <div id="sb-titulo-projetos" class="sb-section">
-                <div class="sb-label">Projetos</div>
-                <a href="<?= URL_BASE ?>/projetos" class="sb-item <?php echo $paginaAtual === 'projetos' ? 'active' : ''; ?>">
-                    <span class="sb-icon"></span> Listar Projetos
-                </a>
-                <a href="<?= URL_BASE ?>/projetos/cadastrar" class="sb-item <?php echo $paginaAtual === 'cadastrar' ? 'active' : ''; ?>">
-                    <span class="sb-icon"></span> Criar Projeto
-                </a>
-            </div>
-        <?php endif; ?>
 
         <!-- Historico -->
         <div id="sb-titulo-historico" class="sb-section">
@@ -254,6 +322,25 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
 
             <a href="<?= URL_BASE ?>/projetos/saida?tab=baixar" class="sb-item <?php echo verificarAtivo('saida', $paginaAtual, 'tab', 'baixar'); ?>"> <span class="sb-icon"></span> Baixar Tudo
             </a>
+        </div>
+
+        <!-- PHPMeuAmigo -->
+        <div id="sb-titulo-PHPMeuAmigo" class="sb-section">
+            <div class="sb-label">PHPMeuAmigo</div>
+            <a href="<?= URL_BASE ?>/projetos/phpmeuamigo" class="sb-item <?php echo verificarAtivo('phpmeuamigo', $paginaAtual); ?>">
+                <span class="sb-icon"></span> Modelador de Banco
+            </a>
+        </div>
+
+        <!-- Perfil -->
+        <div id="sb-titulo-perfil" class="sb-section">
+            <div class="sb-label">Perfil</div>
+            <a href="<?= URL_BASE ?>/perfil" class="sb-item <?php echo ($paginaAtual === 'perfil') ? 'active' : ''; ?>">
+                <span class="sb-icon"></span> Gerenciar perfil
+            </a>
+        </div>
     </aside>
+
+  <script src="<?= URL_BASE ?>/assets/js/deslogar.js"></script>
 
     <main class="main-content">

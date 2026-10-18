@@ -44,4 +44,12 @@ class ConnectionFactory {
 
         return $connection;
     }
+     public static function specialConn($dsn,$user,$pass){
+        // print $dsn;
+        $connection = new PDO($dsn, $user, $pass);
+        $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $connection->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+
+        return $connection;
+    }
 }

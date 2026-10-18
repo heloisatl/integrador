@@ -16,9 +16,9 @@ class Usuario {
         string $nome,
         string $email,
         string $senhaUsuario,
-        string $usuarioBanco,
-        string $servidor,
-        string $tipoPerfil
+        string $usuarioBanco = '',
+        string $servidor = 'localhost',
+        string $tipoPerfil = 'usuario'
     ) {
         $this->idUsuario    = $idUsuario;
         $this->nome         = $nome;
@@ -59,13 +59,14 @@ class Usuario {
 
     public static function arrayParaObjeto(array $dados): self {
         return new self(
-            (int) $dados['id_usuario'],
-            $dados['nome'],
-            $dados['email'],
-            $dados['senha_usuario'],
-            $dados['usuario_banco'],
-            $dados['servidor'],
-            $dados['tipo_perfil']
+            (int) ($dados['id_usuario'] ?? 0),
+            (string) ($dados['nome'] ?? ''),
+            (string) ($dados['email'] ?? ''),
+            (string) ($dados['senha_usuario'] ?? ''),
+            (string) ($dados['usuario_banco'] ?? ''),
+            (string) ($dados['servidor'] ?? 'localhost'),
+            (string) ($dados['tipo_perfil'] ?? 'usuario')
         );
     }
 }
+

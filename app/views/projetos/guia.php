@@ -5,21 +5,193 @@
     include_once(__DIR__ . "/../include/navigation.php");
     ?>
 
-    <link rel="stylesheet" href="<?= URL_BASE_CSS ?>/paginas.css">
+    <link rel="stylesheet" href="<?= URL_BASE_CSS ?>/guia.css">
 
-    <!-- main já ta aberta no navigation -->
-    <h2 class="home-h2">Esse é o guia e nsei oq</h2>
-    <p class="home-subtitle">guiazinho rapido demais </p>
+    <section class="guia-pagina">
+        <header class="guia-cabecalho">
+            <p class="guia-etiqueta">Guia Rápido</p>
+            <h2> Tudo o que o DevStudio oferece</h2>
+            <p>Use as ferramentas do DevStudio para configurar seu projeto, gerar sistemas PHP, criar páginas visuais e organizar os arquivos produzidos.</p>
+        </header>
 
-    <a href="<?= URL_BASE ?>/projetos" class="home-btn">link </a>
+        <section class="guia-bloco">
+            <div class="guia-titulo-bloco"><span class="guia-numero">01</span>
+                <div>
+                    <p class="guia-etiqueta">Primeiros passos</p>
+                    <h3>Como começar</h3>
+                </div>
+            </div>
+            <div class="guia-passos">
+                <article class="guia-passo"><span>1</span>
+                    <div>
+                        <h4>Acesse o DevStudio</h4>
+                        <p>Abra o sistema pela URL da pasta <code>public</code>. A página inicial apresenta os atalhos e o resumo das ferramentas.</p>
+                    </div>
+                </article>
+                <article class="guia-passo"><span>2</span>
+                    <div>
+                        <h4>Conecte ao seu banco</h4>
+                        <p>No <strong>MVC Creator</strong>, informe as credenciais de acesso ao MySQL para carregar seus bancos de dados.</p>
+                    </div>
+                </article>
+                <article class="guia-passo"><span>3</span>
+                    <div>
+                        <h4>Escolha seu objetivo</h4>
+                        <p>Gere um sistema PHP pelo <strong>MVC Creator</strong> ou monte uma interface HTML pelo <strong>Page Maker</strong>.</p>
+                    </div>
+                </article>
+                <article class="guia-passo"><span>4</span>
+                    <div>
+                        <h4>Confira e aproveite</h4>
+                        <p>Use a prévia, acompanhe o histórico e consulte a saída para copiar ou baixar o código gerado.</p>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section class="guia-bloco">
+            <div class="guia-titulo-bloco"><span class="guia-numero">02</span>
+                <div>
+                    <p class="guia-etiqueta">Funcionalidades</p>
+                    <h3>Conheça cada área</h3>
+                </div>
+            </div>
+            <div class="guia-camadas">
+                <article class="guia-camada"><span class="guia-icone">⌂</span>
+                    <div>
+                        <h4>Início</h4>
+                        <p>Mostra uma visão geral do DevStudio e oferece acesso rápido ao MVC Creator e Page Maker.</p><a class="guia-link" href="<?= URL_BASE ?>/projetos">Ir para Início →</a>
+                    </div>
+                </article>
+                <article class="guia-camada"><span class="guia-icone">MVC</span>
+                    <div>
+                        <h4>MVC Creator</h4>
+                        <p>Gera Controllers, Models, Repositories/DAO e Views CRUD a partir das tabelas do seu banco de dados.</p><a class="guia-link" href="<?= URL_BASE ?>/projetos/mvc-creator">Abrir MVC Creator →</a>
+                    </div>
+                </article>
+                <article class="guia-camada"><span class="guia-icone">HTML</span>
+                    <div>
+                        <h4>Page Maker</h4>
+                        <p>Cria páginas HTML e CSS com cabeçalho, navegação, imagens, colunas, cards, formulários, botões e prévia responsiva.</p><a class="guia-link" href="<?= URL_BASE ?>/projetos/pagemaker">Abrir Page Maker →</a>
+                    </div>
+                </article>
+                <article class="guia-camada"><span class="guia-icone">OUT</span>
+                    <div>
+                        <h4>Saída</h4>
+                        <p>Centraliza os códigos produzidos pelas ferramentas para visualizar, copiar e baixar cada arquivo gerado.</p><a class="guia-link" href="<?= URL_BASE ?>/projetos/saida">Ver saída →</a>
+                    </div>
+                </article>
+                <article class="guia-camada"><span class="guia-icone">HIS</span>
+                    <div>
+                        <h4>Histórico</h4>
+                        <p>Ajuda a acompanhar os projetos e atividades recentes, facilitando a retomada do trabalho.</p><a class="guia-link" href="<?= URL_BASE ?>/projetos/historico">Ver histórico →</a>
+                    </div>
+                </article>
+                <article class="guia-camada"><span class="guia-icone">DB</span>
+                    <div>
+                        <h4>PHPMeuAmigo</h4>
+                        <p>Modelador visual de banco: crie tabelas, configure atributos, tipos, chaves estrangeiras ou importe bancos locais.</p><a class="guia-link" href="<?= URL_BASE ?>/projetos/phpmeuamigo">Abrir PHPMeuAmigo →</a>
+                    </div>
+                </article>
+                <article class="guia-camada"><span class="guia-icone">PER</span>
+                    <div>
+                        <h4>Perfil e tema</h4>
+                        <p>No menu Perfil, alterne entre tema claro e escuro. Quando estiver autenticado, também poderá sair da conta.</p>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section class="guia-bloco">
+            <div class="guia-titulo-bloco"><span class="guia-numero">03</span>
+                <div>
+                    <p class="guia-etiqueta">Gerador PHP</p>
+                    <h3>Como usar o MVC Creator</h3>
+                </div>
+            </div>
+            <ol class="guia-lista-detalhada">
+                <li><strong>Conecte:</strong> no MVC Creator, informe as credenciais e carregue os bancos disponíveis.</li>
+                <li><strong>Detecte tabelas:</strong> escolha o banco e consulte as tabelas encontradas automaticamente.</li>
+                <li><strong>Selecione as opções:</strong> o gerador prepara Model, Controller, Repository/DAO e Views de listagem, cadastro e edição.</li>
+                <li><strong>Veja a estrutura:</strong> confira as pastas e os arquivos antes de executar a geração.</li>
+                <li><strong>Gere e baixe:</strong> o sistema cria o código, monta o arquivo <code>.zip</code> e disponibiliza o download.</li>
+            </ol>
+            <div class="guia-aviso"><strong>MVC + DAO:</strong> o Model representa os dados; o DAO, chamado de Repository neste projeto, concentra o SQL; o Controller coordena as ações; e a View exibe a interface.</div>
+        </section>
+
+        <section class="guia-bloco">
+            <div class="guia-titulo-bloco"><span class="guia-numero">04</span>
+                <div>
+                    <p class="guia-etiqueta">Criador visual</p>
+                    <h3>Como usar o Page Maker</h3>
+                </div>
+            </div>
+            <div class="guia-lista-recursos">
+                <p><strong>Conteúdo básico:</strong> defina nome do arquivo, título, cabeçalho, texto, imagens por URL ou upload e links de navegação.</p>
+                <p><strong>Layout:</strong> escolha uma, duas ou três colunas, alinhamento, margem, preenchimento e cabeçalho fixo.</p>
+                <p><strong>Design:</strong> configure cores, Google Fonts, peso da fonte, altura da linha, gradientes, imagem de fundo, sombras e cantos arredondados.</p>
+                <p><strong>Componentes:</strong> inclua listas, tabelas, rodapé, cards, formulário de contato e botões CTA personalizados.</p>
+                <p><strong>Prévia e código:</strong> visualize em desktop, tablet ou celular e gere o HTML e CSS finais.</p>
+            </div>
+            <a class="guia-botao" href="<?= URL_BASE ?>/projetos/pagemaker">Experimentar Page Maker</a>
+        </section>
+
+        <section class="guia-bloco">
+            <div class="guia-titulo-bloco"><span class="guia-numero">05</span>
+                <div>
+                    <p class="guia-etiqueta">Modelador de banco</p>
+                    <h3>Como usar o PHPMeuAmigo</h3>
+                </div>
+            </div>
+            <ol class="guia-lista-detalhada">
+                <li><strong>Crie ou importe um banco:</strong> cadastre um novo banco de dados no DevStudio ou importe um banco de dados da sua máquina local.</li>
+                <li><strong>Gerencie tabelas:</strong> crie novas tabelas com nome padronizado diretamente no painel lateral.</li>
+                <li><strong>Configure atributos e tipos:</strong> adicione campos, defina o tipo de dado (INT, VARCHAR, etc.) e configure flags como PK, NN, AI e UQ.</li>
+                <li><strong>Vincule Foreign Keys didáticas:</strong> utilize o seletor visual para apontar uma coluna diretamente para a chave primária de outra tabela do mesmo banco.</li>
+                <li><strong>Integração com o MVC:</strong> o banco modelado fica disponível no MVC Creator para gerar todo o código do sistema.</li>
+            </ol>
+            <div class="guia-aviso"><strong>Ambiente Isolado:</strong> toda a modelagem feita no PHPMeuAmigo é gravada exclusivamente no DevStudio e não altera a estrutura dos seus bancos originais do MySQL.</div>
+            <a class="guia-botao" href="<?= URL_BASE ?>/projetos/phpmeuamigo">Experimentar PHPMeuAmigo</a>
+        </section>
+
+        <section class="guia-bloco">
+            <div class="guia-titulo-bloco"><span class="guia-numero">06</span>
+                <div>
+                    <p class="guia-etiqueta">Depois de gerar</p>
+                    <h3>O que fazer com o resultado</h3>
+                </div>
+            </div>
+            <div class="guia-passos">
+                <article class="guia-passo"><span>1</span>
+                    <div>
+                        <h4>Revise na Saída</h4>
+                        <p>Confira os arquivos separados por tipo e verifique se o conteúdo gerado corresponde ao que foi configurado.</p>
+                    </div>
+                </article>
+                <article class="guia-passo"><span>2</span>
+                    <div>
+                        <h4>Copie ou baixe</h4>
+                        <p>Use os controles de cada bloco para copiar o código ou salvar os arquivos no computador.</p>
+                    </div>
+                </article>
+                <article class="guia-passo"><span>3</span>
+                    <div>
+                        <h4>Coloque no servidor</h4>
+                        <p>Use o código em XAMPP, WAMP, Docker ou outro ambiente PHP/HTML.</p>
+                    </div>
+                </article>
+                <article class="guia-passo"><span>4</span>
+                    <div>
+                        <h4>Retome depois</h4>
+                        <p>Consulte o Histórico para encontrar atividades e continuar seu trabalho com mais organização.</p>
+                    </div>
+                </article>
+            </div>
+        </section>
+    </section>
+    <?php require_once __DIR__ . '/../include/footer.php'; ?>
     </main>
-    <div class="guia-container">
-        <p>oioio</p>
-
-    </div>
-
 </div>
 </body>
-
 
 </html>
