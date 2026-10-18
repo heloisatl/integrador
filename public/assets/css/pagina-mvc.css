@@ -1,16 +1,72 @@
+/* Estilo visual para elementos desabilitados */
+.mvc-etapa input:disabled,
+.mvc-etapa select:disabled,
+.mvc-etapa button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
 
 /* Esconde todas as seções de sidebar por padrão */
-.sb-section { display: none; }
+.sb-section {
+    display: none;
+}
 
 /* Mostra apenas o que deve aparecer em cada página */
-#home #sb-principal { display: block; }
-#config-global #sb-principal { display: block; }
-#guia #sb-principal { display: block; }
-#mvc-creator #sb-titulo-MVC { display: block; }
-#pagemaker #sb-titulo-PageMaker { display: block; }
-#historico #sb-titulo-historico { display: block; }
-#saida #sb-titulo-saida { display: block; }
-#usuarios #sb-titulo-usuarios { display: block; }
+#home #sb-principal,
+#projetos #sb-principal,
+body#home #sb-principal,
+body#projetos #sb-principal {
+    display: flex;
+}
+
+
+#config-global #sb-principal,
+body#config-global #sb-principal {
+    display: flex;
+}
+
+#guia #sb-principal,
+body#guia #sb-principal {
+    display: flex;
+}
+
+#mvc-creator #sb-titulo-MVC,
+#mvcCreator #sb-titulo-MVC,
+body#mvc-creator #sb-titulo-MVC {
+    display: flex;
+}
+
+#pagemaker #sb-titulo-PageMaker,
+#pageMaker #sb-titulo-PageMaker,
+body#pagemaker #sb-titulo-PageMaker {
+    display: flex;
+}
+
+#historico #sb-titulo-historico,
+body#historico #sb-titulo-historico {
+    display: flex;
+}
+
+#saida #sb-titulo-saida,
+body#saida #sb-titulo-saida {
+    display: flex;
+}
+
+#usuarios #sb-titulo-usuarios,
+body#usuarios #sb-titulo-usuarios {
+    display: flex;
+}
+
+#phpmeuamigo #sb-titulo-PHPMeuAmigo,
+body#phpmeuamigo #sb-titulo-PHPMeuAmigo {
+    display: flex;
+}
+
+#perfil #sb-titulo-perfil,
+body#perfil #sb-titulo-perfil {
+    display: flex;
+}
 
 .mvc-etapa-wrapper {
     max-width: 900px;
@@ -81,7 +137,7 @@
     margin-bottom: 16px;
 }
 
-/* Banner informativo, ex: credenciais pré-carregadas */
+/* Banner informativo */
 .mvc-aviso-info {
     display: flex;
     align-items: flex-start;
@@ -100,21 +156,17 @@
     color: var(--text);
 }
 
-/* Grid de mvc-campos em duas colunas */
+/* Grid de formulário ajustado */
 .mvc-grade-formulario {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
     margin-bottom: 16px;
 }
 
 .mvc-campo {
     display: flex;
     flex-direction: column;
-}
-
-.mvc-campo-completo {
-    grid-column: 1 / -1;
 }
 
 .mvc-campo label {
@@ -150,7 +202,9 @@
 .mvc-etapa input,
 .mvc-etapa select {
     width: 100%;
-    padding: 11px 12px;
+    height: 42px;
+    /* Força altura consistente */
+    padding: 0 12px;
     border: 1px solid var(--border);
     border-radius: 8px;
     background: var(--surface);
@@ -158,6 +212,7 @@
     font-size: 14px;
     font-family: 'DM Sans', sans-serif;
     transition: border-color 0.15s ease;
+    box-sizing: border-box;
 }
 
 .mvc-etapa input::placeholder {
@@ -170,13 +225,10 @@
     border-color: var(--accent);
 }
 
-.mvc-etapa label {
-    display: block;
-    margin-bottom: 8px;
-}
-
+/* Flex do Banco de Dados para manter o Select e Botões alinhados */
 .mvc-linha-banco {
     display: flex;
+    align-items: center;
     gap: 10px;
 }
 
@@ -184,20 +236,22 @@
     flex: 1;
 }
 
-.mvc-linha-banco .mvc-etapa-botao {
-    margin-top: 0;
-    white-space: nowrap;
+.mvc-botoes-banco {
+    display: flex;
+    gap: 8px;
+    align-items: center;
 }
 
 .mvc-acoes {
     display: flex;
     gap: 10px;
-    margin-top: 6px;
+    margin-top: 16px;
 }
 
 .mvc-etapa-botao {
-    margin-top: 10px;
-    padding: 11px 18px;
+    height: 42px;
+    /* Mesma altura dos inputs para uniformidade */
+    padding: 0 16px;
     border: none;
     border-radius: 8px;
     background: var(--accent);
@@ -208,8 +262,11 @@
     cursor: pointer;
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
+    white-space: nowrap;
     transition: background-color 0.15s ease;
+    box-sizing: border-box;
 }
 
 .mvc-etapa-botao:hover {
@@ -217,7 +274,6 @@
 }
 
 .mvc-etapa-botao-secundario {
-    margin-left: 0;
     background: var(--surface);
     color: var(--text);
     border: 1px solid var(--border);
@@ -226,6 +282,11 @@
 .mvc-etapa-botao-secundario:hover {
     background: var(--panel);
     border-color: var(--muted);
+}
+
+.mvc-btn-icon {
+    width: 42px;
+    padding: 0;
 }
 
 .mvc-formulario-opcoes label {
@@ -280,32 +341,15 @@
         max-width: 100%;
     }
 
-    .mvc-grade-formulario {
-        grid-template-columns: 1fr;
-        gap: 14px;
-    }
-
     .mvc-etapa {
         padding: 20px;
-    }
-
-    .mvc-linha-banco {
-        flex-direction: column;
-    }
-
-    .mvc-linha-banco .mvc-etapa-botao {
-        width: 100%;
-        justify-content: center;
-    }
-
-    .mvc-acoes {
-        flex-wrap: wrap;
     }
 }
 
 @media (max-width: 640px) {
     .mvc-etapa-cabecalho {
         flex-wrap: wrap;
+        gap: 8px;
     }
 
     .mvc-etapa {
@@ -316,11 +360,31 @@
         flex-direction: column;
     }
 
-    .mvc-etapa-botao,
-    .mvc-etapa-botao-secundario {
+    .mvc-linha-banco {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+
+    .mvc-botoes-banco {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .mvc-botoes-banco .mvc-etapa-botao {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .mvc-acoes {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .mvc-acoes .mvc-etapa-botao {
         width: 100%;
         justify-content: center;
     }
 }
-
-
