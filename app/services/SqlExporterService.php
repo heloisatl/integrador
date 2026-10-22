@@ -59,7 +59,8 @@ class SqlExporterService {
             }
         }
 
-        $dataGeracao = date('d/m/Y H:i:s');
+        $dt = new \DateTime('now', new \DateTimeZone('America/Sao_Paulo'));
+        $dataGeracao = $dt->format('d/m/Y H:i:s');
         $sql = [];
 
         $sql[] = "-- ============================================================================";
