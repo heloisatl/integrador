@@ -212,6 +212,7 @@ Ao utilizar o XAMPP ou servidor Apache tradicional:
 | `POST` | `/phpmeuamigo/importar-sql` | Processa e executa script SQL enviado |
 | `POST` | `/phpmeuamigo/conectar-mysql-local` | Testa conectividade com instancia local |
 | `POST` | `/phpmeuamigo/importar-banco-local` | Importa metadados de schema ativo no MySQL local |
+| `GET` | `/phpmeuamigo/bancos/exportar-sql?id_banco={id}` | Gera e faz o download do script .SQL atualizado do banco selecionado |
 
 ---
 

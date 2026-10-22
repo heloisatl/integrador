@@ -6,6 +6,7 @@ use app\services\BancoService;
 use app\services\TabelaService;
 use app\services\AtributoService;
 use app\services\SqlImporterService;
+use app\services\SqlExporterService;
 use app\database\ConnectionFactory;
 use app\tools\SchemaInspector;
 
@@ -14,12 +15,14 @@ class PhpMeuAmigoController extends Controller{
     private TabelaService $tabelaService;
     private AtributoService $atributoService;
     private SqlImporterService $sqlImporterService;
+    private SqlExporterService $sqlExporterService;
 
     public function __construct(){
         $this->bancoService       = new BancoService();
         $this->tabelaService      = new TabelaService();
         $this->atributoService    = new AtributoService();
         $this->sqlImporterService = new SqlImporterService();
+        $this->sqlExporterService = new SqlExporterService();
     }
 
     public function index(): void{
@@ -601,5 +604,52 @@ class PhpMeuAmigoController extends Controller{
         // Endpoint reservado para futura importacao via arquivo .sql
         header('Content-Type: application/json; charset=utf-8');
         echo json_encode(['sucesso' => false, 'mensagem' => 'Use a importacao direta pelo MySQL local.']);
+    }
+
+    public function exportarSql(): void{
+        if (!isset($_SESSION['usuario_logado'])) {
+            $isJson = isset($_SERVER['HTTP_ACCEPT']) && str_contains($_SERVER['HTTP_ACCEPT'], 'application/json');
+            if ($isJson) {
+                $this->autenticacaoJsonRequired();
+            } else {
+                $this->autenticacaoRequired();
+            }
+            return;
+        }
+
+        $id_banco = filter_input(INPUT_GET, 'id_banco', FILTER_VALIDATE_INT)
+                 ?: filter_input(INPUT_POST, 'id_banco', FILTER_VALIDATE_INT);
+
+        if (!$id_banco) {
+            http_response_code(400);
+            header('Content-Type: application/json; charset=utf-8');
+            echo json_encode(['sucesso' => false, 'mensagem' => 'ID do banco não informado ou inválido.']);
+            return;
+        }
+
+        try {
+            $id_usuario = $_SESSION['usuario_logado']->getIdUsuario();
+            session_write_close();
+            $resultado  = $this->sqlExporterService->exportarSql($id_banco, $id_usuario);
+
+            $nomeArquivo = $resultado['nome_arquivo'];
+            $conteudoSql = $resultado['conteudo_sql'];
+
+            header('Content-Description: File Transfer');
+            header('Content-Type: application/sql; charset=utf-8');
+            header('Content-Disposition: attachment; filename="' . $nomeArquivo . '"');
+            header('Content-Length: ' . strlen($conteudoSql));
+            header('Pragma: public');
+            header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+            header('Expires: 0');
+
+            echo $conteudoSql;
+            exit;
+        } catch (\Exception $e) {
+            http_response_code(400);
+            header('Content-Type: application/json; charset=utf-8');
+            echo json_encode(['sucesso' => false, 'mensagem' => 'Erro ao exportar SQL: ' . $e->getMessage()]);
+            return;
+        }
     }
 }
