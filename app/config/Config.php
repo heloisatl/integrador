@@ -53,6 +53,9 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+// Configuração de Fuso Horário (Horário de Brasília)
+date_default_timezone_set('America/Sao_Paulo');
+
 // Configuração do sistema
 define('APP_NAME', env('APP_NAME', 'DevStudio'));
 
