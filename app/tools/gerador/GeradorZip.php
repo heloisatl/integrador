@@ -7,13 +7,7 @@ use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
 
 class GeradorZip {
-    /**
-     * Compacta uma pasta inteira de arquivos gerados em um arquivo .zip
-     *
-     * @param string $pastaOrigem Caminho da pasta contendo os arquivos
-     * @param string $arquivoZipDestino Caminho completo onde o .zip será criado
-     * @return bool
-     */
+    
     public function compactarPasta(string $pastaOrigem, string $arquivoZipDestino): bool {
         if (!file_exists($pastaOrigem)) {
             return false;
@@ -45,12 +39,6 @@ class GeradorZip {
         return $zip->close();
     }
 
-    /**
-     * Envia o arquivo .zip gerado diretamente para o navegador realizar o download.
-     *
-     * @param string $caminhoZip
-     * @param string $nomeArquivoDownload
-     */
     public function enviarDownload(string $caminhoZip, string $nomeArquivoDownload = 'projeto_mvc.zip'): void {
         if (!file_exists($caminhoZip)) {
             http_response_code(404);

@@ -18,20 +18,17 @@ class GeradorModel {
         $nomeAtributos = "";
         $gettersSetters = "";
 
-        foreach ($atributos as $atributo) {
-            foreach($atributo as $att){
+        foreach ($atributos as $att) {
+            $nomeAtributos .= "    private \${$att->getNome_atributo()};\n";
+            $metodo = ucfirst($att->getNome_atributo());
 
-                $nomeAtributos .= "    private \${$att->getNome_atributo()};\n";
-                $metodo = ucfirst($att->getNome_atributo());
-    
-                $gettersSetters .= "    public function get{$metodo}() {\n";
-                $gettersSetters .= "        return \$this->{$att->getNome_atributo()};\n";
-                $gettersSetters .= "    }\n\n";
-    
-                $gettersSetters .= "    public function set{$metodo}(\${$att->getNome_atributo()}) {\n";
-                $gettersSetters .= "        \$this->{$att->getNome_atributo()} = \${$att->getNome_atributo()};\n";
-                $gettersSetters .= "    }\n\n";
-            }
+            $gettersSetters .= "    public function get{$metodo}() {\n";
+            $gettersSetters .= "        return \$this->{$att->getNome_atributo()};\n";
+            $gettersSetters .= "    }\n\n";
+
+            $gettersSetters .= "    public function set{$metodo}(\${$att->getNome_atributo()}) {\n";
+            $gettersSetters .= "        \$this->{$att->getNome_atributo()} = \${$att->getNome_atributo()};\n";
+            $gettersSetters .= "    }\n\n";
         }
 
         return <<<PHP

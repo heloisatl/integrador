@@ -5,14 +5,9 @@ use app\models\Tabela;
 use app\models\Atributo;
 
 class GeradorView {
-    /**
-     * Gera a view de Listagem (index.php)
-     *
-     * @param string $nomeTabela
-     * @param array $atributos
-     * @param string $chavePrimaria
-     * @return string
-     */
+    
+    //Gera a view de Listagem (index.php)
+   
     public function gerarIndexView(Tabela $tabela, array $atributos, string $chavePrimaria = 'id'): string {
         $nomeClasse = $tabela->getNome_tabelaUC();
         $varPlural = strtolower($tabela->getNome_tabela()) . 's';
@@ -20,16 +15,13 @@ class GeradorView {
 
         $ths = "";
         $tds = "";
-        foreach ($atributos as $atributo) {
-            foreach($atributo as $campo){
-                $ths .= "                    <th>" . ucfirst($campo->getNome_atributo()) . "</th>\n";
-                $tds .= "                        <td><?= htmlspecialchars(\${$varSingular}['{$campo->getNome_atributo()}'] ?? '') ?></td>\n";
-            }
+        foreach ($atributos as $campo) {
+            $ths .= "                    <th>" . ucfirst($campo->getNome_atributo()) . "</th>\n";
+            $tds .= "                        <td><?= htmlspecialchars(\${$varSingular}['{$campo->getNome_atributo()}'] ?? '') ?></td>\n";
         }
 
         return <<<PHP
-<?php require_once __DIR__ . '/../include/head.php'; ?>
-<?php require_once __DIR__ . '/../include/navigation.php'; ?>
+
 
 <div class="page-header">
     <h1 class="page-title">Listagem de {$nomeClasse}</h1>
@@ -72,26 +64,21 @@ class GeradorView {
 PHP;
     }
 
-    /**
-     * Gera a view de Cadastro (create.php)
-     */
+    
+    //Gera a view de Cadastro (create.php)
+     
     public function gerarCreateView(Tabela $tabela, array $atributos): string {
         $nomeClasse = $tabela->getNome_tabelaUC();
         $varPlural = strtolower($tabela->getNome_tabela()) . 's';
 
         $camposForm = "";
-        foreach($atributos as $atributo){
-            foreach($atributo as $campo){
-                if ($campo->getPk()) continue;
-                // $label = ucfirst($campo->getNome_atributo());
-                $camposForm .= $campo->getInput();
-
-            }
+        foreach($atributos as $campo){
+            if ($campo->getPk()) continue;
+            $camposForm .= $campo->getInput();
         }
 
         return <<<PHP
-<?php require_once __DIR__ . '/../include/head.php'; ?>
-<?php require_once __DIR__ . '/../include/navigation.php'; ?>
+
 
 <div class="page-header">
     <h1 class="page-title">Cadastrar {$nomeClasse}</h1>
@@ -102,6 +89,7 @@ PHP;
 
 <div class="form-container">
     <form action="<?= URL_BASE ?>/{$varPlural}/salvar" method="POST">
+<?php \$obj = null; ?>
 {$camposForm}
         <button type="submit" class="btn btn-primary">Salvar</button>
     </form>
@@ -109,32 +97,22 @@ PHP;
 PHP;
     }
 
-    /**
-     * Gera a view de Edição (edit.php)
-     *
-     * @param Tabela $tabela
-     * @param array $atributos
-     * @param string $chavePrimaria
-     * @return string
-     */
+    
+    //Gera a view de Edição (edit.php)
+   
     public function gerarEditView(Tabela $tabela, array $atributos, string $chavePrimaria = 'id'): string {
         $nomeClasse = $tabela->getNome_tabelaUC();
         $varPlural = strtolower($tabela->getNome_tabela()) . 's';
         $varSingular = strtolower($tabela->getNome_tabela());
 
         $camposForm = "";
-        foreach ($atributos as $atributo){
-            foreach($atributo as $campo){
-                if ($campo->getPk()) continue;
-                $label = $campo->getNome_atributo();
-                $camposForm .= $atributo->getInput();
-
-            }
+        foreach ($atributos as $campo){
+            if ($campo->getPk()) continue;
+            $camposForm .= $campo->getInput();
         }
 
         return <<<PHP
-<?php require_once __DIR__ . '/../include/head.php'; ?>
-<?php require_once __DIR__ . '/../include/navigation.php'; ?>
+
 
 <div class="page-header">
     <h1 class="page-title">Editar {$nomeClasse}</h1>
@@ -145,6 +123,7 @@ PHP;
 
 <div class="form-container">
     <form action="<?= URL_BASE ?>/{$varPlural}/atualizar" method="POST">
+<?php \$obj = \${$varSingular}; ?>
         <input type="hidden" name="id" value="<?= htmlspecialchars(\${$varSingular}['{$chavePrimaria}'] ?? '') ?>">
 {$camposForm}
         <button type="submit" class="btn btn-primary">Atualizar</button>
@@ -153,15 +132,9 @@ PHP;
 PHP;
     }
 
-    /**
-     * Salva todas as views na pasta app/views/{varPlural}/
-     *
-     * @param string $nomeTabela
-     * @param array $atributos
-     * @param string $chavePrimaria
-     * @param string $caminhoBase
-     * @return array
-     */
+    
+    //Salva todas as views na pasta app/views/{varPlural}/
+    
     public function salvarViews(Tabela $tabela, array $atributos, string $chavePrimaria = 'id', string $caminhoBase = __DIR__ . '/../../views'): array {
         $varPlural = strtolower($tabela->getNome_tabela()) . 's';
         $pastaDestino = "{$caminhoBase}/{$varPlural}";

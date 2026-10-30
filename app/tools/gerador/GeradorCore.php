@@ -40,25 +40,25 @@ PHP;
 
     public static function gerarAutoload(){
         
-        $arquivo = <<<PHP
+        $arquivo = <<<'PHP'
 <?php
 
-spl_autoload_register(function (\$class) {
+spl_autoload_register(function ($class) {
 
-    \$prefix  = 'app\\';
-    \$baseDir = __DIR__ . '/../';
+    $prefix  = 'app\\';
+    $baseDir = __DIR__ . '/../';
 
-    if (str_starts_with(\$class, \$prefix)) {
+    if (str_starts_with($class, $prefix)) {
 
-        \$path = substr(\$class, strlen(\$prefix));
+        $path = substr($class, strlen($prefix));
 
-        \$classFile = \$baseDir . str_replace('\\', '/', \$path) . '.php';
+        $classFile = $baseDir . str_replace('\\', '/', $path) . '.php';
 
-        if (file_exists(\$classFile)) {
-            require_once \$classFile;
+        if (file_exists($classFile)) {
+            require_once $classFile;
         }
     } else {
-        throw new Exception("A classe {\$class} não pode ser carregada");
+        throw new Exception("A classe {$class} não pode ser carregada");
     }
 });
 
@@ -122,10 +122,10 @@ class Router {
     private function dispatch(array \$route): void {
         list(\$controller, \$method) = explode('@', \$route['action']);
 
-        \$controllerClass = "app\\controllers\\\$controller";
+        \$controllerClass = "app\\controllers\\\\\$controller";
 
         if (!class_exists(\$controllerClass)) {
-            print "Controller \$controller não encontrado";
+            print "Controller \$controllerClass não encontrado";
             die;
         }
 

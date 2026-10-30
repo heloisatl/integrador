@@ -58,6 +58,9 @@ class Projeto{
     public function getComentarios(){
         return $this->comentarios;
     }
+    public function getComentario(){
+        return $this->comentarios;
+    }
     public function getViews(){
         return $this->views;
     }
@@ -69,6 +72,9 @@ class Projeto{
     // SETTERS
     public function setComentarios($comentarios){
         $this->comentarios = $comentarios;
+    }
+    public function setComentario($comentario){
+        $this->comentarios = $comentario;
     }
     public function setViews($views){
         $this->views = $views;
