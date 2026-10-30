@@ -3,7 +3,6 @@
 
     let navegacaoAtiva = true;
     let imagemSelecionada = '';
-    let historicoRegistrado = '';
 
     const buscar = (id) => document.getElementById(id);
     const ler = (id, padrao = '') => buscar(id)?.value.trim() || padrao;
@@ -152,10 +151,9 @@ img { max-width: 100%; width: ${largura === 'auto' ? 'auto' : largura + 'px'}; }
     function gerarHtml() {
         const links = gerarLinks();
         const componentes = gerarComponentes();
-        const css = gerarCss();
         return `<!doctype html>
 <html lang="pt-BR">
-    <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>${ler('tituloAba', 'Meu Projeto')}</title><style>${css}</style></head>
+<head><meta charset="utf-8"><title>${ler('tituloAba', 'Meu Projeto')}</title><link rel="stylesheet" href="estilo.css"></head>
 <body>
     <header><h1>${ler('textoCabecalho', 'Meu Projeto')}</h1></header>
     ${links ? `<nav>${links}</nav>` : ''}
@@ -170,76 +168,6 @@ img { max-width: 100%; width: ${largura === 'auto' ? 'auto' : largura + 'px'}; }
         buscar('codeCSS').value = gerarCss();
         buscar('codeHTML').value = gerarHtml();
         renderizarPrevia();
-    }
-
-    function baixarArquivo(conteudo, nomeArquivo, tipo) {
-        const blob = new Blob([conteudo], { type: tipo });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = nomeArquivo;
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-        URL.revokeObjectURL(url);
-    }
-
-    async function baixarHtml() {
-        atualizarSaida();
-        const html = buscar('codeHTML').value;
-        const nomeArquivo = nomeArquivoPageMaker();
-        await registrarNoHistorico();
-        baixarArquivo(html, `${nomeArquivo}.html`, 'text/html;charset=utf-8');
-    }
-
-    async function baixarCss() {
-        atualizarSaida();
-        const css = buscar('codeCSS').value;
-        const nomeArquivo = nomeArquivoPageMaker();
-        await registrarNoHistorico();
-        baixarArquivo(css, `${nomeArquivo}.css`, 'text/css;charset=utf-8');
-    }
-
-    function nomeArquivoPageMaker() {
-        return (ler('nomeArquivo', ler('tituloAba', 'pagina')) || 'pagina')
-            .replace(/\.html?$/i, '')
-            .replace(/[^a-zA-Z0-9_-]+/g, '-')
-            .replace(/^-+|-+$/g, '')
-            .toLowerCase() || 'pagina';
-    }
-
-    async function registrarNoHistorico() {
-        const conteudo = {
-            arquivo: `${nomeArquivoPageMaker()}.html`,
-            html: buscar('codeHTML').value,
-            css: buscar('codeCSS').value
-        };
-        const nome = ler('nomeArquivo', ler('tituloAba', 'pagina')) || 'pagina';
-        const assinatura = JSON.stringify({ nome, conteudo });
-        const status = buscar('pmHistoricoStatus');
-        if (assinatura === historicoRegistrado) return true;
-        if (status) status.textContent = 'Salvando no histórico...';
-
-        try {
-            const baseUrl = buscar('pageMaker')?.dataset.urlBase || '';
-            const resposta = await fetch(`${baseUrl}/projetos/historico/registrar`, {
-                method: 'POST',
-                credentials: 'same-origin',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ nome, modulo: 'PageMaker', conteudo })
-            });
-            const resultado = await resposta.json();
-            if (!resposta.ok || !resultado.sucesso) {
-                if (status) status.textContent = resultado.mensagem || 'Entre na sua conta para salvar no histórico.';
-                return false;
-            }
-            historicoRegistrado = assinatura;
-            if (status) status.textContent = 'Projeto salvo no histórico.';
-            return true;
-        } catch (erro) {
-            if (status) status.textContent = 'Não foi possível salvar no histórico. Verifique sua conexão e tente novamente.';
-            return false;
-        }
     }
 
     function renderizarPrevia() {
@@ -269,13 +197,8 @@ img { max-width: 100%; width: ${largura === 'auto' ? 'auto' : largura + 'px'}; }
     document.addEventListener('DOMContentLoaded', () => {
         buscar('adicionarLink')?.addEventListener('click', adicionarLink);
         buscar('semNavegacao')?.addEventListener('change', atualizarNavegacao);
-        buscar('gerarCodigo')?.addEventListener('click', () => {
-            atualizarSaida();
-            registrarNoHistorico();
-        });
+        buscar('gerarCodigo')?.addEventListener('click', atualizarSaida);
         buscar('visualizarPrevia')?.addEventListener('click', atualizarSaida);
-        buscar('baixarHTML')?.addEventListener('click', baixarHtml);
-        buscar('baixarCSS')?.addEventListener('click', baixarCss);
         document.querySelectorAll('input[type="range"]').forEach((controle) => controle.addEventListener('input', atualizarValores));
         document.querySelectorAll('[data-largura]').forEach((botao) => botao.addEventListener('click', () => {
             buscar('pagina').style.width = botao.dataset.largura;
@@ -288,6 +211,5 @@ img { max-width: 100%; width: ${largura === 'auto' ? 'auto' : largura + 'px'}; }
         atualizarNavegacao();
         atualizarValores();
         adicionarLink();
-        atualizarSaida();
     });
 })();

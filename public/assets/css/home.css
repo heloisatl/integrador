@@ -135,6 +135,11 @@
     color: #f59e0b;
 }
 
+.icone-saida {
+    background: rgba(148, 163, 184, 0.16);
+    color: #94a3b8;
+}
+
 .cartao-ferramenta h4 {
     color: var(--text);
     font-family: 'Syne', sans-serif;
@@ -181,6 +186,10 @@
 
 .botao-phpma {
     background: #ea580c;
+}
+
+.botao-saida {
+    background: #3f4857;
 }
 
 @media (max-width: 850px) {

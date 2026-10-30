@@ -51,8 +51,6 @@ $router->get('/usuarios/editar', 'UsuarioController@editar');
 $router->post('/usuarios/atualizar', 'UsuarioController@atualizar');
 $router->get('/perfil', 'UsuarioController@perfil');
 $router->get('/perfil/editar', 'UsuarioController@perfil');
-$router->post('/perfil/atualizar', 'UsuarioController@atualizarPerfil');
-$router->get('/perfil/avatar', 'UsuarioController@avatar');
 
 
 
@@ -65,14 +63,7 @@ $router->post("/projetos/editar/opcoes","ProjetoController@editBools");
 $router->post("/projetos/getDatabases","ProjetoController@getDatabases");
 $router->post("/projetos/getTabelas","ProjetoController@getTabelas");
 $router->post("/projetos/gerarMvc","ProjetoController@gerarMvc");
-$router->post("/projetos/historico/listar","ProjetoController@listarHistoricoJson");
-$router->post("/projetos/historico/registrar","ProjetoController@registrarProjetoHistoricoJson");
-$router->get("/projetos/historico/baixar","ProjetoController@baixarProjetoHistorico");
-$router->post("/projetos/historico/baixar","ProjetoController@baixarProjetoHistorico");
-$router->get("/projetos/historico/apagar","ProjetoController@apagarProjetoHistorico");
-$router->post("/projetos/historico/apagar","ProjetoController@apagarProjetoHistorico");
-$router->get("/projetos/historico/limpar","ProjetoController@limparHistorico");
-$router->post("/projetos/historico/limpar","ProjetoController@limparHistorico");
+$router->post("/projetos/previewEstrutura","ProjetoController@previewEstrutura");
 
 
 // Páginas do "menu principal" (topbar/sidebar) que já tinham view pronta
@@ -81,6 +72,7 @@ $router->get("/projetos/guia", "ProjetoController@guia");
 $router->get("/projetos/mvc-creator", "ProjetoController@mvcCreator");
 $router->get("/projetos/pagemaker", "ProjetoController@pageMaker");
 $router->get("/projetos/historico", "ProjetoController@historico");
+$router->get("/projetos/saida", "ProjetoController@saida");
 $router->get("/projetos/phpmeuamigo", "PhpMeuAmigoController@index");
 
 // Rotas de API AJAX do módulo PHPMeuAmigo
@@ -96,7 +88,5 @@ $router->post("/phpmeuamigo/atributos/excluir", "PhpMeuAmigoController@excluirAt
 $router->post("/phpmeuamigo/importar-sql", "PhpMeuAmigoController@importarSql");
 $router->post("/phpmeuamigo/conectar-mysql-local", "PhpMeuAmigoController@conectarMysqlLocal");
 $router->post("/phpmeuamigo/importar-banco-local", "PhpMeuAmigoController@importarBancoLocal");
-$router->get("/phpmeuamigo/bancos/exportar-sql", "PhpMeuAmigoController@exportarSql");
-$router->post("/phpmeuamigo/bancos/exportar-sql", "PhpMeuAmigoController@exportarSql");
 
 $router->run();
