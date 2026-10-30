@@ -1,0 +1,7 @@
+# Arquivos de ambiente e credenciais sensíveis
+.env
+
+# Arquivos temporários e downloads compilados
+public/temp/
+public/downloads/
+*.log

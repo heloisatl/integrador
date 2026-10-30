@@ -55,6 +55,9 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+// Configuração de Fuso Horário (Horário de Brasília)
+date_default_timezone_set('America/Sao_Paulo');
+
 // Configuração do sistema
 define('APP_NAME', env('APP_NAME', 'DevStudio'));
 
@@ -85,4 +88,4 @@ define('VIEWS_HELO_PATH', __DIR__ . '/../views');
 define('DB_HOST', env('DB_HOST', 'localhost'));
 define('DB_NAME', env('DB_NAME', 'mvc_creator'));
 define('DB_USER', env('DB_USER', 'root'));
-define('DB_PASS', env('DB_PASS', '1234'));
+define('DB_PASS', env('DB_PASS', ''));

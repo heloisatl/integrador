@@ -97,5 +97,7 @@ $router->post("/phpmeuamigo/atributos/excluir", "PhpMeuAmigoController@excluirAt
 $router->post("/phpmeuamigo/importar-sql", "PhpMeuAmigoController@importarSql");
 $router->post("/phpmeuamigo/conectar-mysql-local", "PhpMeuAmigoController@conectarMysqlLocal");
 $router->post("/phpmeuamigo/importar-banco-local", "PhpMeuAmigoController@importarBancoLocal");
+$router->get("/phpmeuamigo/bancos/exportar-sql", "PhpMeuAmigoController@exportarSql");
+$router->post("/phpmeuamigo/bancos/exportar-sql", "PhpMeuAmigoController@exportarSql");
 
 $router->run();

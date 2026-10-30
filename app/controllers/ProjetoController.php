@@ -198,6 +198,7 @@ class ProjetoController extends Controller{
                 $geradorCtrl = new \app\tools\gerador\GeradorController();
                 $geradorView = new \app\tools\gerador\GeradorView();
                 $geradorCore = new \app\tools\gerador\GeradorCore();
+                $geradorIndex = new \app\tools\gerador\geradorIndex();
                 $geradorConfig = new \app\tools\gerador\GeradorConfig();
 
                 $geradorModel->salvarModel($tabela, $atributos, $pastaApp . '/models');
