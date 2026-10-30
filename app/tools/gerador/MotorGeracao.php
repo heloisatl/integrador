@@ -33,7 +33,7 @@ class MotorGeracao {
 
         foreach ($tabelas as $tabela) {
             $this->validarNome($tabela);
-            $classe = ucfirst($tabela->getNome_tabelaUC());
+            $classe = $tabela->getNome_tabelaUC();
             $plural = strtolower($tabela->getNome_tabela()) . 's';
             $atributos = $atributosPorTabela[$tabela->getId_tabela()] ?? [];
             $pk = $this->chavePrimaria($atributos);

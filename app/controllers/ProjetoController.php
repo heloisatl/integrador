@@ -187,13 +187,13 @@ class ProjetoController extends Controller{
             // Apaga a pasta temporária de compilação após gerar o ZIP
             $this->excluirDiretorioRecursivo($pastaOutput);
 
-                $downloadUrl = URL_BASE . '/projetos/downloadZip?file=' . urlencode($nomeZip);
+            $downloadUrl = URL_BASE . '/projetos/downloadZip?file=' . urlencode($nomeZip);
             $this->registrarProjetoNoHistorico($nomeProjeto, 'MVC Creator', [
                 'nome' => $nomeProjeto,
                 'arquivo' => $nomeZip,
                 'downloadUrl' => $downloadUrl,
-                'banco' => $bancoSelecionado['nome_banco'] ?? $bancoSelecionado['nome'] ?? $banco,
-                'banco_id' => $bancoSelecionado['id_banco'] ?? $banco,
+                'banco' => $ctx['banco']['nome_banco'],
+                'banco_id' => $ctx['banco']['id_banco'],
                 'gerado_em' => date('c'),
                 'tipo' => 'MVC Creator',
             ]);

@@ -7,7 +7,7 @@
         
         <div class="mvc-campo">
             <label for="nomeProjeto">Nome do Projeto</label>
-            <input type="text" name="nomeProjeto" id="nomeProjeto" placeholder="Insira aqui o nome do seu projeto">
+            <input type="text" name="nomeProjeto" oninput="salvarConfiguracoesSession()" id="nomeProjeto" placeholder="Insira aqui o nome do seu projeto">
         </div>
 
         <div class="mvc-campo">
