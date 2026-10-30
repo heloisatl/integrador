@@ -246,11 +246,11 @@
 
         <div class="links">
             <a href="<?= URL_BASE ?>/recuperar-senha">Esqueceu a senha?</a>
-            <a href="<?= URL_BASE ?>/projetos">Continuar sem login</a>
+            <a href="<?= URL_BASE ?>/explorar">Continuar sem login</a>
         </div>
 
         <div class="links" style="justify-content:center; margin-top:10px;">
-            <a href="<?= URL_BASE ?>/cadastro">Se cadastrar</a>
+            <a href="<?= URL_BASE ?>/cadastro">Cadastre-se</a>
         </div>
     </div>
 </div>

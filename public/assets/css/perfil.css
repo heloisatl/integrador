@@ -3,9 +3,9 @@
    ========================================================================== */
 
 .perfil-container {
-    max-width: 640px;
-    margin: 20px auto 40px;
-    padding: 0 16px;
+    max-width: 760px;
+    margin: 28px auto 48px;
+    padding: 0 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -17,6 +17,43 @@
 .perfil-header {
     text-align: center;
     margin-bottom: 24px;
+}
+
+.perfil-subtitulo {
+    color: var(--muted);
+    font-size: 14px;
+    margin: 10px 0 0;
+}
+
+.perfil-feedback {
+    align-items: center;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    display: flex;
+    font-size: 14px;
+    gap: 10px;
+    margin: 0 0 18px;
+    padding: 12px 16px;
+    width: 100%;
+}
+
+.perfil-feedback-sucesso {
+    background: rgba(34, 197, 94, 0.1);
+    border-color: rgba(34, 197, 94, 0.35);
+    color: #22c55e;
+}
+
+.perfil-feedback-erro {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: rgba(239, 68, 68, 0.35);
+    color: #ef4444;
+}
+
+.perfil-formulario {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    width: 100%;
 }
 
 .perfil-nome-titulo {
@@ -89,7 +126,7 @@
 /* Card do Formulário */
 .perfil-card {
     width: 100%;
-    max-width: 480px;
+    max-width: none;
     background-color: var(--panel);
     border: 1px solid var(--border);
     border-radius: 16px;
@@ -102,6 +139,153 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
+}
+
+.perfil-secao-cabecalho {
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 13px;
+    margin-bottom: 22px;
+    padding-bottom: 18px;
+}
+
+.perfil-secao-cabecalho h2 {
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    margin: 0 0 4px;
+}
+
+.perfil-secao-cabecalho p {
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.perfil-secao-icone {
+    align-items: center;
+    background: rgba(91, 106, 240, 0.12);
+    border-radius: 11px;
+    color: var(--accent);
+    display: inline-flex;
+    flex: 0 0 42px;
+    font-size: 19px;
+    height: 42px;
+    justify-content: center;
+}
+
+.perfil-avatar-editor {
+    align-items: center;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    display: flex;
+    gap: 18px;
+    margin-bottom: 22px;
+    padding: 16px;
+}
+
+.perfil-avatar-editor .perfil-avatar-wrapper {
+    flex: 0 0 auto;
+    margin: 0;
+}
+
+.perfil-avatar-editor .perfil-avatar {
+    height: 88px;
+    width: 88px;
+}
+
+.perfil-avatar-editor .perfil-avatar-icon {
+    font-size: 56px;
+    margin-top: 8px;
+}
+
+.perfil-avatar img {
+    height: 100%;
+    object-fit: cover;
+    width: 100%;
+}
+
+.perfil-avatar img[hidden],
+.perfil-avatar-icon[hidden] {
+    display: none;
+}
+
+.perfil-avatar-controles {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.perfil-avatar-controles strong {
+    color: var(--text);
+    font-size: 14px;
+}
+
+.perfil-avatar-controles > span,
+.perfil-ajuda-senha {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.perfil-btn-foto {
+    align-items: center;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    cursor: pointer;
+    display: inline-flex;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    gap: 7px;
+    padding: 8px 11px;
+    text-transform: none;
+    transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.perfil-btn-foto:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.perfil-input-arquivo {
+    height: 1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    width: 1px;
+}
+
+.perfil-remover-avatar {
+    align-items: center;
+    color: var(--muted);
+    display: inline-flex;
+    font-size: 12px;
+    gap: 7px;
+    text-transform: none;
+}
+
+.perfil-remover-avatar input {
+    accent-color: var(--accent);
+}
+
+.perfil-grade-campos {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.perfil-card-seguranca > .perfil-campo {
+    margin-bottom: 16px;
+}
+
+.perfil-ajuda-senha {
+    line-height: 1.5;
+    margin: 12px 0 0;
 }
 
 .perfil-campo {
@@ -171,11 +355,19 @@
 
 /* Botão Salvar Alterações (posicionado abaixo do card conforme protótipo) */
 .perfil-acoes {
-    margin-top: 24px;
+    margin-top: 0;
     display: flex;
     justify-content: center;
     width: 100%;
-    max-width: 480px;
+    max-width: none;
+}
+
+.perfil-acoes .perfil-btn-salvar {
+    align-items: center;
+    display: inline-flex;
+    gap: 8px;
+    justify-content: center;
+    min-width: 210px;
 }
 
 .perfil-btn-salvar {
@@ -212,6 +404,14 @@
         padding: 24px 20px;
     }
 
+    .perfil-grade-campos {
+        grid-template-columns: 1fr;
+    }
+
+    .perfil-avatar-editor {
+        align-items: flex-start;
+    }
+
     .perfil-nome-titulo {
         font-size: 26px;
     }
@@ -223,5 +423,18 @@
 
     .perfil-avatar-icon {
         font-size: 70px;
+    }
+
+    .perfil-avatar-editor .perfil-avatar {
+        height: 72px;
+        width: 72px;
+    }
+
+    .perfil-avatar-editor .perfil-avatar-icon {
+        font-size: 46px;
+    }
+
+    .perfil-btn-salvar {
+        width: 100%;
     }
 }

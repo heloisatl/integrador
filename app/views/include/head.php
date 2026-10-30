@@ -489,6 +489,8 @@
     // Link global para estilos públicos (migrados para public/assets/css)
     $hrefGlobalStyle = defined('URL_BASE') ? (URL_BASE . '/assets/css/style.css') : '/assets/css/style.css';
     echo '<link rel="stylesheet" href="' . $hrefGlobalStyle . '">';
+    $hrefResponsiveStyle = defined('URL_BASE') ? (URL_BASE . '/assets/css/responsivo.css') : '/assets/css/responsivo.css';
+    echo '<link rel="stylesheet" href="' . $hrefResponsiveStyle . '">';
     ?>
 
     <script>
@@ -564,7 +566,7 @@
                 link.addEventListener('click', function() {
                     const nav = document.getElementById('topbarNav');
                     const toggle = document.getElementById('topbarToggle');
-                    if (nav && toggle && window.innerWidth <= 900) {
+                    if (nav && toggle && window.innerWidth <= 1024) {
                         nav.classList.remove('open');
                         toggle.classList.remove('open');
                         toggle.setAttribute('aria-expanded', 'false');

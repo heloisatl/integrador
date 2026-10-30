@@ -222,6 +222,6 @@ class AutenticacaoController extends Controller
 
     public function explorar(): void
     {
-        $this->redirect(URL_BASE . '/projetos');
+        $this->view('projetos/guia');
     }
 }

@@ -186,7 +186,7 @@
     </a>
 
     <div class="auth-card">
-        <h1 class="auth-title">Criar conta</h1>
+        <h1 class="auth-title">Cadastre-se</h1>
         <p class="auth-subtitle">Cadastre-se para acessar o painel.</p>
 
         <?php if (!empty($erro)) : ?>
@@ -214,7 +214,7 @@
                 </div>
             </div>
 
-            <button type="submit" class="btn">Cadastrar</button>
+            <button type="submit" class="btn">Cadastre-se</button>
         </form>
 
         <script>

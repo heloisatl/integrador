@@ -32,6 +32,8 @@ function carregaEnv(string $caminho): bool {
 
 carregaEnv(ROOT_PATH . '/.env');
 
+date_default_timezone_set('America/Sao_Paulo');
+
 function env(string $chave, $padrao = null) {
     $valor = getenv($chave);
     if ($valor === false) {

@@ -94,6 +94,24 @@ class UsuarioRepository {
         return $stmt->execute();
     }
 
+    public function updatePerfil(int $id, string $nome, string $email, ?string $senha = null): bool {
+        $sql = 'UPDATE usuario SET nome = :nome, email = :email';
+        if ($senha !== null) {
+            $sql .= ', senha_usuario = :senha';
+        }
+        $sql .= ' WHERE id_usuario = :id';
+
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindValue(':nome', $nome);
+        $stmt->bindValue(':email', $email);
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        if ($senha !== null) {
+            $stmt->bindValue(':senha', password_hash($senha, PASSWORD_DEFAULT));
+        }
+
+        return $stmt->execute();
+    }
+
     public function updateUsuario(int $id, array $dados): bool {
         $sql = "UPDATE usuario SET 
                 nome = :nome, 

@@ -11,6 +11,14 @@ if ($paginaAtual === '' || $paginaAtual === 'index.php') {
 $currentSection = $_GET['section'] ?? '';
 $currentTab = $_GET['tab'] ?? '';
 $currentStep = $_GET['step'] ?? '';
+$avatarNavbarUrl = null;
+if (isset($_SESSION['usuario_logado']) && method_exists($_SESSION['usuario_logado'], 'getIdUsuario')) {
+    $idUsuarioNavbar = (int) $_SESSION['usuario_logado']->getIdUsuario();
+    $arquivosAvatarNavbar = glob(dirname(__DIR__, 2) . '/projetos/avatars/' . $idUsuarioNavbar . '_*.*') ?: [];
+    if (!empty($arquivosAvatarNavbar)) {
+        $avatarNavbarUrl = URL_BASE . '/perfil/avatar?v=' . filemtime($arquivosAvatarNavbar[0]);
+    }
+}
 
 function usuarioEhAdmin(): bool
 {
@@ -127,8 +135,11 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
             <!-- Menu de Perfil tradicional (Desktop) -->
             <div class="profile-dropdown-container">
                 <button type="button" class="profile-btn" id="profileDropdownBtn" onclick="toggleProfileMenu(event)">
-                    <i class="bi bi-person"></i>
-                    <i class="bi bi-person-fill" aria-hidden="true"></i>
+                    <?php if ($avatarNavbarUrl): ?>
+                        <img class="profile-btn-avatar" src="<?= htmlspecialchars($avatarNavbarUrl, ENT_QUOTES, 'UTF-8') ?>" alt="" aria-hidden="true">
+                    <?php else: ?>
+                        <i class="bi bi-person-fill profile-btn-placeholder" aria-hidden="true"></i>
+                    <?php endif; ?>
                     Perfil
                 </button>
                 <div class="profile-dropdown-menu" id="profileDropdownMenu">
@@ -158,7 +169,7 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
                         <a href="<?= URL_BASE ?>/cadastro" class="profile-dropdown-item register-link">
                             <i class="bi bi-person-plus" aria-hidden="true"></i>
                             <i class="bi bi-person-plus-fill" aria-hidden="true"></i>
-                            Cadastrar
+                            Cadastre-se
                         </a>
                     <?php endif; ?>
                 </div>
@@ -171,7 +182,11 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
                 ?>
                     <div class="mobile-user-info">
                         <div class="mobile-user-avatar">
-                            <i class="bi bi-person-fill"></i>
+                            <?php if ($avatarNavbarUrl): ?>
+                                <img class="mobile-user-avatar-image" src="<?= htmlspecialchars($avatarNavbarUrl, ENT_QUOTES, 'UTF-8') ?>" alt="">
+                            <?php else: ?>
+                                <i class="bi bi-person-fill" aria-hidden="true"></i>
+                            <?php endif; ?>
                         </div>
                         <div class="mobile-user-meta">
                             <strong class="mobile-user-name"><?= htmlspecialchars($usuarioLogado->getNome()) ?></strong>
@@ -192,7 +207,7 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
                             <i class="bi bi-box-arrow-in-right"></i> Entrar
                         </a>
                         <a href="<?= URL_BASE ?>/cadastro" class="btn-mobile-register">
-                            <i class="bi bi-person-plus"></i> Criar Conta
+                            <i class="bi bi-person-plus"></i> Cadastre-se
                         </a>
                     </div>
                 <?php endif; ?>

@@ -1,4 +1,4 @@
-<div id="pageMaker">
+<div id="pageMaker" data-url-base="<?= htmlspecialchars(URL_BASE, ENT_QUOTES, 'UTF-8') ?>">
 
     <?php
     include_once(__DIR__ . "/../include/head.php");
@@ -245,6 +245,11 @@
             </div>
             <button type="button" class="pm-botao" id="visualizarPrevia">Visualizar prévia</button>
             <button type="button" class="pm-botao pm-botao-secundario" id="gerarCodigo">Gerar HTML + CSS</button>
+            <div class="pm-controles-download" aria-label="Download dos arquivos gerados">
+                <button type="button" class="pm-botao pm-botao-secundario" id="baixarHTML">Baixar HTML</button>
+                <button type="button" class="pm-botao pm-botao-secundario" id="baixarCSS">Baixar CSS</button>
+            </div>
+            <p id="pmHistoricoStatus" class="pm-status-historico" role="status" aria-live="polite"></p>
             <div class="pm-saida">
                 <label for="codeHTML">HTML gerado</label>
                 <textarea id="codeHTML" readonly></textarea>
