@@ -215,25 +215,6 @@ output {
     margin: 14px 0 4px;
 }
 
-.pm-controles-download {
-    align-items: center;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin: 12px 0 0;
-}
-
-.pm-controles-download .pm-botao {
-    margin-top: 0;
-}
-
-.pm-status-historico {
-    color: var(--muted);
-    font-size: 13px;
-    min-height: 18px;
-    margin: 8px 0 0;
-}
-
 .pm-controles-tela .pm-botao {
     background: var(--surface);
     border: 1px solid var(--border);

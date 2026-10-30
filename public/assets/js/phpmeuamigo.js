@@ -262,9 +262,8 @@ function bindEvents() {
         });
     }
 
-    const btnNovoBanco   = document.getElementById("phpma-btn-novo-banco");
+    const btnNovoBanco = document.getElementById("phpma-btn-novo-banco");
     const btnConfigBanco = document.getElementById("phpma-btn-config-banco");
-    const btnExportarSql = document.getElementById("phpma-btn-exportar-sql");
     const btnNovaTabela  = document.getElementById("phpma-btn-nova-tabela");
     const btnAddAtributo = document.getElementById("phpma-btn-add-atributo");
     const wrapperNovaTab = document.getElementById("phpma-wrapper-nova-tabela");
@@ -274,7 +273,6 @@ function bindEvents() {
 
     if (btnNovoBanco) btnNovoBanco.addEventListener("click", abrirModalNovoBanco);
     if (btnConfigBanco) btnConfigBanco.addEventListener("click", abrirModalConfigBanco);
-    if (btnExportarSql) btnExportarSql.addEventListener("click", window.phpmaExportarSqlBanco);
 
     // Controle do formulário inline padronizado de criação de tabelas (sem prompt nativo)
     if (btnNovaTabela && wrapperNovaTab) {
@@ -836,90 +834,6 @@ window.phpmaConfirmarExclusaoBanco = async function () {
         }
     } catch (err) {
         phpmaToast("Erro de conexao ao tentar excluir banco de dados.", "error");
-    }
-};
-
-let isExportingSql = false;
-
-window.phpmaExportarSqlBanco = async function (e) {
-    if (e && e.preventDefault) e.preventDefault();
-    if (e && e.stopPropagation) e.stopPropagation();
-
-    // Trava de reentrância: bloqueia cliques múltiplos enquanto um download está em andamento
-    if (isExportingSql) {
-        return;
-    }
-
-    if (!state.activeBancoId) {
-        phpmaToast("Crie ou selecione um Banco de Dados para exportar o script .SQL!", "warning");
-        return;
-    }
-
-    const PADRAO_BTN_HTML = '<i class="bi bi-download"></i> Baixar SQL';
-    const btn = document.getElementById("phpma-btn-exportar-sql");
-    const banco = state.bancos.find(b => parseInt(b.id_banco) === parseInt(state.activeBancoId));
-    const nomeBanco = banco ? banco.nome_banco : 'banco';
-
-    isExportingSql = true;
-
-    if (btn) {
-        btn.disabled = true;
-        btn.style.pointerEvents = 'none';
-        btn.style.opacity = '0.7';
-        btn.innerHTML = `<i class="bi bi-arrow-repeat phpma-spin"></i> Gerando SQL...`;
-    }
-
-    try {
-        const downloadUrl = apiEndpoint(`/phpmeuamigo/bancos/exportar-sql?id_banco=${state.activeBancoId}`);
-        const response = await fetch(downloadUrl);
-
-        if (!response.ok) {
-            let errorMsg = "Erro ao gerar arquivo SQL.";
-            try {
-                const errData = await response.json();
-                if (errData && errData.mensagem) errorMsg = errData.mensagem;
-            } catch (_) {}
-            phpmaToast(errorMsg, "error");
-            return;
-        }
-
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.style.display = 'none';
-        a.href = url;
-
-        let fileName = `${nomeBanco}.sql`;
-        const disposition = response.headers.get('Content-Disposition');
-        if (disposition && disposition.indexOf('filename=') !== -1) {
-            const matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(disposition);
-            if (matches != null && matches[1]) {
-                fileName = matches[1].replace(/['"]/g, '');
-            }
-        }
-
-        a.download = fileName;
-        document.body.appendChild(a);
-        a.click();
-
-        setTimeout(() => {
-            window.URL.revokeObjectURL(url);
-            if (a.parentNode) {
-                a.parentNode.removeChild(a);
-            }
-        }, 1500);
-
-        phpmaToast(`Arquivo SQL "${fileName}" gerado e baixado com sucesso!`, "success");
-    } catch (err) {
-        phpmaToast("Erro ao baixar script SQL: " + err.message, "error");
-    } finally {
-        isExportingSql = false;
-        if (btn) {
-            btn.disabled = false;
-            btn.style.pointerEvents = '';
-            btn.style.opacity = '';
-            btn.innerHTML = PADRAO_BTN_HTML;
-        }
     }
 };
 
