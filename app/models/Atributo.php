@@ -90,6 +90,39 @@ class Atributo{
         return $this->pk;
     }
 
+    public function getId_atributo()
+    {
+        return $this->id_atributo;
+    }
+
+    /**
+     * Id do atributo referenciado (Foreign Key), ou null quando não é FK.
+     */
+    public function getFk_atributo()
+    {
+        return $this->fk_atributo;
+    }
+
+    public function getTipo()
+    {
+        return $this->tipo;
+    }
+
+    public function getNn()
+    {
+        return $this->nn;
+    }
+
+    public function getAi()
+    {
+        return $this->ai;
+    }
+
+    public function getUq()
+    {
+        return $this->uq;
+    }
+
     /**
      * Get the value of input
      */ 

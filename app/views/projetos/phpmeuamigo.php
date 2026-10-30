@@ -21,7 +21,10 @@
                 </h2>
             </div>
 
-            <div>
+            <div style="display:flex; gap:10px;">
+                <button type="button" id="phpma-btn-import-sql" class="btn btn-secondary" onclick="window.phpmaOpenImportModal()">
+                    <i class="bi bi-download"></i> Importar Banco Local
+                </button>
                 <button type="button" id="phpma-btn-novo-banco" class="btn btn-primary">
                     <i class="bi bi-plus-lg"></i> Novo Banco
                 </button>
@@ -39,9 +42,12 @@
                 </select>
             </div>
 
-            <div>
+            <div style="display:flex; gap:8px;">
                 <button type="button" id="phpma-btn-config-banco" class="btn btn-secondary" title="Configurações do Banco (Host, Usuário, Senha)">
-                    <i class="bi bi-gear-fill"></i> Configurações do Banco
+                    <i class="bi bi-gear-fill"></i> Configurações
+                </button>
+                <button type="button" id="phpma-btn-excluir-banco" class="btn btn-secondary" style="color:#ff6b6b; border-color:rgba(255,107,107,0.3);" onclick="window.phpmaDeleteBancoActive()" title="Excluir Banco de Dados do DevStudio">
+                    <i class="bi bi-trash"></i> Excluir Banco
                 </button>
             </div>
         </div>
@@ -84,7 +90,7 @@
             </aside>
 
             <!-- Painel Principal: Atributos (Entidade: ATRIBUTO) -->
-            <main class="phpma-card">
+            <section class="phpma-card">
                 
                 <div class="phpma-table-editor-header">
                     <div class="phpma-table-name-field">
@@ -121,7 +127,12 @@
                     </table>
                 </div>
 
-            </main>
+            </section>
+        </div>
+
+        <!-- Aviso Permanente de Modelagem (DevStudio Identity - Tom #5B6AF0) -->
+        <div class="phpma-aviso-permanente" role="note">
+            <strong>Ambiente de Modelagem do DevStudio:</strong> Ao criar ou importar um banco de dados, a estrutura de tabelas e atributos é armazenada no modelo do seu projeto. Quaisquer alterações realizadas aqui (criação, edição ou exclusão de tabelas e campos) <strong>não afetarão</strong> o banco de dados MySQL original da sua máquina local.
         </div>
 
     </div>
@@ -134,6 +145,13 @@
                 <button type="button" class="btn-icon-danger" onclick="window.phpmaCloseModal()">
                     <i class="bi bi-x-lg"></i>
                 </button>
+            </div>
+
+            <!-- Alerta inline interno do modal -->
+            <div id="phpma-modal-banco-alert" class="phpma-inline-alert" style="display: none; margin-bottom: 16px;">
+                <div class="phpma-inline-alert-body">
+                    <div class="phpma-inline-alert-msg"></div>
+                </div>
             </div>
 
             <div class="phpma-grid-fields">
@@ -231,11 +249,39 @@
         </div>
     </div>
 
+    <!-- Modal de Confirmação de Exclusão do Banco de Dados (DevStudio Identity) -->
+    <div id="phpma-modal-confirm-delete" class="phpma-modal-overlay">
+        <div class="phpma-modal-content" style="max-width: 480px;">
+            <div class="phpma-modal-head">
+                <h3 style="color: #ff6b6b;"><i class="bi bi-trash" style="color: #ff6b6b;"></i> Excluir Banco de Dados</h3>
+                <button type="button" class="btn-icon-danger" onclick="window.phpmaCloseDeleteModal()">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+
+            <div style="padding: 10px 0 16px; font-size: 14px; line-height: 1.6; color: var(--text);">
+                <p>Tem certeza que deseja excluir o banco de dados <strong id="phpma-delete-banco-nome" style="color: var(--accent);"></strong> do DevStudio?</p>
+                <div style="margin-top: 14px; padding: 12px 14px; background: rgba(255, 107, 107, 0.1); border: 1px solid rgba(255, 107, 107, 0.25); border-radius: 8px; font-size: 13px; color: var(--text); display: flex; align-items: flex-start; gap: 10px;">
+                    <i class="bi bi-exclamation-triangle" style="color: #ff6b6b; font-size: 16px; flex-shrink: 0; margin-top: 2px;"></i>
+                    <span>Todas as tabelas e atributos associados serão excluídos do ambiente de modelagem.</span>
+                </div>
+            </div>
+
+            <div class="phpma-modal-foot">
+                <button type="button" class="btn btn-secondary" onclick="window.phpmaCloseDeleteModal()">Cancelar</button>
+                <button type="button" id="phpma-btn-confirm-delete-action" class="btn btn-primary" style="background: #e03131; border-color: #c92a2a; color: #fff;" onclick="window.phpmaConfirmarExclusaoBanco()">
+                    <i class="bi bi-trash"></i> Excluir Definitivamente
+                </button>
+            </div>
+        </div>
+    </div>
+
     <?php require_once __DIR__ . '/../include/footer.php'; ?>
     </main>
 </div>
 
 <!-- Script de interatividade visual -->
+<script>window.URL_BASE = "<?= URL_BASE ?>";</script>
 <script src="<?= URL_BASE ?>/assets/js/phpmeuamigo.js"></script>
 </body>
 

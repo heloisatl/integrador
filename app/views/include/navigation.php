@@ -76,62 +76,39 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
     </button>
 
     <div class="topbar-nav" id="topbarNav">
-        <a href="<?= URL_BASE ?>/projetos" class="topbar-item-inicio <?php echo verificarAtivo('projetos', $paginaAtual); ?>">
-            Início
-        </a>
-
-        <a href="<?= URL_BASE ?>/projetos/mvc-creator" class="topbar-item <?php echo verificarAtivo('mvc-creator', $paginaAtual); ?>">
-            MVC Creator
-        </a>
-        <a href="<?= URL_BASE ?>/projetos/pagemaker" class="topbar-item <?php echo verificarAtivo('pagemaker', $paginaAtual); ?>">
-            Page Maker </a>
-
-        <?php if (isset($_SESSION['usuario_logado'])):
-                        $usuarioLogado = $_SESSION['usuario_logado'];
-                    ?>
-                    <a href="<?= URL_BASE ?>/projetos/historico" class="topbar-item <?php echo verificarAtivo('historico', $paginaAtual); ?>">
-            Histórico </a>
-            <?php endif; ?>
+        <div class="mobile-nav-group">
+            <span class="mobile-section-label">Ferramentas & Páginas</span>
+            <a href="<?= URL_BASE ?>/projetos" class="topbar-item-inicio <?php echo verificarAtivo('projetos', $paginaAtual); ?>">
+                Início
+            </a>
 
             <a href="<?= URL_BASE ?>/projetos/mvc-creator" class="topbar-item <?php echo verificarAtivo('mvc-creator', $paginaAtual); ?>">
-                <i class="bi bi-cpu nav-icon"></i>
-                <span class="nav-text">MVC Creator</span>
-                <i class="bi bi-chevron-right nav-arrow"></i>
+                MVC Creator
             </a>
 
             <a href="<?= URL_BASE ?>/projetos/pagemaker" class="topbar-item <?php echo verificarAtivo('pagemaker', $paginaAtual); ?>">
-                <i class="bi bi-file-earmark-code nav-icon"></i>
-                <span class="nav-text">Page Maker</span>
-                <i class="bi bi-chevron-right nav-arrow"></i>
+                Page Maker
             </a>
 
             <?php if (isset($_SESSION['usuario_logado'])):
                 $usuarioLogado = $_SESSION['usuario_logado'];
             ?>
                 <a href="<?= URL_BASE ?>/projetos/historico" class="topbar-item <?php echo verificarAtivo('historico', $paginaAtual); ?>">
-                    <i class="bi bi-clock-history nav-icon"></i>
-                    <span class="nav-text">Histórico</span>
-                    <i class="bi bi-chevron-right nav-arrow"></i>
+                    Histórico
                 </a>
             <?php endif; ?>
 
             <a href="<?= URL_BASE ?>/projetos/saida" class="topbar-item <?php echo verificarAtivo('saida', $paginaAtual); ?>">
-                <i class="bi bi-box-arrow-up-right nav-icon"></i>
-                <span class="nav-text">Saída</span>
-                <i class="bi bi-chevron-right nav-arrow"></i>
+                Saída
             </a>
 
             <a href="<?= URL_BASE ?>/projetos/phpmeuamigo" class="topbar-item <?php echo verificarAtivo('phpmeuamigo', $paginaAtual); ?>">
-                <i class="bi bi-database nav-icon"></i>
-                <span class="nav-text">PHPMeuAmigo</span>
-                <i class="bi bi-chevron-right nav-arrow"></i>
+                PHPMeuAmigo
             </a>
 
             <?php if (defined('URL_BASE') && usuarioEhAdmin()): ?>
                 <a href="<?= URL_BASE ?>/usuarios" class="topbar-item <?php echo $paginaAtual === 'usuarios' ? 'active' : ''; ?>">
-                    <i class="bi bi-people nav-icon"></i>
-                    <span class="nav-text">Usuários</span>
-                    <i class="bi bi-chevron-right nav-arrow"></i>
+                    Usuários
                 </a>
             <?php endif; ?>
         </div>
@@ -303,18 +280,6 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
         <?php endif; ?>
 
 
-        <!-- Projetos -->
-        <?php if (defined('URL_BASE')): ?>
-            <div id="sb-titulo-projetos" class="sb-section">
-                <div class="sb-label">Projetos</div>
-                <a href="<?= URL_BASE ?>/projetos" class="sb-item <?php echo $paginaAtual === 'projetos' ? 'active' : ''; ?>">
-                    <span class="sb-icon"></span> Listar Projetos
-                </a>
-                <a href="<?= URL_BASE ?>/projetos/cadastrar" class="sb-item <?php echo $paginaAtual === 'cadastrar' ? 'active' : ''; ?>">
-                    <span class="sb-icon"></span> Criar Projeto
-                </a>
-            </div>
-        <?php endif; ?>
 
         <!-- Historico -->
         <div id="sb-titulo-historico" class="sb-section">
