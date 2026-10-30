@@ -54,11 +54,15 @@ $csrfPerfil = $csrfPerfil ?? '';
                     <div class="perfil-avatar-controles">
                         <strong>Foto de perfil</strong>
                         <span>JPG, PNG ou WEBP · máximo 2 MB</span>
-                        <label class="perfil-btn-foto" for="perfilAvatarInput"><i class="bi bi-camera" aria-hidden="true"></i> Escolher foto</label>
-                        <input class="perfil-input-arquivo" type="file" id="perfilAvatarInput" name="avatar" accept="image/jpeg,image/png,image/webp">
-                        <?php if ($avatarUrl): ?>
-                            <label class="perfil-remover-avatar"><input type="checkbox" name="remover_avatar" value="1" id="perfilRemoverAvatar"> Remover foto atual</label>
-                        <?php endif; ?>
+                        <div class="perfil-avatar-botoes">
+                            <label class="perfil-btn-foto" for="perfilAvatarInput"><i class="bi bi-camera" aria-hidden="true"></i> Escolher foto</label>
+                            <input class="perfil-input-arquivo" type="file" id="perfilAvatarInput" name="avatar" accept="image/jpeg,image/png,image/webp">
+                            <input type="hidden" name="remover_avatar" id="perfilRemoverAvatar" value="0">
+                            <button type="button" class="perfil-btn-remover" id="perfilBtnRemover" <?= !$avatarUrl ? 'style="display: none;"' : '' ?>>
+                                <i class="bi bi-trash" id="perfilBtnRemoverIcone" aria-hidden="true"></i>
+                                <span id="perfilBtnRemoverTexto">Remover foto</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -101,6 +105,7 @@ $csrfPerfil = $csrfPerfil ?? '';
             </section>
 
             <div class="perfil-acoes">
+                <a href="<?= URL_BASE ?>/projetos" class="perfil-btn-voltar"><i class="bi bi-arrow-left" aria-hidden="true"></i> Voltar ao início</a>
                 <button type="submit" class="perfil-btn-salvar"><i class="bi bi-check2-circle" aria-hidden="true"></i> Salvar alterações</button>
             </div>
         </form>
@@ -112,11 +117,19 @@ $csrfPerfil = $csrfPerfil ?? '';
         const inputFoto = document.getElementById('perfilAvatarInput');
         const preview = document.getElementById('perfilAvatarPreview');
         const placeholder = document.getElementById('perfilAvatarPlaceholder');
-        const removerFoto = document.getElementById('perfilRemoverAvatar');
+        const inputRemover = document.getElementById('perfilRemoverAvatar');
+        const btnRemover = document.getElementById('perfilBtnRemover');
+        const btnRemoverIcone = document.getElementById('perfilBtnRemoverIcone');
+        const btnRemoverTexto = document.getElementById('perfilBtnRemoverTexto');
         const senhaAtual = document.getElementById('perfil-senha-atual');
         const senhaNova = document.getElementById('perfil-senha-nova');
         const confirmarSenha = document.getElementById('perfil-confirmar-senha');
         let urlPreview = null;
+        const temAvatarOriginal = preview && preview.getAttribute('src') !== '';
+
+        if (temAvatarOriginal) {
+            preview.dataset.avatarOriginalSrc = preview.getAttribute('src');
+        }
 
         inputFoto?.addEventListener('change', () => {
             const arquivo = inputFoto.files?.[0];
@@ -136,21 +149,60 @@ $csrfPerfil = $csrfPerfil ?? '';
             preview.src = urlPreview;
             preview.hidden = false;
             if (placeholder) placeholder.hidden = true;
-            if (removerFoto) removerFoto.checked = false;
+            if (inputRemover) inputRemover.value = '0';
+            if (btnRemover) {
+                btnRemover.style.display = 'inline-flex';
+                btnRemover.classList.remove('ativo');
+                if (btnRemoverIcone) btnRemoverIcone.className = 'bi bi-trash';
+                if (btnRemoverTexto) btnRemoverTexto.textContent = 'Remover foto selecionada';
+            }
         });
 
-        removerFoto?.addEventListener('change', () => {
-            if (removerFoto.checked && inputFoto) inputFoto.value = '';
-            if (removerFoto.checked && preview) preview.hidden = true;
-            if (!removerFoto.checked && preview?.dataset.avatarOriginal) preview.hidden = false;
-            if (placeholder) placeholder.hidden = !removerFoto.checked;
-        });
+        btnRemover?.addEventListener('click', () => {
+            // Se havia um arquivo recém-selecionado mas não salvo, cancela a seleção
+            if (inputFoto?.files?.length > 0) {
+                inputFoto.value = '';
+                if (urlPreview) {
+                    URL.revokeObjectURL(urlPreview);
+                    urlPreview = null;
+                }
+                if (temAvatarOriginal) {
+                    preview.src = preview.dataset.avatarOriginalSrc;
+                    preview.hidden = false;
+                    if (placeholder) placeholder.hidden = true;
+                    inputRemover.value = '0';
+                    btnRemover.classList.remove('ativo');
+                    btnRemoverIcone.className = 'bi bi-trash';
+                    btnRemoverTexto.textContent = 'Remover foto';
+                } else {
+                    preview.hidden = true;
+                    if (placeholder) placeholder.hidden = false;
+                    btnRemover.style.display = 'none';
+                }
+                return;
+            }
 
-        if (preview?.getAttribute('src')) preview.dataset.avatarOriginal = '1';
+            // Alternar estado de remoção do avatar já existente
+            if (inputRemover.value === '1') {
+                inputRemover.value = '0';
+                preview.hidden = false;
+                if (placeholder) placeholder.hidden = true;
+                btnRemover.classList.remove('ativo');
+                btnRemoverIcone.className = 'bi bi-trash';
+                btnRemoverTexto.textContent = 'Remover foto';
+            } else {
+                inputRemover.value = '1';
+                preview.hidden = true;
+                if (placeholder) placeholder.hidden = false;
+                btnRemover.classList.add('ativo');
+                btnRemoverIcone.className = 'bi bi-arrow-counterclockwise';
+                btnRemoverTexto.textContent = 'Desfazer remoção';
+            }
+        });
 
         form?.addEventListener('submit', (evento) => {
             const vaiAlterarSenha = senhaAtual.value !== '' || senhaNova.value !== '' || confirmarSenha.value !== '';
-            const vaiRemoverFoto = removerFoto?.checked === true;
+            const vaiRemoverFoto = inputRemover?.value === '1';
             const acoesCriticas = [];
             if (vaiAlterarSenha) acoesCriticas.push('alterar sua senha');
             if (vaiRemoverFoto) acoesCriticas.push('remover sua foto de perfil');

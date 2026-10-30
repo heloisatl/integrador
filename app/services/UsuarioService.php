@@ -42,6 +42,18 @@ class UsuarioService {
         if ($email === '' || (function_exists('mb_strlen') ? mb_strlen($email) : strlen($email)) > 60 || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             return ['sucesso' => false, 'mensagem' => 'Informe um e-mail válido com até 60 caracteres.'];
         }
+
+        // Bloquear SQL Injection em nome e e-mail
+        $padraoSqlInjection = '/(--|\/\*|\*\/|;|[\'"`=]|#|\b(SELECT|INSERT|UPDATE|DELETE|DROP|UNION|ALTER|CREATE|TRUNCATE|EXEC|BENCHMARK|SLEEP)\b)/i';
+        if (preg_match($padraoSqlInjection, $nome) || preg_match($padraoSqlInjection, $email)) {
+            return ['sucesso' => false, 'mensagem' => 'Ação bloqueada: termos suspeitos ou caracteres de SQL Injection não são permitidos.'];
+        }
+
+        // Bloquear caracteres especiais e números no nome
+        if (!preg_match('/^[\p{L}\s]+$/u', $nome)) {
+            return ['sucesso' => false, 'mensagem' => 'O nome deve conter apenas letras e espaços, sem caracteres especiais ou números.'];
+        }
+
         if ($this->repository->emailExiste($email, $id)) {
             return ['sucesso' => false, 'mensagem' => 'Este e-mail já está sendo usado por outra conta.'];
         }

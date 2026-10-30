@@ -31,16 +31,13 @@ if ($paginaAtual === 'pagemaker' && $currentSection === '') {
 if ($paginaAtual === 'historico' && $currentTab === '') {
     $currentTab = 'visualizar';
 }
-if ($paginaAtual === 'saida' && $currentTab === '') {
-    $currentTab = 'todos';
-}
 if ($paginaAtual === 'mvc-creator' && $currentStep === '') {
     $currentStep = 'configurar';
 }
 
 // Função auxiliar para injetar a classe 'active' de forma dinâmica.
 // $slug agora é o pedaço final da rota (ex: 'projetos', 'config-global',
-// 'mvc-creator', 'pagemaker', 'historico', 'saida', 'guia').
+// 'mvc-creator', 'pagemaker', 'historico', 'guia').
 function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = null)
 {
     if ($slug !== $paginaAtual) {
@@ -105,10 +102,6 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
                     Histórico
                 </a>
             <?php endif; ?>
-
-            <a href="<?= URL_BASE ?>/projetos/saida" class="topbar-item <?php echo verificarAtivo('saida', $paginaAtual); ?>">
-                Saída
-            </a>
 
             <a href="<?= URL_BASE ?>/projetos/phpmeuamigo" class="topbar-item <?php echo verificarAtivo('phpmeuamigo', $paginaAtual); ?>">
                 PHPMeuAmigo
@@ -306,23 +299,6 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
             </a>
         </div>
 
-
-        <!-- Saida -->
-        <div id="sb-titulo-saida" class="sb-section">
-            <div class="sb-label">Saida</div>
-
-            <a href="<?= URL_BASE ?>/projetos/saida?tab=todos" class="sb-item <?php echo verificarAtivo('saida', $paginaAtual, 'tab', 'todos'); ?>"> <span class="sb-icon"></span> Todos os arquivos
-            </a>
-
-            <a href="<?= URL_BASE ?>/projetos/saida?tab=mvc" class="sb-item <?php echo verificarAtivo('saida', $paginaAtual, 'tab', 'mvc'); ?>"> <span class="sb-icon"></span> Arquivos MVC
-            </a>
-
-            <a href="<?= URL_BASE ?>/projetos/saida?tab=pagemaker" class="sb-item <?php echo verificarAtivo('saida', $paginaAtual, 'tab', 'pagemaker'); ?>"> <span class="sb-icon"></span> Arquivos PageMaker
-            </a>
-
-            <a href="<?= URL_BASE ?>/projetos/saida?tab=baixar" class="sb-item <?php echo verificarAtivo('saida', $paginaAtual, 'tab', 'baixar'); ?>"> <span class="sb-icon"></span> Baixar Tudo
-            </a>
-        </div>
 
         <!-- PHPMeuAmigo -->
         <div id="sb-titulo-PHPMeuAmigo" class="sb-section">

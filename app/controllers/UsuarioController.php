@@ -117,11 +117,16 @@ class UsuarioController extends Controller {
         $avatarPath = $this->obterCaminhoAvatar($id);
         $flash = $_SESSION['perfil_flash'] ?? null;
         unset($_SESSION['perfil_flash']);
+        $dadosAntigos = $_SESSION['perfil_dados_antigos'] ?? null;
+        unset($_SESSION['perfil_dados_antigos']);
+
+        $nomePadrao = is_array($dadosAntigos) && isset($dadosAntigos['nome']) ? (string) $dadosAntigos['nome'] : $usuario->getNome();
+        $emailPadrao = is_array($dadosAntigos) && isset($dadosAntigos['email']) ? (string) $dadosAntigos['email'] : $usuario->getEmail();
 
         $dados = [
             'nomeExibicao' => strtoupper($usuario->getNome()),
-            'nomeUsuario' => $usuario->getNome(),
-            'emailUsuario' => $usuario->getEmail(),
+            'nomeUsuario' => $nomePadrao,
+            'emailUsuario' => $emailPadrao,
             'avatarUrl' => $avatarPath ? URL_BASE . '/perfil/avatar?v=' . filemtime($avatarPath) : null,
             'mensagemPerfil' => is_array($flash) ? ($flash['mensagem'] ?? '') : '',
             'tipoMensagemPerfil' => is_array($flash) ? ($flash['tipo'] ?? 'sucesso') : 'sucesso',
@@ -149,6 +154,7 @@ class UsuarioController extends Controller {
             $resultadoAvatar = $this->salvarAvatarEnviado($usuarioAtual->getIdUsuario(), $_FILES['avatar']);
             if (!$resultadoAvatar['sucesso']) {
                 $_SESSION['perfil_flash'] = ['tipo' => 'erro', 'mensagem' => $resultadoAvatar['mensagem']];
+                $_SESSION['perfil_dados_antigos'] = ['nome' => $_POST['nome'] ?? '', 'email' => $_POST['email'] ?? ''];
                 $this->redirect(URL_BASE . '/perfil');
             }
             $avatarNovo = $resultadoAvatar['caminho'];
@@ -160,6 +166,7 @@ class UsuarioController extends Controller {
                 unlink($avatarNovo);
             }
             $_SESSION['perfil_flash'] = ['tipo' => 'erro', 'mensagem' => $resultado['mensagem']];
+            $_SESSION['perfil_dados_antigos'] = ['nome' => $_POST['nome'] ?? '', 'email' => $_POST['email'] ?? ''];
             $this->redirect(URL_BASE . '/perfil');
         }
 

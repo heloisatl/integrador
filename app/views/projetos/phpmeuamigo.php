@@ -1,9 +1,7 @@
-<div id="phpmeuamigo">
-
-    <?php
-    include_once(__DIR__ . "/../include/head.php");
-    include_once(__DIR__ . "/../include/navigation.php");
-    ?>
+<?php
+include_once(__DIR__ . "/../include/head.php");
+include_once(__DIR__ . "/../include/navigation.php");
+?>
 
     <!-- Estilos de formulários globais e do PHPmeuamigo -->
     <link rel="stylesheet" href="<?= URL_BASE ?>/assets/css/form-styles.css">

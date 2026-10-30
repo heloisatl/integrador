@@ -1,10 +1,8 @@
-<div id="historico">
+<?php
+include_once(__DIR__ . "/../include/head.php");
+include_once(__DIR__ . "/../include/navigation.php");
 
-    <?php
-    include_once(__DIR__ . "/../include/head.php");
-    include_once(__DIR__ . "/../include/navigation.php");
-
-    $historicoPorModulo = [
+$historicoPorModulo = [
         'PageMaker' => [],
         'MVC Creator' => [],
     ];
@@ -241,8 +239,7 @@
 
     </style>
 
-    <main class="main-content">
-        <section class="historico-shell">
+    <section class="historico-shell">
             <header class="historico-toolbar page-header">
                 <div>
                     <p class="etiqueta-inicial">Projetos gerados</p>
@@ -316,7 +313,6 @@
                     <?php endif; ?>
             </section>
         </section>
-    </main>
 
     <?php require_once __DIR__ . '/../include/footer.php'; ?>
     </main>

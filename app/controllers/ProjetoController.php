@@ -646,10 +646,6 @@ class ProjetoController extends Controller{
         $this->view('projetos/historico', ['historico' => $historico]);
     }
 
-    public function saida(): void {
-        $this->view('projetos/saida');
-    }
-
     public function cadastrar(): void {
         $this->view("projetos/projeto_create");
     }

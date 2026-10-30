@@ -48,11 +48,6 @@ body#historico #sb-titulo-historico {
     display: flex;
 }
 
-#saida #sb-titulo-saida,
-body#saida #sb-titulo-saida {
-    display: flex;
-}
-
 #usuarios #sb-titulo-usuarios,
 body#usuarios #sb-titulo-usuarios {
     display: flex;

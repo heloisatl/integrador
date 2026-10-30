@@ -43,6 +43,7 @@
     background: var(--surface);
     border-top: 1px solid var(--border);
     box-sizing: border-box;
+    flex-shrink: 0;
 }
 
 @media (max-width: 900px) {
@@ -138,13 +139,18 @@
     align-items: center;
     border: 1px solid var(--border);
     border-radius: 50%;
-    display: inline-flex;
+    display: inline-flex !important;
     flex: 0 0 26px;
     height: 26px;
     justify-content: center;
     object-fit: cover;
     overflow: hidden;
     width: 26px;
+    box-sizing: border-box;
+    line-height: 1;
+    margin: 0;
+    padding: 0;
+    vertical-align: middle;
 }
 
 .profile-btn-placeholder {
@@ -152,6 +158,14 @@
     border-color: rgba(91, 106, 240, 0.35);
     color: var(--accent);
     font-size: 15px;
+}
+
+.profile-btn:hover .profile-btn-placeholder {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    transform: none !important;
+    color: var(--accent);
 }
 
 .mobile-user-avatar-image {
@@ -684,11 +698,6 @@ body#pagemaker #sb-titulo-PageMaker {
 
 #historico #sb-titulo-historico,
 body#historico #sb-titulo-historico {
-    display: flex;
-}
-
-#saida #sb-titulo-saida,
-body#saida #sb-titulo-saida {
     display: flex;
 }
 

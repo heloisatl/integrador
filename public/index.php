@@ -81,7 +81,6 @@ $router->get("/projetos/guia", "ProjetoController@guia");
 $router->get("/projetos/mvc-creator", "ProjetoController@mvcCreator");
 $router->get("/projetos/pagemaker", "ProjetoController@pageMaker");
 $router->get("/projetos/historico", "ProjetoController@historico");
-$router->get("/projetos/saida", "ProjetoController@saida");
 $router->get("/projetos/phpmeuamigo", "PhpMeuAmigoController@index");
 
 // Rotas de API AJAX do módulo PHPMeuAmigo

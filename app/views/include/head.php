@@ -253,25 +253,15 @@
             transition: all 0.2s ease;
         }
 
-        .profile-btn .bi-person,
+
         .login-link .bi-door-closed,
         .register-link .bi-person-plus {
             display: inline-block;
         }
 
-        .profile-btn .bi-person-fill,
         .login-link .bi-door-open-fill,
         .register-link .bi-person-plus-fill {
             display: none;
-        }
-
-        .profile-btn:hover .bi-person {
-            display: none;
-        }
-
-        .profile-btn:hover .bi-person-fill,
-        .login-link:hover .bi-door-open-fill {
-            display: inline-block;
         }
 
         .login-link:hover .bi-door-closed,
@@ -279,8 +269,39 @@
             display: none;
         }
 
+        .login-link:hover .bi-door-open-fill,
         .register-link:hover .bi-person-plus-fill {
             display: inline-block;
+        }
+
+        .profile-btn-placeholder {
+            align-items: center;
+            border: 1px solid var(--border);
+            border-radius: 50%;
+            display: inline-flex !important;
+            flex: 0 0 26px;
+            height: 26px;
+            justify-content: center;
+            object-fit: cover;
+            overflow: hidden;
+            width: 26px;
+            background: rgba(91, 106, 240, 0.16);
+            border-color: rgba(91, 106, 240, 0.35);
+            color: var(--accent);
+            font-size: 15px;
+            line-height: 1;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            vertical-align: middle;
+        }
+
+        .profile-btn:hover .profile-btn-placeholder {
+            display: inline-flex !important;
+            align-items: center;
+            justify-content: center;
+            transform: none !important;
+            color: var(--accent);
         }
 
         .theme-toggle .bi-brightness-high-fill {
