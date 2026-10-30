@@ -1,0 +1,387 @@
+html,
+body {
+    max-width: 100%;
+    overflow-x: clip !important;
+}
+
+.layout-wrapper,
+.main-content,
+.main-content > *,
+.perfil-container,
+.perfil-formulario,
+.phpma-container,
+.pm-etapa-wrapper {
+    min-width: 0;
+    max-width: 100%;
+}
+
+.main-content > * {
+    box-sizing: border-box;
+}
+
+img,
+video,
+iframe {
+    max-width: 100%;
+}
+
+pre,
+code,
+.mvc-arvore,
+.phpma-code,
+.pm-saida textarea {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+}
+
+.table-container,
+.phpma-table-responsive,
+.table-responsive {
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.page-header,
+.page-actions,
+.historico-toolbar,
+.historico-card-actions,
+.form-actions,
+.pm-controles-tela,
+.pm-controles-download {
+    min-width: 0;
+    flex-wrap: wrap;
+}
+
+.page-actions .btn,
+.historico-card-actions .btn {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+}
+
+@media (min-width: 901px) and (max-width: 1024px) {
+    body .topbar-toggle {
+        display: flex !important;
+        flex: 0 0 44px;
+        height: 44px;
+        width: 44px;
+    }
+
+    body .topbar-nav {
+        align-items: stretch;
+        background: var(--surface);
+        border-top: 1px solid var(--border);
+        bottom: 0;
+        display: none;
+        flex-direction: column;
+        gap: 18px;
+        justify-content: flex-start;
+        left: 0;
+        overflow-y: auto;
+        padding: 16px 16px 36px;
+        position: fixed;
+        right: 0;
+        top: 60px;
+        -webkit-overflow-scrolling: touch;
+        z-index: 999;
+    }
+
+    body .topbar-nav.open {
+        display: flex;
+    }
+
+    body .topbar-nav .mobile-nav-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        width: 100%;
+    }
+
+    body .topbar-nav .mobile-section-label {
+        display: block !important;
+    }
+
+    body .topbar-nav .topbar-item,
+    body .topbar-nav .topbar-item-inicio {
+        align-items: center;
+        box-sizing: border-box;
+        display: flex !important;
+        margin: 0 !important;
+        min-height: 48px;
+        padding: 10px 14px;
+        width: 100% !important;
+    }
+
+    body .topbar-nav .topbar-actions {
+        align-items: stretch;
+        border-top: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin: auto 0 0;
+        padding-top: 14px;
+        width: 100%;
+    }
+
+    body .topbar-actions .theme-toggle {
+        display: flex !important;
+        justify-content: space-between;
+        min-height: 48px;
+        width: 100%;
+    }
+
+    body .profile-dropdown-container {
+        display: none !important;
+    }
+
+    body .mobile-user-card {
+        box-sizing: border-box;
+        display: flex !important;
+        flex-direction: column;
+        gap: 12px;
+        width: 100%;
+    }
+
+    body .layout-wrapper {
+        flex-direction: row;
+        height: calc(100vh - 60px);
+        min-height: 0;
+    }
+
+    body .sidebar {
+        flex: 0 0 200px;
+        width: 200px;
+    }
+
+    body .main-content {
+        flex: 1;
+        min-width: 0;
+        width: auto;
+    }
+}
+
+@media (max-width: 1024px) {
+    body .main-content {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    body .site-footer {
+        margin-left: -20px;
+        margin-right: -20px;
+        width: calc(100% + 40px);
+    }
+
+    body .layout-wrapper {
+        height: auto;
+        min-height: calc(100vh - 60px);
+    }
+
+    body .sidebar {
+        display: none;
+    }
+
+    body .main-content {
+        min-height: calc(100vh - 60px);
+    }
+
+    body .phpma-main-layout {
+        gap: 16px;
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    body .phpma-sidebar-panel {
+        position: static;
+    }
+
+    body .phpma-grid-fields,
+    body .guia-grade-dupla,
+    body .guia-camadas,
+    body .guia-passos {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    body .mvc-grade-formulario,
+    body .pm-grade-formulario {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    body .main-content {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    body .grade-metricas,
+    body .grade-ferramentas,
+    body .guia-grade-dupla,
+    body .guia-camadas,
+    body .guia-passos,
+    body .phpma-grid-fields,
+    body .field-row,
+    body .field-row3 {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    body .mvc-grade-formulario,
+    body .pm-grade-formulario {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    body .pm-campo-completo,
+    body .mvc-campo-completo {
+        grid-column: auto;
+    }
+
+    body .pm-grupo-link {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    body .pm-controles-tela,
+    body .pm-controles-download,
+    body .page-actions,
+    body .historico-card-actions {
+        align-items: stretch;
+    }
+
+    body .pm-controles-tela .pm-botao,
+    body .pm-controles-download .pm-botao,
+    body .page-actions .btn {
+        flex: 1 1 100%;
+        justify-content: center;
+        min-height: 44px;
+    }
+
+    body .phpma-modal-content,
+    body .modal-content,
+    body dialog {
+        box-sizing: border-box;
+        margin: 12px auto;
+        max-height: calc(100dvh - 24px);
+        max-width: calc(100vw - 24px);
+        overflow-y: auto;
+        width: calc(100vw - 24px);
+    }
+
+    body .phpma-modal-foot {
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 480px) {
+    body .main-content {
+        padding-left: 14px;
+        padding-right: 14px;
+    }
+
+    body .site-footer {
+        margin-left: -14px;
+        margin-right: -14px;
+        width: calc(100% + 28px);
+    }
+
+    body .topbar {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    body .historico-panel,
+    body .pm-etapa,
+    body .pm-cartao,
+    body .guia-bloco,
+    body .phpma-card {
+        padding: 14px;
+    }
+
+    body .historico-cards-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    body .perfil-container {
+        padding-left: 12px;
+        padding-right: 12px;
+    }
+
+    body .perfil-card {
+        padding: 20px 16px;
+    }
+
+    body .perfil-grade-campos {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    body .perfil-avatar-editor {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    body .auth-wrapper {
+        max-width: 100%;
+        padding: 24px 12px;
+    }
+
+    body .auth-card {
+        max-width: 100%;
+        padding: 22px 18px;
+    }
+
+    body .auth-title {
+        font-size: clamp(22px, 7vw, 28px);
+        overflow-wrap: anywhere;
+    }
+
+    body .link-row {
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    body .phpma-table {
+        min-width: 620px;
+    }
+}
+
+@media (max-width: 360px) {
+    body .main-content {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    body .site-footer {
+        margin-left: -10px;
+        margin-right: -10px;
+        width: calc(100% + 20px);
+    }
+
+    body .auth-card {
+        padding: 18px 14px;
+    }
+
+    body .historico-card-actions .btn,
+    body .perfil-btn-salvar {
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px), (pointer: coarse) {
+    body input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='color']),
+    body select,
+    body textarea {
+        font-size: 16px !important;
+    }
+
+    body button,
+    body .btn,
+    body .pm-botao,
+    body .mvc-etapa-botao,
+    body .sb-item,
+    body .topbar-item,
+    body .topbar-item-inicio,
+    body .profile-dropdown-item,
+    body .btn-mobile-profile,
+    body .btn-mobile-logout,
+    body .btn-mobile-login,
+    body .btn-mobile-register {
+        min-height: 44px;
+    }
+}

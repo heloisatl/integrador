@@ -1,13 +1,11 @@
-<div id="pageMaker">
+<?php
+include_once(__DIR__ . "/../include/head.php");
+include_once(__DIR__ . "/../include/navigation.php");
+?>
 
-    <?php
-    include_once(__DIR__ . "/../include/head.php");
-    include_once(__DIR__ . "/../include/navigation.php");
-    ?>
-
-    <link rel="stylesheet" href="<?= URL_BASE_CSS ?>/pagina-pm.css">
-    <script src="<?= URL_BASE ?>/assets/js/funcoes-pm.js" defer></script>
-    <div class="pm-etapa-wrapper">
+<link rel="stylesheet" href="<?= URL_BASE_CSS ?>/pagina-pm.css">
+<script src="<?= URL_BASE ?>/assets/js/funcoes-pm.js" defer></script>
+<div class="pm-etapa-wrapper" id="pageMaker" data-url-base="<?= htmlspecialchars(URL_BASE, ENT_QUOTES, 'UTF-8') ?>">
         <div class="pm-etapa">
             <h3>Arquivo e cabeçalho</h3>
             <div class="pm-grade-formulario">
@@ -245,6 +243,11 @@
             </div>
             <button type="button" class="pm-botao" id="visualizarPrevia">Visualizar prévia</button>
             <button type="button" class="pm-botao pm-botao-secundario" id="gerarCodigo">Gerar HTML + CSS</button>
+            <div class="pm-controles-download" aria-label="Download dos arquivos gerados">
+                <button type="button" class="pm-botao pm-botao-secundario" id="baixarHTML">Baixar HTML</button>
+                <button type="button" class="pm-botao pm-botao-secundario" id="baixarCSS">Baixar CSS</button>
+            </div>
+            <p id="pmHistoricoStatus" class="pm-status-historico" role="status" aria-live="polite"></p>
             <div class="pm-saida">
                 <label for="codeHTML">HTML gerado</label>
                 <textarea id="codeHTML" readonly></textarea>
@@ -255,14 +258,8 @@
         </div>
     </div>
 
-</div>
-</div>
-
-
-
-<?php require_once __DIR__ . '/../include/footer.php'; ?>
-</main>
-</div>
+    <?php require_once __DIR__ . '/../include/footer.php'; ?>
+    </main>
 </div>
 </body>
 

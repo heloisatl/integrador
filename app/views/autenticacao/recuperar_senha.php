@@ -219,7 +219,7 @@
 
         <div class="links">
             <a href="<?= URL_BASE ?>/login">Voltar para o login</a>
-            <a href="<?= URL_BASE ?>/projetos">Continuar sem login</a>
+            <a href="<?= URL_BASE ?>/explorar">Continuar sem login</a>
         </div>
     </div>
 </div>

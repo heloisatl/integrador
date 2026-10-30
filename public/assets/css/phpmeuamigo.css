@@ -694,3 +694,18 @@
     color: #5B6AF0;
     font-weight: 600;
 }
+
+@keyframes phpmaSpin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.phpma-spin {
+    display: inline-block;
+    animation: phpmaSpin 1s linear infinite;
+}
+

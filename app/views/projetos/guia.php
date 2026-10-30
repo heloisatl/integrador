@@ -1,9 +1,7 @@
-<div id="guia">
-
-    <?php
-    include_once(__DIR__ . "/../include/head.php");
-    include_once(__DIR__ . "/../include/navigation.php");
-    ?>
+<?php
+include_once(__DIR__ . "/../include/head.php");
+include_once(__DIR__ . "/../include/navigation.php");
+?>
 
     <link rel="stylesheet" href="<?= URL_BASE_CSS ?>/guia.css">
 
@@ -43,7 +41,7 @@
                 <article class="guia-passo"><span>4</span>
                     <div>
                         <h4>Confira e aproveite</h4>
-                        <p>Use a prévia, acompanhe o histórico e consulte a saída para copiar ou baixar o código gerado.</p>
+                        <p>Use a prévia, acompanhe o histórico e baixe o código gerado.</p>
                     </div>
                 </article>
             </div>
@@ -73,12 +71,6 @@
                     <div>
                         <h4>Page Maker</h4>
                         <p>Cria páginas HTML e CSS com cabeçalho, navegação, imagens, colunas, cards, formulários, botões e prévia responsiva.</p><a class="guia-link" href="<?= URL_BASE ?>/projetos/pagemaker">Abrir Page Maker →</a>
-                    </div>
-                </article>
-                <article class="guia-camada"><span class="guia-icone">OUT</span>
-                    <div>
-                        <h4>Saída</h4>
-                        <p>Centraliza os códigos produzidos pelas ferramentas para visualizar, copiar e baixar cada arquivo gerado.</p><a class="guia-link" href="<?= URL_BASE ?>/projetos/saida">Ver saída →</a>
                     </div>
                 </article>
                 <article class="guia-camada"><span class="guia-icone">HIS</span>
@@ -164,8 +156,8 @@
             <div class="guia-passos">
                 <article class="guia-passo"><span>1</span>
                     <div>
-                        <h4>Revise na Saída</h4>
-                        <p>Confira os arquivos separados por tipo e verifique se o conteúdo gerado corresponde ao que foi configurado.</p>
+                        <h4>Revise os arquivos</h4>
+                        <p>Confira os arquivos gerados e verifique se o conteúdo corresponde ao que foi configurado.</p>
                     </div>
                 </article>
                 <article class="guia-passo"><span>2</span>

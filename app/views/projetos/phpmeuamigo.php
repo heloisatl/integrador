@@ -1,9 +1,7 @@
-<div id="phpmeuamigo">
-
-    <?php
-    include_once(__DIR__ . "/../include/head.php");
-    include_once(__DIR__ . "/../include/navigation.php");
-    ?>
+<?php
+include_once(__DIR__ . "/../include/head.php");
+include_once(__DIR__ . "/../include/navigation.php");
+?>
 
     <!-- Estilos de formulários globais e do PHPmeuamigo -->
     <link rel="stylesheet" href="<?= URL_BASE ?>/assets/css/form-styles.css">
@@ -45,6 +43,9 @@
             <div style="display:flex; gap:8px;">
                 <button type="button" id="phpma-btn-config-banco" class="btn btn-secondary" title="Configurações do Banco (Host, Usuário, Senha)">
                     <i class="bi bi-gear-fill"></i> Configurações
+                </button>
+                <button type="button" id="phpma-btn-exportar-sql" class="btn btn-secondary" title="Gerar e baixar o arquivo .sql atualizado deste banco">
+                    <i class="bi bi-download"></i> Baixar SQL
                 </button>
                 <button type="button" id="phpma-btn-excluir-banco" class="btn btn-secondary" style="color:#ff6b6b; border-color:rgba(255,107,107,0.3);" onclick="window.phpmaDeleteBancoActive()" title="Excluir Banco de Dados do DevStudio">
                     <i class="bi bi-trash"></i> Excluir Banco

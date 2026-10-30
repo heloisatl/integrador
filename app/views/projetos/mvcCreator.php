@@ -1,9 +1,7 @@
-<div id="mvcCreator">
-
-    <?php
-    include_once(__DIR__ . "/../include/head.php");
-    include_once(__DIR__ . "/../include/navigation.php");
-    ?>
+<?php
+include_once(__DIR__ . "/../include/head.php");
+include_once(__DIR__ . "/../include/navigation.php");
+?>
 
     <link rel="stylesheet" href="<?= URL_BASE_CSS ?>/pagina-mvc.css">
 
@@ -63,7 +61,6 @@
     <script src="<?= URL_BASE ?>/assets/js/arvoreArquivos.js"></script>
     <script src="<?= URL_BASE ?>/assets/js/mvcLoad.js"></script>
     <!-- <script src="<?= URL_BASE ?>/assets/js/desabilitado.js"></script> -->
-</div>
 </div>
 </body>
 

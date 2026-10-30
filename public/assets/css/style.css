@@ -43,6 +43,7 @@
     background: var(--surface);
     border-top: 1px solid var(--border);
     box-sizing: border-box;
+    flex-shrink: 0;
 }
 
 @media (max-width: 900px) {
@@ -125,6 +126,53 @@
     padding: 0.8rem 1.5rem;
     border-radius: 0 0 16px 16px;
     box-shadow: 0 4px 18px rgba(0, 0, 0, 0.12);
+}
+
+.profile-btn {
+    align-items: center;
+    display: inline-flex;
+    gap: 8px;
+}
+
+.profile-btn-avatar,
+.profile-btn-placeholder {
+    align-items: center;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    display: inline-flex !important;
+    flex: 0 0 26px;
+    height: 26px;
+    justify-content: center;
+    object-fit: cover;
+    overflow: hidden;
+    width: 26px;
+    box-sizing: border-box;
+    line-height: 1;
+    margin: 0;
+    padding: 0;
+    vertical-align: middle;
+}
+
+.profile-btn-placeholder {
+    background: rgba(91, 106, 240, 0.16);
+    border-color: rgba(91, 106, 240, 0.35);
+    color: var(--accent);
+    font-size: 15px;
+}
+
+.profile-btn:hover .profile-btn-placeholder {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    transform: none !important;
+    color: var(--accent);
+}
+
+.mobile-user-avatar-image {
+    border-radius: 50%;
+    height: 100%;
+    object-fit: cover;
+    width: 100%;
 }
 
 /* Desktop base: hide mobile-only elements */
@@ -618,40 +666,54 @@
 }
 
 /* Mostra apenas o que deve aparecer em cada página */
-#home #sb-principal {
-    display: block;
+#home #sb-principal,
+#projetos #sb-principal,
+body#home #sb-principal,
+body#projetos #sb-principal {
+    display: flex;
 }
 
-#config-global #sb-principal {
-    display: block;
+
+#config-global #sb-principal,
+body#config-global #sb-principal {
+    display: flex;
 }
 
-#guia #sb-principal {
-    display: block;
+#guia #sb-principal,
+body#guia #sb-principal {
+    display: flex;
 }
 
-#mvc-creator #sb-titulo-MVC {
-    display: block;
+#mvc-creator #sb-titulo-MVC,
+#mvcCreator #sb-titulo-MVC,
+body#mvc-creator #sb-titulo-MVC {
+    display: flex;
 }
 
-#pagemaker #sb-titulo-PageMaker {
-    display: block;
+#pagemaker #sb-titulo-PageMaker,
+#pageMaker #sb-titulo-PageMaker,
+body#pagemaker #sb-titulo-PageMaker {
+    display: flex;
 }
 
-#historico #sb-titulo-historico {
-    display: block;
+#historico #sb-titulo-historico,
+body#historico #sb-titulo-historico {
+    display: flex;
 }
 
-#saida #sb-titulo-saida {
-    display: block;
+#usuarios #sb-titulo-usuarios,
+body#usuarios #sb-titulo-usuarios {
+    display: flex;
 }
 
-#usuarios #sb-titulo-usuarios {
-    display: block;
+#phpmeuamigo #sb-titulo-PHPMeuAmigo,
+body#phpmeuamigo #sb-titulo-PHPMeuAmigo {
+    display: flex;
 }
 
-#phpmeuamigo #sb-titulo-PHPMeuAmigo {
-    display: block;
+#perfil #sb-titulo-perfil,
+body#perfil #sb-titulo-perfil {
+    display: flex;
 }
 
 .mvc-etapa-wrapper {

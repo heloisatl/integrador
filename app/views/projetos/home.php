@@ -1,14 +1,12 @@
-    <div id="home">
+<?php
+include_once(__DIR__ . "/../include/head.php");
+include_once(__DIR__ . "/../include/navigation.php");
 
-        <?php
-        include_once(__DIR__ . "/../include/head.php");
-        include_once(__DIR__ . "/../include/navigation.php");
-
-        $nomeDev = 'Desenvolvedor';
-        if (isset($_SESSION['usuario_logado']) && method_exists($_SESSION['usuario_logado'], 'getNome')) {
-            $nomeDev = $_SESSION['usuario_logado']->getNome();
-        }
-        ?>
+$nomeDev = 'Desenvolvedor';
+if (isset($_SESSION['usuario_logado']) && method_exists($_SESSION['usuario_logado'], 'getNome')) {
+    $nomeDev = $_SESSION['usuario_logado']->getNome();
+}
+?>
 
         <link rel="stylesheet" href="<?= URL_BASE_CSS ?>/home.css">
 
@@ -61,13 +59,6 @@
                         <h4>PHPMeuAmigo — Modelador</h4>
                         <p>Modele bancos visualmente, gerencie tabelas e atributos, configure chaves estrangeiras didáticas ou importe bancos locais.</p>
                         <a class="botao-ferramenta botao-phpma" href="<?= URL_BASE ?>/projetos/phpmeuamigo">Abrir <span aria-hidden="true">→</span></a>
-                    </article>
-
-                    <article class="cartao-ferramenta">
-                        <span class="icone-ferramenta icone-saida" aria-hidden="true"><i class="bi bi-box-arrow-up-right"></i></span>
-                        <h4>Saída Unificada</h4>
-                        <p>Todo o código gerado em ambas ferramentas aparece na aba &quot;Saída Gerada&quot;. Copie ou baixe individualmente cada arquivo.</p>
-                        <a class="botao-ferramenta botao-saida" href="<?= URL_BASE ?>/projetos/saida">Ver Saída <span aria-hidden="true">→</span></a>
                     </article>
                 </div>
             </section>
