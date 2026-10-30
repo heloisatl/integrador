@@ -4,7 +4,11 @@
 // então PHP_SELF sempre retornaria "index.php" e o menu nunca marcaria página ativa corretamente. A detecção agora usa a rota da URL atual.
 $requestPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
 $paginaAtual = trim(basename(rtrim($requestPath, '/')), '/');
-if ($paginaAtual === '' || $paginaAtual === 'index.php') {
+if (strpos($requestPath, '/perfil') !== false) {
+    $paginaAtual = 'perfil';
+} elseif (strpos($requestPath, '/usuarios') !== false) {
+    $paginaAtual = 'usuarios';
+} elseif ($paginaAtual === '' || $paginaAtual === 'index.php') {
     $paginaAtual = 'projetos'; // rota "/projetos" = home
 }
 
