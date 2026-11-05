@@ -103,7 +103,8 @@ class BancoRepository{
         $stmClean->bindValue(':id_banco', $id_banco, PDO::PARAM_INT);
         $stmClean->execute();
 
-        $sqlCleanProjetos = "DELETE FROM projeto WHERE fk_banco = :id_banco";
+        // Desvincula os projetos gerados (fk_banco = NULL) para preservar os projetos e arquivos para download
+        $sqlCleanProjetos = "UPDATE projeto SET fk_banco = NULL WHERE fk_banco = :id_banco";
         $stmCleanProj = $this->conn->prepare($sqlCleanProjetos);
         $stmCleanProj->bindValue(':id_banco', $id_banco, PDO::PARAM_INT);
         $stmCleanProj->execute();

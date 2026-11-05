@@ -224,7 +224,22 @@ Foi criado um motor JavaScript e CSS que substitui os alertas nativos por cards 
 
 ---
 
-## 8. Diagrama de Casos de Uso com a Nova Funcionalidade
+## 8. Segurança de Dados no PHPMeuAmigo e Preservação de Projetos
+
+### 8.1 Exportação Segura de Scripts SQL (`nomeBanco_devstudio`)
+A exportação de script SQL no PHPMeuAmigo foi totalmente reformulada para eliminar riscos de perda acidental de dados no ambiente do usuário:
+1. **Remoção de `DROP TABLE`**: Foram eliminadas todas as cláusulas `DROP TABLE IF EXISTS`.
+2. **Uso de `CREATE TABLE IF NOT EXISTS`**: A criação de tabelas é segura e não sobrescreve nem apaga dados já existentes.
+3. **Nomenclatura Isolada `nomeBanco_devstudio`**: O script cria e utiliza exclusivamente o schema `nomeBanco_devstudio` (`CREATE SCHEMA IF NOT EXISTS nomeBanco_devstudio`), mantendo o banco de dados original do usuário 100% intocado.
+
+### 8.2 Desvinculação Segura na Exclusão de Bancos
+1. A coluna `fk_banco` na tabela `projeto` foi reconfigurada para aceitar `NULL` (`INT NULL DEFAULT NULL`).
+2. A chave estrangeira `fk_projeto_banco` foi redefinida com `ON DELETE SET NULL ON UPDATE CASCADE`.
+3. Ao excluir um banco de dados no PHPMeuAmigo, os projetos gerados **NÃO são mais excluídos**. Seus registros no banco e os arquivos `.zip` para download no Histórico permanecem permanentemente preservados.
+
+---
+
+## 9. Diagrama de Casos de Uso com a Nova Funcionalidade
 
 ```mermaid
 flowchart LR
@@ -264,7 +279,7 @@ flowchart LR
 
 ---
 
-## 9. Relação de Arquivos Criados e Modificados
+## 10. Relação de Arquivos Criados e Modificados
 
 | Arquivo | Status | Descrição |
 | :--- | :--- | :--- |
@@ -283,7 +298,9 @@ flowchart LR
 | `app/controllers/UsuarioController.php` | **Modificado** | Acoplamento de logs para criação, atualização e exclusão de contas e perfil. |
 | `app/controllers/ProjetoController.php` | **Modificado** | Acoplamento de logs para geração MVC Creator, PageMaker e operações de histórico. |
 | `app/controllers/PhpMeuAmigoController.php` | **Modificado** | Acoplamento de logs para criação/edição/exclusão de bancos, tabelas, atributos, importações e exportações SQL. |
-| `app/repositories/BancoRepository.php` | **Modificado** | Exclusão em cascata de projetos atrelados antes da exclusão de banco para prevenir erro MySQL 1451. |
+| `app/services/SqlExporterService.php` | **Modificado** | Exportação segura sem DROP, criação com IF NOT EXISTS e schema isolado `nomeBanco_devstudio`. |
+| `app/repositories/BancoRepository.php` | **Modificado** | Desvinculação dos projetos (`fk_banco = NULL`) ao excluir banco, preservando projetos e arquivos para download. |
+| `app/database/scripts/script.sql` | **Modificado** | Atualização do schema da tabela `projeto` com `fk_banco INT NULL` e `ON DELETE SET NULL`. |
 | `app/services/UsuarioService.php` | **Modificado** | Ajuste da mensagem de validação de caracteres especiais sem termos de SQL Injection. |
 | `app/views/projetos/historico.php` | **Modificado** | Substituição de botões vermelhos por azul DevStudio e remoção de contador duplicado. |
 | `public/assets/js/mvcLoad.js` | **Modificado** | Substituição dos `alert()` nativos por `devstudioAlert(...)`. |
@@ -292,7 +309,7 @@ flowchart LR
 
 ---
 
-## 10. Procedimentos de Verificação e Testes
+## 11. Procedimentos de Verificação e Testes
 
 1. **Acesso Administrativo ao Módulo**:
    - Realizar login com usuário administrador (`admin@devstudio.com` / `admin123`).

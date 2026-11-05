@@ -30,9 +30,7 @@ function obterIconeAcao(string $acao): string {
 <div class="logs-shell">
     <header class="logs-header page-header">
         <div>
-            <p class="etiqueta-inicial">Auditoria & Segurança (RF 15 / UC 15)</p>
             <h1 class="page-title">Logs do Sistema</h1>
-            <p class="logs-subtitulo">Acompanhamento cronológico de todas as ações e eventos operacionais da plataforma.</p>
         </div>
         <div class="logs-actions">
             <span class="logs-badge-total" title="Total de registros de auditoria">
