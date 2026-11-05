@@ -26,7 +26,18 @@ if (isset($_SESSION['usuario_logado']) && method_exists($_SESSION['usuario_logad
 
 function usuarioEhAdmin(): bool
 {
-    return isset($_SESSION['usuario_logado']) && strtolower($_SESSION['usuario_logado']->getTipoPerfil()) === 'admin';
+    if (!isset($_SESSION['usuario_logado'])) {
+        return false;
+    }
+    $usuario = $_SESSION['usuario_logado'];
+    if (method_exists($usuario, 'ehAdmin')) {
+        return $usuario->ehAdmin();
+    }
+    if (method_exists($usuario, 'getTipoPerfil')) {
+        $tipo = strtolower(trim($usuario->getTipoPerfil()));
+        return in_array($tipo, ['admin', 'administrador'], true);
+    }
+    return false;
 }
 
 if ($paginaAtual === 'pagemaker' && $currentSection === '') {
@@ -296,10 +307,8 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
         <!-- Historico -->
         <div id="sb-titulo-historico" class="sb-section">
             <div class="sb-label">Histórico</div>
-            <a href="<?= URL_BASE ?>/projetos/historico?tab=visualizar" class="sb-item <?php echo verificarAtivo('historico', $paginaAtual, 'tab', 'visualizar'); ?>"> <span class="sb-icon"></span> Visualizar Histórico
-            </a>
-
-            <a href="<?= URL_BASE ?>/projetos/historico?tab=exportar" class="sb-item <?php echo verificarAtivo('historico', $paginaAtual, 'tab', 'exportar'); ?>"> <span class="sb-icon"></span> Exportar todos
+            <a href="<?= URL_BASE ?>/projetos/historico" class="sb-item <?php echo ($paginaAtual === 'historico') ? 'active' : ''; ?>">
+                <span class="sb-icon"></span> Visualizar Histórico
             </a>
         </div>
 

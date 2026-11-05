@@ -95,6 +95,9 @@ class UsuarioService {
         $email = strtolower(trim((string) ($dados['email'] ?? '')));
         $senha = (string) ($dados['senha'] ?? '');
         $tipoPerfil = trim((string) ($dados['tipo_perfil'] ?? ''));
+        if (strtolower($tipoPerfil) === 'administrador') {
+            $tipoPerfil = 'admin';
+        }
 
         if ($nome === '' || $email === '' || $senha === '' || $tipoPerfil === '') {
             return false;
@@ -118,6 +121,10 @@ class UsuarioService {
     public function updateUsuario(int $id, array $dados): bool {
         if (empty($dados['nome']) || empty($dados['email'])) {
             return false;
+        }
+
+        if (isset($dados['tipo_perfil']) && strtolower(trim((string)$dados['tipo_perfil'])) === 'administrador') {
+            $dados['tipo_perfil'] = 'admin';
         }
 
         return $this->repository->updateUsuario($id, $dados);

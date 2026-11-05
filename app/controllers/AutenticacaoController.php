@@ -43,7 +43,7 @@ class AutenticacaoController extends Controller
 
         if ($resultado) {
             $perfil = strtolower($_SESSION['usuario_logado']->getTipoPerfil());
-            $destino = $perfil === 'admin' ? '/usuarios' : '/projetos';
+            $destino = in_array($perfil, ['admin', 'administrador'], true) ? '/usuarios' : '/projetos';
             $this->redirect(URL_BASE . $destino);
         }
 

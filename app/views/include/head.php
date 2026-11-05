@@ -274,11 +274,23 @@
             display: inline-block;
         }
 
+        .profile-btn-avatar {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid var(--border);
+            display: inline-block;
+            vertical-align: middle;
+            flex-shrink: 0;
+            box-sizing: border-box;
+        }
+
         .profile-btn-placeholder {
             align-items: center;
             border: 1px solid var(--border);
             border-radius: 50%;
-            display: inline-flex !important;
+            display: inline-flex;
             flex: 0 0 26px;
             height: 26px;
             justify-content: center;
@@ -297,10 +309,10 @@
         }
 
         .profile-btn:hover .profile-btn-placeholder {
-            display: inline-flex !important;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            transform: none !important;
+            transform: none;
             color: var(--accent);
         }
 

@@ -108,7 +108,7 @@ include_once(__DIR__ . "/../include/navigation.php");
                 <li><strong>Veja a estrutura:</strong> confira as pastas e os arquivos antes de executar a geração.</li>
                 <li><strong>Gere e baixe:</strong> o sistema cria o código, monta o arquivo <code>.zip</code> e disponibiliza o download.</li>
             </ol>
-            <div class="guia-aviso"><strong>MVC + DAO:</strong> o Model representa os dados; o DAO, chamado de Repository neste projeto, concentra o SQL; o Controller coordena as ações; e a View exibe a interface.</div>
+            <a class="guia-botao" href="<?= URL_BASE ?>/projetos/mvc-creator">Experimentar MVC Creator</a>
         </section>
 
         <section class="guia-bloco">
@@ -142,7 +142,6 @@ include_once(__DIR__ . "/../include/navigation.php");
                 <li><strong>Vincule Foreign Keys didáticas:</strong> utilize o seletor visual para apontar uma coluna diretamente para a chave primária de outra tabela do mesmo banco.</li>
                 <li><strong>Integração com o MVC:</strong> o banco modelado fica disponível no MVC Creator para gerar todo o código do sistema.</li>
             </ol>
-            <div class="guia-aviso"><strong>Ambiente Isolado:</strong> toda a modelagem feita no PHPMeuAmigo é gravada exclusivamente no DevStudio e não altera a estrutura dos seus bancos originais do MySQL.</div>
             <a class="guia-botao" href="<?= URL_BASE ?>/projetos/phpmeuamigo">Experimentar PHPMeuAmigo</a>
         </section>
 

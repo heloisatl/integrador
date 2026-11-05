@@ -254,7 +254,7 @@ class ProjetoController extends Controller{
         $caminhoMigrado = __DIR__ . '/../projetos/historico_compartilhado_migrado.json';
 
         if (!$usuario || !method_exists($usuario, 'getTipoPerfil')
-            || strtolower($usuario->getTipoPerfil()) !== 'admin'
+            || !in_array(strtolower(trim($usuario->getTipoPerfil())), ['admin', 'administrador'], true)
             || !is_file($caminhoLegado)
             || is_file($caminhoMigrado)) {
             return;
