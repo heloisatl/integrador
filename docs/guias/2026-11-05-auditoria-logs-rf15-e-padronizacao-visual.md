@@ -118,12 +118,10 @@ Encapsula os atributos de cada evento de auditoria:
 
 ### 4.2 Camada de Dados (`app/repositories/LogRepository.php`)
 - **`create(int $fkUsuario, string $acao, ?string $data)`**: Insere um novo evento com tratamento automático de data corrente e limite de 255 caracteres (`mb_substr`).
-- **`getAll(array $filtros, int $limite, int $offset)`**: Monta queries dinâmicas preparadas (`PDO::prepare`) suportando filtros por busca textual (`q`), ID do usuário (`usuario_id`), intervalo de datas (`data_inicio` a `data_fim`) e perfil (`tipo_perfil`), ordenando sempre cronologicamente de forma decrescente (`ORDER BY l.data DESC, l.id_log DESC`).
+- **`getAll(array $filtros, int $limite, int $offset)`**: Monta queries dinâmicas preparadas (`PDO::prepare`) suportando filtros por busca textual (`q`), busca de usuário por nome/e-mail (`usuario`), ID do usuário (`usuario_id`), intervalo de datas (`data_inicio` a `data_fim`) e perfil (`tipo_perfil`), ordenando sempre cronologicamente de forma decrescente (`ORDER BY l.data DESC, l.id_log DESC`).
 - **`contarTotal(array $filtros)`**: Retorna o quantitativo total de registros sob os mesmos critérios de filtro.
-- **`getEstatisticas()`**: Agrega métricas para os cartões de indicadores (total de eventos, eventos de hoje, usuários distintos com ações e última ação registrada).
-- **`getUsuariosParaFiltro()`**: Recupera a lista de usuários com atividade para popular dinamicamente o campo `<select>` de filtro.
-- **`limparHistoricoLogs()`**: Trunca a tabela `log` para fins de manutenção por administradores.
 - **`garantirTabela()`**: Mecanismo de auto-cura (`CREATE TABLE IF NOT EXISTS`) para garantir que o sistema não falhe mesmo se o banco for recriado em novo ambiente.
+- **Imutabilidade e Segurança de Auditoria**: Métodos de limpeza ou truncamento foram deliberadamente retirados por conformidade com segurança da informação (ISO 27001, LGPD e princípio de não-repúdio). Audit logs devem ser estritamente *append-only*.
 
 ### 4.3 Camada de Serviço (`app/services/LogService.php`)
 - **`LogService::registrar(string $acao, ?int $fkUsuario = null): bool`**: Método estático e desacoplado que pode ser chamado de qualquer controller, service ou ferramenta do sistema. Se o ID do usuário não for explicitado, recupera automaticamente da sessão ativa (`$_SESSION['usuario_logado']`). Em eventos anônimos de sistema, vincula ao administrador padrão (ID 1). Falhas de log são capturadas internamente para nunca interromper a regra de negócio principal.
@@ -132,9 +130,9 @@ Encapsula os atributos de cada evento de auditoria:
 
 ### 4.4 Controlador e Rotas (`app/controllers/LogController.php` & `public/index.php`)
 - Rotas registradas:
-  - `GET /logs`: Executa `LogController@index`, validando `adminRequired()` e renderizando a interface.
-  - `GET /logs/exportar`: Executa `LogController@exportar`, disparando o download do arquivo CSV.
-  - `GET /logs/limpar`: Executa `LogController@limpar`, esvaziando o histórico após confirmação.
+  - `GET /logs`: Executa `LogController@index`, validando `adminRequired()` e renderizando a interface de auditoria.
+  - `GET /logs/exportar`: Executa `LogController@exportar`, disparando o download do arquivo CSV com os registros filtrados.
+  - *(Nota de Segurança)*: A rota de limpeza foi intencionalmente eliminada para manter a trilha de auditoria append-only.
 
 ### 4.5 Acoplamento Automático dos Eventos no Sistema
 O método `LogService::registrar()` foi integrado aos seguintes eventos em tempo real:
@@ -147,31 +145,40 @@ O método `LogService::registrar()` foi integrado aos seguintes eventos em tempo
   - `atualizar()`: *"Dados de usuário atualizados pelo Administrador (ID: {id})"*
   - `excluir()`: *"Usuário excluído pelo Administrador (ID: {id})"*
   - `atualizarPerfil()`: *"Perfil de usuário atualizado com sucesso."*
-- **`ProjetoController.php`**:
+- **`ProjetoController.php` (MVC Creator & PageMaker)**:
   - `gerarMvc()`: *"Geração de sistema MVC Creator: {nomeProjeto}"*
+  - `registrarProjetoNoHistorico()`: *"Projeto salvo no histórico ({modulo}): {nome}"*
+  - `baixarProjetoHistorico()`: *"Download de projeto do histórico ({modulo}): {nome}"*
   - `apagarProjetoHistorico()`: *"Projeto removido do histórico (ID: {id})"*
   - `limparHistorico()`: *"Histórico de projetos foi limpo pelo usuário."*
+- **`PhpMeuAmigoController.php` (Modelagem de Banco de Dados)**:
+  - `salvarBanco()`: *"Novo banco de dados criado no modelador: {nome_banco}"* / *"Configurações do banco de dados atualizadas: {nome_banco}"*
+  - `excluirBanco()`: *"Banco de dados excluído no modelador: {nome_banco}"*
+  - `salvarTabela()`: *"Nova tabela criada no modelador: {nome_tabela}"* / *"Tabela renomeada no modelador: {nome_tabela}"*
+  - `excluirTabela()`: *"Tabela excluída no modelador: {nome_tabela}"*
+  - `salvarAtributo()`: *"Novo atributo adicionado no modelador: {nome_atributo} ({tipo})"* / *"Atributo atualizado no modelador: {nome_atributo} ({tipo})"*
+  - `excluirAtributo()`: *"Atributo excluído no modelador: {nome_atributo}"*
+  - `importarBancoLocal()`: *"Banco MySQL local importado no modelador: {banco_selecionado}"*
+  - `exportarSql()`: *"Exportação de script SQL do banco: {nomeArquivo}"*
 
 ---
 
 ## 5. Interface Visual e Estilização (`app/views/logs/index.php` & `logs.css`)
 
-A interface foi projetada seguindo rigorosamente o design system do DevStudio:
-1. **Cabeçalho & Ações**:
+A interface foi projetada com foco em usabilidade, escalabilidade e conformidade com o design system do DevStudio:
+1. **Cabeçalho & Ações Limpas**:
    - Tag de identificação: `AUDITORIA & SEGURANÇA (RF 15 / UC 15)`.
-   - Botões de exportação CSV, gerenciamento de usuários e limpeza rápida.
-2. **Dashboard de KPIs**:
-   - **Total de Logs**: volume total registrado.
-   - **Registros Hoje**: ações contabilizadas no dia corrente.
-   - **Usuários Ativos**: número de contas distintas com ações auditadas.
-   - **Último Evento**: prévia da última operação e seu horário.
-3. **Barra de Filtros**:
-   - Busca instantânea por termo/ação/nome/e-mail.
-   - Filtro por Usuário e Perfil (`Administrador` / `Usuário Comum`).
-   - Intervalo de datas com inputs tipo `date`.
-   - Botões `Filtrar` e `Limpar`.
-4. **Tabela Cronológica**:
-   - Colunas: ID, Data/Hora (com tempo relativo: *"há 10 min"*, *"ontem"*), Usuário (com badge de perfil e avatar) e Ação Realizada (com ícone temático conforme a categoria do evento: chave, banco, engrenagem, lixeira, etc.).
+   - Badge com totalizador cronológico de eventos (`x eventos`).
+   - Botão de exportação para CSV.
+   - Remoção de ações redundantes ou perigosas (como "Gerenciar Usuários" já existente na topbar e botão de limpeza de logs).
+2. **Barra de Filtros Escalável**:
+   - Busca instantânea por termo geral (ação, nome ou e-mail).
+   - **Campo de busca textual por Usuário**: substituído o `<select>` por um `<input type="text">` pesquisável por nome ou e-mail, permitindo localizar usuários rapidamente mesmo em bases com centenas de contas.
+   - Filtro por Perfil (`Administrador` / `Usuário Comum`).
+   - Intervalo de datas com inputs nativos tipo `date`.
+   - Botões `Filtrar` e `Limpar Filtros`.
+3. **Tabela Cronológica**:
+   - Colunas: ID, Data/Hora (com tempo relativo: *"há 10 min"*, *"ontem"*), Usuário (com badge de perfil e avatar) e Ação Realizada (com ícone temático conforme a categoria do evento: chave, banco, engrenagem, código, lixeira, etc.).
 
 ---
 
@@ -230,7 +237,6 @@ flowchart LR
         UC15["UC 15 - Consultar Logs do Sistema"]
         UC15_Filtro["Filtrar Eventos por Data / Usuário / Termo"]
         UC15_Export["Exportar Histórico em CSV"]
-        UC15_Limpar["Limpar Registros Antigos"]
     end
 
     subgraph Modulo_Usuarios["Módulo de Usuários (UC 16)"]
@@ -241,6 +247,8 @@ flowchart LR
         EvLogin["Login / Logout"]
         EvCad["Cadastro de Usuários"]
         EvMVC["Geração MVC Creator"]
+        EvPage["PageMaker (Salvar / Baixar)"]
+        EvBanco["PHPMeuAmigo (Bancos / Tabelas / FKs)"]
         EvHist["Exclusões do Histórico"]
     end
 
@@ -248,7 +256,6 @@ flowchart LR
     Adm --> UC16
     UC15 -.-> UC15_Filtro
     UC15 -.-> UC15_Export
-    UC15 -.-> UC15_Limpar
 
     User -.->|Gera eventos| Eventos_Auditados
     Adm -.->|Gera eventos| Eventos_Auditados
@@ -262,19 +269,21 @@ flowchart LR
 | Arquivo | Status | Descrição |
 | :--- | :--- | :--- |
 | `app/models/Log.php` | **Criado** | Modelo da entidade Log com getters, setters e helpers de formatação. |
-| `app/repositories/LogRepository.php` | **Criado** | Repositório PDO para consulta, filtros, inserção e agregação de logs. |
+| `app/repositories/LogRepository.php` | **Criado** | Repositório PDO para consulta, filtros por busca textual e usuário, e inserção append-only. |
 | `app/services/LogService.php` | **Criado** | Serviço de auditoria com método estático de registro e exportação CSV. |
-| `app/controllers/LogController.php` | **Criado** | Controller administrativo restrito com ações de listagem, exportação e limpeza. |
-| `app/views/logs/index.php` | **Criado** | View da tela de logs com cards de KPI, formulário de filtros e tabela cronológica. |
+| `app/controllers/LogController.php` | **Criado** | Controller administrativo restrito com ações de listagem e exportação CSV. |
+| `app/views/logs/index.php` | **Criado** | View da tela de logs com layout limpo, campo de busca de usuário por texto e tabela cronológica. |
 | `public/assets/css/logs.css` | **Criado** | Estilos dedicados da tela de logs, badges, avatares e estados vazios. |
-| `public/index.php` | **Modificado** | Registro das rotas `/logs`, `/logs/exportar` e `/logs/limpar`. |
+| `public/index.php` | **Modificado** | Registro das rotas `/logs` e `/logs/exportar`. |
 | `app/views/include/navigation.php` | **Modificado** | Inclusão do link de Logs na topbar e sidebar para admins; correção do avatar único. |
 | `app/views/include/head.php` | **Modificado** | Inclusão do motor global de toasts `devstudioAlert`, sobrescrita de `alert()`, `logs.css` e ID no body. |
 | `public/assets/css/style.css` | **Modificado** | Regras CSS dos toasts flutuantes, destaque da sidebar de logs e `white-space: nowrap` para botões. |
 | `public/assets/css/responsivo.css` | **Modificado** | Correção de quebra de texto em botões da barra de ações. |
 | `app/controllers/AutenticacaoController.php` | **Modificado** | Acoplamento de logs para login, logout e cadastro de novos usuários. |
 | `app/controllers/UsuarioController.php` | **Modificado** | Acoplamento de logs para criação, atualização e exclusão de contas e perfil. |
-| `app/controllers/ProjetoController.php` | **Modificado** | Acoplamento de logs para geração MVC Creator e operações de histórico. |
+| `app/controllers/ProjetoController.php` | **Modificado** | Acoplamento de logs para geração MVC Creator, PageMaker e operações de histórico. |
+| `app/controllers/PhpMeuAmigoController.php` | **Modificado** | Acoplamento de logs para criação/edição/exclusão de bancos, tabelas, atributos, importações e exportações SQL. |
+| `app/repositories/BancoRepository.php` | **Modificado** | Exclusão em cascata de projetos atrelados antes da exclusão de banco para prevenir erro MySQL 1451. |
 | `app/services/UsuarioService.php` | **Modificado** | Ajuste da mensagem de validação de caracteres especiais sem termos de SQL Injection. |
 | `app/views/projetos/historico.php` | **Modificado** | Substituição de botões vermelhos por azul DevStudio e remoção de contador duplicado. |
 | `public/assets/js/mvcLoad.js` | **Modificado** | Substituição dos `alert()` nativos por `devstudioAlert(...)`. |

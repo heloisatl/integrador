@@ -81,6 +81,11 @@ class LogRepository {
             $params[':busca'] = '%' . trim($filtros['busca']) . '%';
         }
 
+        if (!empty($filtros['usuario'])) {
+            $where[] = "(u.nome LIKE :usuario OR u.email LIKE :usuario)";
+            $params[':usuario'] = '%' . trim($filtros['usuario']) . '%';
+        }
+
         if (!empty($filtros['usuario_id']) && is_numeric($filtros['usuario_id'])) {
             $where[] = "l.fk_usuario = :fk_usuario";
             $params[':fk_usuario'] = (int) $filtros['usuario_id'];
@@ -150,6 +155,11 @@ class LogRepository {
         if (!empty($filtros['busca'])) {
             $where[] = "(l.acao LIKE :busca OR u.nome LIKE :busca OR u.email LIKE :busca)";
             $params[':busca'] = '%' . trim($filtros['busca']) . '%';
+        }
+
+        if (!empty($filtros['usuario'])) {
+            $where[] = "(u.nome LIKE :usuario OR u.email LIKE :usuario)";
+            $params[':usuario'] = '%' . trim($filtros['usuario']) . '%';
         }
 
         if (!empty($filtros['usuario_id']) && is_numeric($filtros['usuario_id'])) {
@@ -232,19 +242,6 @@ class LogRepository {
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (Exception $e) {
             return [];
-        }
-    }
-
-    public function limparHistoricoLogs(): bool {
-        $conn = $this->getConn();
-        if (!$conn) return false;
-
-        try {
-            $conn->exec("TRUNCATE TABLE `log`");
-            return true;
-        } catch (Exception $e) {
-            error_log("Erro ao truncar tabela de logs: " . $e->getMessage());
-            return false;
         }
     }
 }

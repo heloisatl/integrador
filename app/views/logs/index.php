@@ -41,57 +41,8 @@ function obterIconeAcao(string $acao): string {
             <a href="<?= URL_BASE ?>/logs/exportar?<?= http_build_query($filtros ?? []) ?>" class="btn btn-secondary" title="Exportar dados filtrados para planilha">
                 <i class="bi bi-download"></i> Exportar CSV
             </a>
-            <a href="<?= URL_BASE ?>/usuarios" class="btn btn-secondary">
-                <i class="bi bi-people"></i> Gerenciar Usuários
-            </a>
-            <?php if (!empty($logs)): ?>
-                <button type="button" class="btn btn-primary" onclick="if (confirm('Atenção: deseja limpar permanentemente todo o histórico de logs do sistema? Esta ação é irreversível.')) { window.location.href = '<?= URL_BASE ?>/logs/limpar'; }">
-                    <i class="bi bi-trash"></i> Limpar Logs
-                </button>
-            <?php endif; ?>
         </div>
     </header>
-
-    <!-- Cards de Métricas / KPIs -->
-    <section class="logs-kpi-grid">
-        <article class="logs-kpi-card">
-            <div class="logs-kpi-card-head">
-                <span>Total de Logs</span>
-                <i class="bi bi-database-check logs-kpi-card-icon"></i>
-            </div>
-            <div class="logs-kpi-card-value"><?= number_format($estatisticas['total'] ?? 0, 0, ',', '.') ?></div>
-            <div class="logs-kpi-card-desc">Histórico completo armazenado</div>
-        </article>
-
-        <article class="logs-kpi-card">
-            <div class="logs-kpi-card-head">
-                <span>Registros Hoje</span>
-                <i class="bi bi-calendar-day logs-kpi-card-icon"></i>
-            </div>
-            <div class="logs-kpi-card-value"><?= (int) ($estatisticas['hoje'] ?? 0) ?></div>
-            <div class="logs-kpi-card-desc">Ações realizadas no dia atual</div>
-        </article>
-
-        <article class="logs-kpi-card">
-            <div class="logs-kpi-card-head">
-                <span>Usuários Ativos</span>
-                <i class="bi bi-person-check logs-kpi-card-icon"></i>
-            </div>
-            <div class="logs-kpi-card-value"><?= (int) ($estatisticas['usuarios_distintos'] ?? 0) ?></div>
-            <div class="logs-kpi-card-desc">Contas com ações auditadas</div>
-        </article>
-
-        <article class="logs-kpi-card">
-            <div class="logs-kpi-card-head">
-                <span>Último Evento</span>
-                <i class="bi bi-bell logs-kpi-card-icon"></i>
-            </div>
-            <div class="logs-kpi-card-value" style="font-size: 15px; font-weight: 600; margin-top: 4px;">
-                <?= htmlspecialchars(mb_strimwidth($estatisticas['ultimo_evento_texto'] ?? '-', 0, 32, '...')) ?>
-            </div>
-            <div class="logs-kpi-card-desc"><?= htmlspecialchars($estatisticas['ultimo_evento_data'] ?? '-') ?></div>
-        </article>
-    </section>
 
     <!-- Filtros Dinâmicos -->
     <section class="logs-filtros-panel">
@@ -103,14 +54,7 @@ function obterIconeAcao(string $acao): string {
 
             <div class="logs-campo">
                 <label for="campoUsuario">Usuário</label>
-                <select id="campoUsuario" name="usuario_id">
-                    <option value="">Todos os usuários</option>
-                    <?php foreach (($usuariosFiltro ?? []) as $u): ?>
-                        <option value="<?= (int) $u['id_usuario'] ?>" <?= (($filtros['usuario_id'] ?? '') == $u['id_usuario']) ? 'selected' : '' ?>>
-                            <?= htmlspecialchars($u['nome']) ?> (<?= htmlspecialchars($u['email']) ?>)
-                        </option>
-                    <?php endforeach; ?>
-                </select>
+                <input type="text" id="campoUsuario" name="usuario" value="<?= htmlspecialchars($filtros['usuario'] ?? '') ?>" placeholder="Nome ou e-mail...">
             </div>
 
             <div class="logs-campo">

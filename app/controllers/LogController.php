@@ -21,18 +21,16 @@ class LogController extends Controller {
 
         $filtros = [
             'busca'       => $_GET['q'] ?? '',
-            'usuario_id'  => $_GET['usuario_id'] ?? '',
+            'usuario'     => $_GET['usuario'] ?? '',
             'data_inicio' => $_GET['data_inicio'] ?? '',
             'data_fim'    => $_GET['data_fim'] ?? '',
             'tipo_perfil' => $_GET['tipo_perfil'] ?? ''
         ];
 
         $dados = [
-            'logs'           => $this->service->listarLogs($filtros),
-            'totalLogs'      => $this->service->contarLogs($filtros),
-            'estatisticas'   => $this->service->obterEstatisticas(),
-            'usuariosFiltro' => $this->service->obterUsuariosFiltro(),
-            'filtros'        => $filtros
+            'logs'      => $this->service->listarLogs($filtros),
+            'totalLogs' => $this->service->contarLogs($filtros),
+            'filtros'   => $filtros
         ];
 
         $this->view('logs/index', $dados);
@@ -46,22 +44,12 @@ class LogController extends Controller {
 
         $filtros = [
             'busca'       => $_GET['q'] ?? '',
-            'usuario_id'  => $_GET['usuario_id'] ?? '',
+            'usuario'     => $_GET['usuario'] ?? '',
             'data_inicio' => $_GET['data_inicio'] ?? '',
             'data_fim'    => $_GET['data_fim'] ?? '',
             'tipo_perfil' => $_GET['tipo_perfil'] ?? ''
         ];
 
         $this->service->exportarCsv($filtros);
-    }
-
-    /**
-     * Limpeza dos logs (ação opcional do administrador)
-     */
-    public function limpar(): void {
-        $this->adminRequired();
-
-        $this->service->limparLogs();
-        $this->redirect(URL_BASE . '/logs');
     }
 }

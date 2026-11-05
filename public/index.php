@@ -58,7 +58,6 @@ $router->get('/perfil/avatar', 'UsuarioController@avatar');
 // RF 15 / UC 15: Consultar Logs (Restrito para Administradores)
 $router->get('/logs', 'LogController@index');
 $router->get('/logs/exportar', 'LogController@exportar');
-$router->get('/logs/limpar', 'LogController@limpar');
 
 
 

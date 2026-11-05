@@ -461,8 +461,9 @@ class ProjetoController extends Controller{
         $historico = $this->ordenarPorData($historico);
         $historico = array_slice($historico, 0, 10);
         $this->salvarJsonArrayValido($this->getHistoricoStoragePath(), $historico);
-        \app\services\LogService::registrar("Projeto removido do histórico (ID: " . $id . ")");
 
+
+        \app\services\LogService::registrar("Projeto salvo no histórico (" . $modulo . "): " . $nome);
         return ['sucesso' => true, 'item' => $novoItem];
     }
 
@@ -517,6 +518,7 @@ class ProjetoController extends Controller{
         }
 
         $payload = is_array($item['conteudo'] ?? null) ? $item['conteudo'] : [];
+        \app\services\LogService::registrar("Download de projeto do histórico (" . ($item['modulo'] ?? 'Geral') . "): " . ($item['nome'] ?? 'Projeto'));
 
         if (($item['modulo'] ?? '') === 'PageMaker' && ($_GET['arquivo'] ?? '') === 'css') {
             if (!isset($payload['css']) || !is_string($payload['css'])) {
@@ -558,12 +560,15 @@ class ProjetoController extends Controller{
 
         $historico = $this->sincronizarHistoricoEArquivos();
         $item = $this->removerItemPorId($historico, $id);
+        if ($item !== null) {
+            \app\services\LogService::registrar("Projeto removido do histórico (ID: " . $id . ")");
+        }
         if ($item === null) {
             $this->redirect(URL_BASE . '/projetos/historico');
         }
 
         $this->salvarJsonArrayValido($this->getHistoricoStoragePath(), $historico);
-        \app\services\LogService::registrar("Projeto removido do histórico (ID: " . $id . ")");
+
         $this->redirect(URL_BASE . '/projetos/historico');
     }
 

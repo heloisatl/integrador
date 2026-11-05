@@ -56,14 +56,6 @@ class LogService {
         return $this->repository->getUsuariosParaFiltro();
     }
 
-    public function limparLogs(): bool {
-        $sucesso = $this->repository->limparHistoricoLogs();
-        if ($sucesso) {
-            self::registrar('O histórico de logs foi limpo pelo Administrador.');
-        }
-        return $sucesso;
-    }
-
     /**
      * Caso o banco esteja zerado, insere os logs essenciais de inicialização
      */
