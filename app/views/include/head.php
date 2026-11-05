@@ -687,6 +687,10 @@
         $hrefPerfil = defined('URL_BASE') ? (URL_BASE . '/assets/css/perfil.css?v=' . time()) : ('/assets/css/perfil.css?v=' . time());
         echo '<link rel="stylesheet" href="' . $hrefPerfil . '">' . "\n";
     }
+    if (strpos($requestUri, '/logs') !== false) {
+        $hrefLogs = defined('URL_BASE') ? (URL_BASE . '/assets/css/logs.css?v=' . time()) : ('/assets/css/logs.css?v=' . time());
+        echo '<link rel="stylesheet" href="' . $hrefLogs . '">' . "\n";
+    }
     ?>
 </head>
 
@@ -699,6 +703,8 @@ if (strpos($requestPath, '/perfil') !== false) {
     $bodyId = 'perfil';
 } elseif (strpos($requestPath, '/usuarios') !== false) {
     $bodyId = 'usuarios';
+} elseif (strpos($requestPath, '/logs') !== false) {
+    $bodyId = 'logs';
 } elseif ($bodyId === '' || $bodyId === 'index.php') {
     $bodyId = 'projetos';
 }

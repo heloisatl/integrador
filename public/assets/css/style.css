@@ -659,6 +659,8 @@ body#saida #sb-titulo-saida {
 }
 
 #usuarios #sb-titulo-usuarios,
+#logs #sb-titulo-logs,
+body#logs #sb-titulo-logs,
 body#usuarios #sb-titulo-usuarios {
     display: flex;
 }

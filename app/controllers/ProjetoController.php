@@ -188,6 +188,7 @@ class ProjetoController extends Controller{
             $this->excluirDiretorioRecursivo($pastaOutput);
 
             $downloadUrl = URL_BASE . '/projetos/downloadZip?file=' . urlencode($nomeZip);
+            \app\services\LogService::registrar("Geração de sistema MVC Creator: " . $nomeProjeto);
             $this->registrarProjetoNoHistorico($nomeProjeto, 'MVC Creator', [
                 'nome' => $nomeProjeto,
                 'arquivo' => $nomeZip,
@@ -460,6 +461,7 @@ class ProjetoController extends Controller{
         $historico = $this->ordenarPorData($historico);
         $historico = array_slice($historico, 0, 10);
         $this->salvarJsonArrayValido($this->getHistoricoStoragePath(), $historico);
+        \app\services\LogService::registrar("Projeto removido do histórico (ID: " . $id . ")");
 
         return ['sucesso' => true, 'item' => $novoItem];
     }
@@ -561,6 +563,7 @@ class ProjetoController extends Controller{
         }
 
         $this->salvarJsonArrayValido($this->getHistoricoStoragePath(), $historico);
+        \app\services\LogService::registrar("Projeto removido do histórico (ID: " . $id . ")");
         $this->redirect(URL_BASE . '/projetos/historico');
     }
 
@@ -569,6 +572,7 @@ class ProjetoController extends Controller{
 
         $this->sincronizarHistoricoEArquivos();
         $this->salvarJsonArrayValido($this->getHistoricoStoragePath(), []);
+        \app\services\LogService::registrar("Histórico de projetos foi limpo pelo usuário.");
         $this->redirect(URL_BASE . '/projetos/historico');
     }
 

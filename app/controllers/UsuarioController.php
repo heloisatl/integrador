@@ -30,6 +30,7 @@ class UsuarioController extends Controller {
         $id = (int) $_GET['id'];
 
         $this->service->deleteUsuario($id);
+        \app\services\LogService::registrar("Usuário excluído pelo Administrador (ID: " . $id . ")");
 
         $this->redirect(URL_BASE . '/usuarios');
     }
@@ -51,6 +52,7 @@ class UsuarioController extends Controller {
         ];
 
         if ($this->service->createUsuario($dados)) {
+            \app\services\LogService::registrar("Novo usuário cadastrado pelo Administrador: " . $dados['nome']);
             $this->redirect(URL_BASE . '/usuarios');
         } else {
             $dados['erro'] = 'Não foi possível cadastrar o usuário. Verifique os dados informados.';
@@ -94,6 +96,7 @@ class UsuarioController extends Controller {
         ];
 
         if ($this->service->updateUsuario($id, $dados)) {
+            \app\services\LogService::registrar("Dados de usuário atualizados pelo Administrador (ID: " . $id . ")");
             $this->redirect(URL_BASE . '/usuarios');
         } else {
             $this->redirect(URL_BASE . '/usuarios/editar?id=' . $id);
@@ -180,6 +183,7 @@ class UsuarioController extends Controller {
         }
 
         $_SESSION['perfil_csrf'] = bin2hex(random_bytes(32));
+        \app\services\LogService::registrar('Perfil de usuário atualizado com sucesso.');
         $_SESSION['perfil_flash'] = ['tipo' => 'sucesso', 'mensagem' => $resultado['mensagem']];
         $this->redirect(URL_BASE . '/perfil');
     }

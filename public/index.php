@@ -55,6 +55,11 @@ $router->get('/perfil/atualizar', 'UsuarioController@perfil');
 $router->post('/perfil/atualizar', 'UsuarioController@atualizarPerfil');
 $router->get('/perfil/avatar', 'UsuarioController@avatar');
 
+// RF 15 / UC 15: Consultar Logs (Restrito para Administradores)
+$router->get('/logs', 'LogController@index');
+$router->get('/logs/exportar', 'LogController@exportar');
+$router->get('/logs/limpar', 'LogController@limpar');
+
 
 
 $router->get("/projetos/cadastrar","ProjetoController@cadastrar");

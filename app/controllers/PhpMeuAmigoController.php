@@ -113,6 +113,7 @@ class PhpMeuAmigoController extends Controller{
 
             // Tabelas e atributos sao excluidos em cascata no mvc_creator
             $this->bancoService->delete($id_banco);
+            \app\services\LogService::registrar("Banco de dados excluído no modelador: " . ($banco['nome_banco'] ?? 'ID #' . $id_banco));
 
             header('Content-Type: application/json; charset=utf-8');
             echo json_encode(['sucesso' => true, 'mensagem' => 'Banco e sua estrutura foram excluidos do DevStudio!']);

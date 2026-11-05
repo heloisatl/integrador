@@ -103,6 +103,11 @@ class BancoRepository{
         $stmClean->bindValue(':id_banco', $id_banco, PDO::PARAM_INT);
         $stmClean->execute();
 
+        $sqlCleanProjetos = "DELETE FROM projeto WHERE fk_banco = :id_banco";
+        $stmCleanProj = $this->conn->prepare($sqlCleanProjetos);
+        $stmCleanProj->bindValue(':id_banco', $id_banco, PDO::PARAM_INT);
+        $stmCleanProj->execute();
+
         $sql = "DELETE FROM banco WHERE id_banco = :id_banco;";
         $stm = $this->conn->prepare($sql);
         $stm->bindValue(':id_banco', $id_banco, PDO::PARAM_INT);

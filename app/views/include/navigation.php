@@ -8,6 +8,8 @@ if (strpos($requestPath, '/perfil') !== false) {
     $paginaAtual = 'perfil';
 } elseif (strpos($requestPath, '/usuarios') !== false) {
     $paginaAtual = 'usuarios';
+} elseif (strpos($requestPath, '/logs') !== false) {
+    $paginaAtual = 'logs';
 } elseif ($paginaAtual === '' || $paginaAtual === 'index.php') {
     $paginaAtual = 'projetos'; // rota "/projetos" = home
 }
@@ -125,6 +127,9 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
             <?php if (defined('URL_BASE') && usuarioEhAdmin()): ?>
                 <a href="<?= URL_BASE ?>/usuarios" class="topbar-item <?php echo $paginaAtual === 'usuarios' ? 'active' : ''; ?>">
                     Usuários
+                </a>
+                <a href="<?= URL_BASE ?>/logs" class="topbar-item <?php echo $paginaAtual === 'logs' ? 'active' : ''; ?>">
+                    Logs
                 </a>
             <?php endif; ?>
         </div>
@@ -298,6 +303,14 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
                 </a>
                 <a href="<?= URL_BASE ?>/usuarios/cadastrar" class="sb-item <?php echo $paginaAtual === 'cadastrar' ? 'active' : ''; ?>">
                     <span class="sb-icon"></span> Criar Usuário
+                </a>
+            </div>
+
+            <!-- Logs (RF 15 / UC 15) -->
+            <div id="sb-titulo-logs" class="sb-section">
+                <div class="sb-label">Auditoria & Logs</div>
+                <a href="<?= URL_BASE ?>/logs" class="sb-item <?php echo $paginaAtual === 'logs' ? 'active' : ''; ?>">
+                    <span class="sb-icon"></span> Consultar Logs
                 </a>
             </div>
         <?php endif; ?>
