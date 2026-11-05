@@ -43,10 +43,10 @@ class UsuarioService {
             return ['sucesso' => false, 'mensagem' => 'Informe um e-mail válido com até 60 caracteres.'];
         }
 
-        // Bloquear SQL Injection em nome e e-mail
+        // Bloquear caracteres especiais e termos não permitidos em nome e e-mail
         $padraoSqlInjection = '/(--|\/\*|\*\/|;|[\'"`=]|#|\b(SELECT|INSERT|UPDATE|DELETE|DROP|UNION|ALTER|CREATE|TRUNCATE|EXEC|BENCHMARK|SLEEP)\b)/i';
         if (preg_match($padraoSqlInjection, $nome) || preg_match($padraoSqlInjection, $email)) {
-            return ['sucesso' => false, 'mensagem' => 'Ação bloqueada: termos suspeitos ou caracteres de SQL Injection não são permitidos.'];
+            return ['sucesso' => false, 'mensagem' => 'Caracteres especiais não são permitidos.'];
         }
 
         // Bloquear caracteres especiais e números no nome

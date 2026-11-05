@@ -159,7 +159,7 @@ function carregarTabelas(salvarConfig = true) {
                     // console.log(window.location.href);
                     if((window.location.href == URL_BASE + '/projetos/mvc-creator?step=configurar' || window.location.href == URL_BASE + '/projetos/mvc-creator') && salvarConfig)window.location.href = URL_BASE + '/projetos/mvc-creator?step=tabelas';
                 } else {
-                    alert(res.mensagem);
+                    devstudioAlert(res.mensagem, "erro");
                 }
             } catch (e) {
                 console.error("Erro no parse JSON", e);
@@ -353,7 +353,7 @@ function executarGeracaoMvc() {
     let nomeProjeto = sessionStorage.getItem("mvc_nomeProjeto") || "meu_projeto";
 
     if (obterTabelasSelecionadas().length === 0) {
-        alert("Selecione ao menos uma tabela para gerar o projeto.");
+        devstudioAlert("Selecione ao menos uma tabela para gerar o projeto.", "aviso");
         return;
     }
 
@@ -379,15 +379,15 @@ function executarGeracaoMvc() {
                         arquivos: res.arquivos || []
                     }));
                     let aviso = (res.avisos && res.avisos.length) ? "\n\nAtenção:\n- " + res.avisos.join("\n- ") : "";
-                    alert("✅ " + res.mensagem + " (" + res.total + " arquivos)" + aviso);
+                    devstudioAlert(res.mensagem + " (" + res.total + " arquivos)" + aviso, "sucesso");
                     if (res.downloadUrl) {
                         window.location.href = res.downloadUrl;
                     }
                 } else {
-                    alert("❌ Erro ao gerar: " + res.mensagem);
+                    devstudioAlert("Erro ao gerar: " + res.mensagem, "erro");
                 }
             } catch (e) {
-                alert("Resposta inesperada do servidor ao gerar.");
+                devstudioAlert("Resposta inesperada do servidor ao gerar.", "erro");
                 console.log(e);
                 console.log(xhr.responseText);
             }

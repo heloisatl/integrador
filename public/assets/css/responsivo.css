@@ -55,6 +55,8 @@ code,
 
 /* buttons */
 .page-actions .btn {
+    white-space: nowrap;
+    word-break: keep-all;
     max-width: 100%;
 }
 
@@ -254,6 +256,8 @@ code,
     body .pm-controles-tela .pm-botao,
     body .pm-controles-download .pm-botao,
     body .page-actions .btn {
+    white-space: nowrap;
+    word-break: keep-all;
         flex: 1 1 100%;
         justify-content: center;
         min-height: 44px;

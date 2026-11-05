@@ -36,6 +36,26 @@ $historicoPorModulo = [
             flex-wrap: wrap;
         }
 
+        .historico-toolbar .page-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .historico-toolbar .page-actions .btn {
+            white-space: nowrap !important;
+            word-break: keep-all !important;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 40px;
+            padding: 9px 16px;
+            box-sizing: border-box;
+            flex-shrink: 0;
+        }
+
         .historico-panel {
             background: var(--panel);
             border: 1px solid var(--border);
@@ -180,6 +200,20 @@ $historicoPorModulo = [
             font-size: 12px;
         }
 
+        .historico-shell .btn-primary,
+        .historico-shell .btn-danger {
+            background-color: var(--accent);
+            color: #ffffff;
+            border: 1px solid var(--accent);
+        }
+
+        .historico-shell .btn-primary:hover,
+        .historico-shell .btn-danger:hover {
+            background-color: var(--accent-h);
+            border-color: var(--accent-h);
+            color: #ffffff;
+        }
+
         .historico-empty {
             border: 1px dashed var(--border);
             border-radius: 14px;
@@ -272,7 +306,7 @@ $historicoPorModulo = [
                     <a class="btn btn-secondary" href="<?= URL_BASE ?>/projetos/mvc-creator"><i class="bi bi-braces"></i> Novo MVC Creator</a>
                     <a class="btn btn-secondary" href="<?= URL_BASE ?>/projetos/pagemaker"><i class="bi bi-file-earmark-code"></i> Novo PageMaker</a>
                     <?php if (!empty($historico)): ?>
-                        <button class="btn btn-danger" type="button" onclick="if (confirm('Tem certeza que deseja excluir permanentemente todo o histórico?')) { window.location.href = '<?= URL_BASE ?>/projetos/historico/limpar'; }"><i class="bi bi-trash"></i> Limpar Histórico</button>
+                        <button class="btn btn-primary" type="button" onclick="if (confirm('Tem certeza que deseja excluir permanentemente todo o histórico?')) { window.location.href = '<?= URL_BASE ?>/projetos/historico/limpar'; }"><i class="bi bi-trash"></i> Limpar Histórico</button>
                     <?php endif; ?>
                 </div>
             </header>
@@ -283,11 +317,6 @@ $historicoPorModulo = [
             </div>
 
             <section class="historico-panel">
-                    <div class="historico-title">
-                        <h3>Projetos salvos</h3>
-                        <span class="historico-meta"><?= $totalHistorico ?> de <?= $limiteHistorico ?></span>
-                    </div>
-
                     <?php if (empty($historico)): ?>
                         <div class="historico-empty">Nenhum projeto foi salvo no histórico ativo.</div>
                     <?php else: ?>
@@ -324,7 +353,7 @@ $historicoPorModulo = [
                                                 <?php else: ?>
                                                     <a class="btn btn-secondary btn-sm" href="<?= URL_BASE ?>/projetos/historico/baixar?id=<?= urlencode((string)($item['id'] ?? '')) ?>"><i class="bi bi-download"></i> Baixar Projeto</a>
                                                 <?php endif; ?>
-                                                <button class="btn btn-danger btn-sm" type="button" onclick="if (confirm('Tem certeza que deseja excluir permanentemente este projeto do histórico?')) { window.location.href = '<?= URL_BASE ?>/projetos/historico/apagar?id=<?= urlencode((string)($item['id'] ?? '')) ?>'; }"><i class="bi bi-trash"></i> Excluir do Histórico</button>
+                                                <button class="btn btn-primary btn-sm" type="button" onclick="if (confirm('Tem certeza que deseja excluir permanentemente este projeto do histórico?')) { window.location.href = '<?= URL_BASE ?>/projetos/historico/apagar?id=<?= urlencode((string)($item['id'] ?? '')) ?>'; }"><i class="bi bi-trash"></i> Excluir do Histórico</button>
                                             </div>
                                         </article>
                                     <?php endforeach; ?>

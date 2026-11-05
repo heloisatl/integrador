@@ -609,6 +609,72 @@
                 });
             });
         });
+        function devstudioAlert(mensagem, tipo = 'info', titulo = null) {
+            let container = document.getElementById('devstudioToastContainer');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'devstudioToastContainer';
+                container.className = 'devstudio-toast-container';
+                document.body.appendChild(container);
+            }
+
+            const toast = document.createElement('div');
+            const classeTipo = (tipo === 'sucesso' || tipo === 'success') ? 'devstudio-toast-sucesso' :
+                               (tipo === 'erro' || tipo === 'error' || tipo === 'danger') ? 'devstudio-toast-erro' :
+                               (tipo === 'aviso' || tipo === 'warning') ? 'devstudio-toast-aviso' : 'devstudio-toast-info';
+
+            const icone = (tipo === 'sucesso' || tipo === 'success') ? 'bi-check-circle-fill' :
+                          (tipo === 'erro' || tipo === 'error' || tipo === 'danger') ? 'bi-exclamation-triangle-fill' :
+                          (tipo === 'aviso' || tipo === 'warning') ? 'bi-exclamation-circle-fill' : 'bi-info-circle-fill';
+
+            toast.className = `devstudio-toast ${classeTipo}`;
+            
+            let htmlTitulo = '';
+            if (titulo) {
+                htmlTitulo = `<div class="devstudio-toast-title">${titulo}</div>`;
+            }
+
+            toast.innerHTML = `
+                <i class="bi ${icone} devstudio-toast-icon" aria-hidden="true"></i>
+                <div class="devstudio-toast-content">
+                    ${htmlTitulo}
+                    <span>${mensagem}</span>
+                </div>
+                <button type="button" class="devstudio-toast-close" aria-label="Fechar">&times;</button>
+            `;
+
+            const fechar = () => {
+                toast.classList.add('is-hiding');
+                setTimeout(() => {
+                    if (toast.parentNode) toast.parentNode.removeChild(toast);
+                }, 260);
+            };
+
+            const closeBtn = toast.querySelector('.devstudio-toast-close');
+            if (closeBtn) {
+                closeBtn.addEventListener('click', fechar);
+            }
+
+            container.appendChild(toast);
+
+            setTimeout(fechar, 5000);
+        }
+
+        window.devstudioAlert = devstudioAlert;
+
+        // Sobrescreve alert() padrão para exibir toasts elegantes no padrão visual DevStudio
+        window.alert = function(msg) {
+            let tipo = 'info';
+            let texto = String(msg ?? '');
+            if (texto.includes('✅') || /sucesso/i.test(texto)) {
+                tipo = 'sucesso';
+                texto = texto.replace(/^[✅\s]+/, '');
+            } else if (texto.includes('❌') || /erro|falha|atenção|selecione|inválid/i.test(texto)) {
+                tipo = 'erro';
+                texto = texto.replace(/^[❌\s]+/, '');
+            }
+            devstudioAlert(texto, tipo);
+        };
     </script>
     <?php
     // Incluir link para stylesheet pública da seção `usuarios` e `perfil`
