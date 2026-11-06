@@ -410,26 +410,22 @@ class PhpMeuAmigoController extends Controller{
 
     // --- IMPORTACAO DE BANCO LOCAL ---
 
+    /**
+     * Endpoint de leitura de bancos da instância MySQL local (SHOW DATABASES via PDO).
+     * Acessível tanto no módulo PHPMeuAmigo quanto no MVC Creator em Modo Visitante (sem exigir idUsuario).
+     */
     public function conectarMysqlLocal(): void{
-        $this->autenticacaoJsonRequired();
+        $hostPadrao = defined('DB_HOST') ? DB_HOST : 'localhost';
+        $userPadrao = defined('DB_USER') ? DB_USER : 'root';
+        $passPadrao = defined('DB_PASS') ? DB_PASS : '';
 
-        $host  = trim($_POST['host'] ?? 'localhost');
-        $porta = trim($_POST['porta'] ?? '3306');
-        $user  = trim($_POST['usuario'] ?? 'root');
-        $pass  = $_POST['senha'] ?? '';
+        $host  = trim($_POST['host'] ?? $_POST['servidor'] ?? '') ?: $hostPadrao;
+        $porta = trim($_POST['porta'] ?? '') ?: '3306';
+        $user  = trim($_POST['usuario'] ?? '') ?: $userPadrao;
+        $pass  = $_POST['senha'] ?? $passPadrao;
 
         try {
-            $dsn = "mysql:host=$host;port=$porta";
-            $pdo = ConnectionFactory::specialConn($dsn, $user, $pass);
-
-            $stm = $pdo->query("SHOW DATABASES");
-            $databases = $stm->fetchAll(\PDO::FETCH_COLUMN);
-
-            // Filtra os schemas internos do MySQL
-            $esquemas_sistema = ['information_schema', 'performance_schema', 'mysql', 'sys'];
-            $bancos_filtrados = array_values(array_filter($databases, function($db) use ($esquemas_sistema) {
-                return !in_array(strtolower($db), $esquemas_sistema);
-            }));
+            $bancos_filtrados = BancoService::listarBancosMysqlLocal($host, $porta, $user, $pass);
 
             header('Content-Type: application/json; charset=utf-8');
             echo json_encode(['sucesso' => true, 'bancos' => $bancos_filtrados]);

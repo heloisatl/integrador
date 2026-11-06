@@ -21,6 +21,29 @@ class ProjetoRepository{
         return $this->conn->lastInsertId() ? $this->conn->lastInsertId() : false;
     }
 
+    /**
+     * Mantém o limite máximo de 10 projetos armazenados por usuário autenticado (RN 01),
+     * removendo os registros mais antigos caso a cota seja ultrapassada.
+     */
+    public function limitarCotaPorUsuario(int $idUsuario, int $limite = 10): void {
+        if ($idUsuario <= 0 || $limite <= 0) {
+            return;
+        }
+        $sqlIds = "SELECT id_projeto FROM projeto WHERE id_usuario = :id_usuario ORDER BY data_criacao DESC, id_projeto DESC";
+        $stm = $this->conn->prepare($sqlIds);
+        $stm->bindValue(':id_usuario', $idUsuario, PDO::PARAM_INT);
+        $stm->execute();
+        $ids = $stm->fetchAll(PDO::FETCH_COLUMN);
+
+        if (count($ids) > $limite) {
+            $excedentes = array_slice($ids, $limite);
+            $placeholders = implode(',', array_fill(0, count($excedentes), '?'));
+            $sqlDelete = "DELETE FROM projeto WHERE id_usuario = ? AND id_projeto IN ({$placeholders})";
+            $stmDel = $this->conn->prepare($sqlDelete);
+            $stmDel->execute(array_merge([$idUsuario], array_map('intval', $excedentes)));
+        }
+    }
+
     public function getById(int $id){
         $sql = "SELECT nome_projeto,comentarios,views FROM projeto WHERE id_projeto = ?;";
         $stm = $this->conn->prepare($sql);

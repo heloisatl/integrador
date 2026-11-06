@@ -1,51 +1,106 @@
 document.addEventListener("DOMContentLoaded", function () {
+    isVisitante = estaEmModoVisitante();
     restaurarValoresFormulario();
     renderizarTabelasSeExistirem();
     renderizarEstruturaArquivos();
     checarCamadas();
-    carregarBanco();
-    salvarConfiguracoesSession();
+    if(!isVisitante)carregarBanco();
+    salvarConfiguracoesSession(false);
 
     let banco = document.getElementById("banco");
-    if(banco){
+    let srv = document.getElementById("servidor");
+    let porta = document.getElementById("porta");
+    let usr = document.getElementById("usuario");
+    let pass = document.getElementById("senha");
+    if(srv) srv.addEventListener("change",salvarConfiguracoesSession(false));
+    if(porta) porta.addEventListener("change",salvarConfiguracoesSession(false));
+    if(usr) usr.addEventListener("change",salvarConfiguracoesSession(false));
+    if(pass) pass.addEventListener("change",salvarConfiguracoesSession(false));
+    if (banco) {
         banco.addEventListener("change", function () {
             let nomeProjeto = document.getElementById("nomeProjeto") ? document.getElementById("nomeProjeto").value : "";
             let srv = document.getElementById("servidor") ? document.getElementById("servidor").value : "localhost";
+            let porta = document.getElementById("porta") ? document.getElementById("porta").value : "3306";
             let usr = document.getElementById("usuario") ? document.getElementById("usuario").value : "root";
             let pass = document.getElementById("senha") ? document.getElementById("senha").value : "";
-            let banco = document.getElementById("banco") ? document.getElementById("banco").value : "";
+            let bancoVal = document.getElementById("banco") ? document.getElementById("banco").value : "";
 
             if (nomeProjeto) sessionStorage.setItem("mvc_nomeProjeto", nomeProjeto);
             if (srv) sessionStorage.setItem("mvc_servidor", srv);
+            if (porta) sessionStorage.setItem("mvc_porta", porta);
             if (usr) sessionStorage.setItem("mvc_usuario", usr);
             if (pass !== undefined) sessionStorage.setItem("mvc_senha", pass);
-            if (banco){
-                sessionStorage.setItem("mvc_banco", banco);
-            }else{
+
+            if (bancoVal) {
+                if (sessionStorage.getItem("mvc_banco") !== bancoVal) {
+                    sessionStorage.setItem("mvc_tabelasDisabled", "[]");
+                }
+                sessionStorage.setItem("mvc_banco", bancoVal);
+                carregarTabelas(false);
+            } else {
                 sessionStorage.removeItem("mvc_banco");
+                sessionStorage.removeItem("mvc_tabelas");
             }
-            carregarTabelas(false);
         });
     }
 });
 
 globalThis.URL_BASE = new URL("../..", document.currentScript.src).href.replace(/\/$/, "");
 
+function estaEmModoVisitante() {
+    if (typeof window.MODO_VISITANTE === "boolean") {
+        return window.MODO_VISITANTE;
+    }
+    const wrapper = document.getElementById("mvcCreatorWrapper");
+    return wrapper ? wrapper.getAttribute("data-visitante") === "1" : false;
+}
 
-function salvarConfiguracoesSession() {
+function mostrarErro(mensagem, tipo = "erro") {
+    const alerta = document.getElementById("alerta-erro");
+    const spanMensagem = document.getElementById("alerta-mensagem");
+    if (!alerta || !spanMensagem) return;
+
+    spanMensagem.textContent = String(mensagem || "");
+    alerta.className = "alerta alerta-" + tipo;
+}
+
+function fecharAlerta() {
+    const alerta = document.getElementById("alerta-erro");
+    const spanMensagem = document.getElementById("alerta-mensagem");
+    if (!alerta) return;
+
+    alerta.classList.add("oculto");
+    if (spanMensagem) spanMensagem.textContent = "";
+}
+
+function escaparAtributoHtml(valor) {
+    return String(valor ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+function salvarConfiguracoesSession(dispararTabelas = false) {
     let nomeProjeto = document.getElementById("nomeProjeto") ? document.getElementById("nomeProjeto").value : "";
-    let srv = document.getElementById("servidor") ? document.getElementById("servidor").value : "localhost";
-    let usr = document.getElementById("usuario") ? document.getElementById("usuario").value : "root";
-    let pass = document.getElementById("senha") ? document.getElementById("senha").value : "";
+    let srv = document.getElementById("servidor") ? document.getElementById("servidor").value : (sessionStorage.getItem("mvc_servidor") || "localhost");
+    let porta = document.getElementById("porta") ? document.getElementById("porta").value : (sessionStorage.getItem("mvc_porta") || "3306");
+    let usr = document.getElementById("usuario") ? document.getElementById("usuario").value : (sessionStorage.getItem("mvc_usuario") || "root");
+    let pass = document.getElementById("senha") ? document.getElementById("senha").value : (sessionStorage.getItem("mvc_senha") || "");
     let banco = document.getElementById("banco") ? document.getElementById("banco").value : "";
 
     if (nomeProjeto) sessionStorage.setItem("mvc_nomeProjeto", nomeProjeto);
     if (srv) sessionStorage.setItem("mvc_servidor", srv);
+    if (porta) sessionStorage.setItem("mvc_porta", porta);
     if (usr) sessionStorage.setItem("mvc_usuario", usr);
     if (pass !== undefined) sessionStorage.setItem("mvc_senha", pass);
     if (banco) sessionStorage.setItem("mvc_banco", banco);
-    if (sessionStorage.getItem("mvc_tabelas")=="[]") sessionStorage.removeItem("mvc_banco");
-    carregarTabelas(false);
+    if (sessionStorage.getItem("mvc_tabelas") === "[]") sessionStorage.removeItem("mvc_banco");
+
+    if (dispararTabelas && banco) {
+        carregarTabelas(false);
+    }
 }
 
 function restaurarValoresFormulario() {
@@ -54,6 +109,9 @@ function restaurarValoresFormulario() {
     }
     if (document.getElementById("servidor") && sessionStorage.getItem("mvc_servidor")) {
         document.getElementById("servidor").value = sessionStorage.getItem("mvc_servidor");
+    }
+    if (document.getElementById("porta") && sessionStorage.getItem("mvc_porta")) {
+        document.getElementById("porta").value = sessionStorage.getItem("mvc_porta");
     }
     if (document.getElementById("usuario") && sessionStorage.getItem("mvc_usuario")) {
         document.getElementById("usuario").value = sessionStorage.getItem("mvc_usuario");
@@ -66,29 +124,83 @@ function restaurarValoresFormulario() {
     }
 }
 
+function aplicarBancoSelecionadoNoSelect(elBanco, selecionadoMemoria) {
+    if (!elBanco) return;
+    if (selecionadoMemoria) {
+        const existeOpcao = Array.from(elBanco.options).some(opt => opt.value === selecionadoMemoria);
+        if (existeOpcao) {
+            elBanco.value = selecionadoMemoria;
+            sessionStorage.setItem("mvc_banco", elBanco.value);
+            carregarTabelas(false);
+            return;
+        }
+        elBanco.value = "";
+        sessionStorage.removeItem("mvc_banco");
+        sessionStorage.removeItem("mvc_tabelas");
+    }
+}
+
 function carregarBanco() {
-    salvarConfiguracoesSession();
+    let elBanco = document.getElementById("banco");
+    if (!elBanco) return;
 
-   let selecionado = sessionStorage.getItem("mvc_banco") || (document.getElementById("banco") ? document.getElementById("banco").value : "");
+    salvarConfiguracoesSession(false);
 
-    const data = new FormData();
-    
-    data.append("selecionado", selecionado);
+    let selecionado = sessionStorage.getItem("mvc_banco") || elBanco.value || "";
+    let srv = sessionStorage.getItem("mvc_servidor") || "localhost";
+    let porta = sessionStorage.getItem("mvc_porta") || "3306";
+    let usr = sessionStorage.getItem("mvc_usuario") || "root";
+    let pass = sessionStorage.getItem("mvc_senha") || "";
 
-    // console.log(URL_BASE);
-    let xhr = new XMLHttpRequest();
-    xhr.open('POST', URL_BASE + '/projetos/getDatabases', true);
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState == 4 && xhr.status == 200) {
-            let elBanco = document.getElementById("banco");
-            if (elBanco) {
-                elBanco.innerHTML = "<option value=''>Selecione um banco</option>" + xhr.responseText;
-                
-                if (sessionStorage.getItem("mvc_banco")) {
-                    elBanco.value = sessionStorage.getItem("mvc_banco");
-                    sessionStorage.setItem("mvc_banco", elBanco.value);
+    // Modo Visitante: reaproveita o endpoint de leitura de bancos locais do PHPMeuAmigo (SHOW DATABASES via PDO)
+    if (estaEmModoVisitante()) {
+        const data = new FormData();
+        data.append("host", srv);
+        data.append("porta", porta);
+        data.append("usuario", usr);
+        data.append("senha", pass);
+
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", URL_BASE + "/phpmeuamigo/conectar-mysql-local", true);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState !== 4) return;
+            if (xhr.status === 200) {
+                try {
+                    const res = JSON.parse(xhr.responseText);
+                    if (res.sucesso && Array.isArray(res.bancos)) {
+                        let html = "<option value=''>Selecione um banco</option>";
+                        res.bancos.forEach(function (nomeBanco) {
+                            const escaped = escaparAtributoHtml(nomeBanco);
+                            html += `<option value="${escaped}">${escaped}</option>`;
+                        });
+                        elBanco.innerHTML = html;
+                        aplicarBancoSelecionadoNoSelect(elBanco, selecionado);
+                        return;
+                    }
+                    elBanco.innerHTML = "<option value=''>Nenhum banco local encontrado</option>";
+                    if (res.mensagem) {
+                        mostrarErro(res.mensagem, "aviso");
+                    }
+                } catch (e) {
+                    console.error("Erro ao processar listagem de bancos locais:", e);
+                    elBanco.innerHTML = "<option value=''>Erro ao carregar bancos locais</option>";
                 }
             }
+        };
+        xhr.send(data);
+        return;
+    }
+
+    // Modo Autenticado: carrega os bancos associados ao usuário logado
+    const data = new FormData();
+    data.append("selecionado", selecionado);
+
+    let xhr = new XMLHttpRequest();
+    xhr.open("POST", URL_BASE + "/projetos/getDatabases", true);
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            elBanco.innerHTML = "<option value=''>Selecione um banco</option>" + xhr.responseText;
+            aplicarBancoSelecionadoNoSelect(elBanco, selecionado);
         }
     };
     xhr.send(data);
@@ -140,26 +252,49 @@ function salvarSessionCamadas(){
 }
 
 function carregarTabelas(salvarConfig = true) {
-    salvarConfig ? salvarConfiguracoesSession() : null;
-    sessionStorage.getItem('mvc_tabelasDisabled')==null ? sessionStorage.setItem('mvc_tabelasDisabled',[]) :  null ;
-    let banco = sessionStorage.getItem("mvc_banco") || (document.getElementById("banco") ? document.getElementById("banco").value : "");
+    if (salvarConfig) {
+        salvarConfiguracoesSession(false);
+    }
+    if (sessionStorage.getItem('mvc_tabelasDisabled') === null) {
+        sessionStorage.setItem('mvc_tabelasDisabled', "[]");
+    }
+
+    let elBanco = document.getElementById("banco");
+    let banco = (elBanco && elBanco.value) ? elBanco.value : (sessionStorage.getItem("mvc_banco") || "");
+
+    if (!banco) {
+        if (salvarConfig) {
+            mostrarErro("Selecione um banco de dados antes de avançar.", "aviso");
+        }
+        return;
+    }
+
+    fecharAlerta();
 
     const data = new FormData();
     data.append('banco', banco);
+    data.append('servidor', sessionStorage.getItem("mvc_servidor") || "localhost");
+    data.append('porta', sessionStorage.getItem("mvc_porta") || "3306");
+    data.append('usuario', sessionStorage.getItem("mvc_usuario") || "root");
+    data.append('senha', sessionStorage.getItem("mvc_senha") || "");
 
     let xhr = new XMLHttpRequest();
     xhr.open('POST', URL_BASE + '/projetos/getTabelas', true);
     xhr.onreadystatechange = function () {
-        if (xhr.readyState == 4 && xhr.status == 200) {
+        if (xhr.readyState === 4 && xhr.status === 200) {
             try {
                 let res = JSON.parse(xhr.responseText);
                 if (res.sucesso) {
                     sessionStorage.setItem("mvc_tabelas", JSON.stringify(res.tabelas));
-                    console.log(URL_BASE + '/projetos/mvc-creator?step=configurar');
-                    // console.log(window.location.href);
-                    if((window.location.href == URL_BASE + '/projetos/mvc-creator?step=configurar' || window.location.href == URL_BASE + '/projetos/mvc-creator') && salvarConfig)window.location.href = URL_BASE + '/projetos/mvc-creator?step=tabelas';
+                    if (
+                        (window.location.href === URL_BASE + '/projetos/mvc-creator?step=configurar' ||
+                         window.location.href === URL_BASE + '/projetos/mvc-creator') &&
+                        salvarConfig
+                    ) {
+                        window.location.href = URL_BASE + '/projetos/mvc-creator?step=tabelas';
+                    }
                 } else {
-                    devstudioAlert(res.mensagem, "erro");
+                    mostrarErro(res.mensagem || "Erro ao carregar as tabelas do banco.");
                 }
             } catch (e) {
                 console.error("Erro no parse JSON", e);
@@ -247,30 +382,30 @@ function renderizarTabelasSeExistirem() {
     if (sessionStorage.getItem("mvc_banco")) {
         try {
             let tabelas = JSON.parse(tabelasJson);
-            // console.log(tabelas);
-            if (tabelas.length === 0 ) {
-                container.innerHTML = '<p style="height:4vh;display:flex;align-items:center;background-color: #ff4949;color: #320000;border-color: #140000;border-radius: 8px;border-width:2px;border-style: solid;">Nenhuma tabela encontrada neste banco de dados.</p>';
+            if (!Array.isArray(tabelas) || tabelas.length === 0) {
+                mostrarErro("Nenhuma tabela encontrada neste banco de dados.");
+                container.innerHTML = "";
                 return;
             }
             let tabelasDesativadas = obterIdsTabelasDesativadas();
             let html = '<div style="display: flex; flex-direction: column; gap: 10px; margin: 15px 0;">';
-            for(const key in tabelas){
+            for (const key in tabelas) {
                 const element = tabelas[key];
                 var check = tabelasDesativadas.includes(String(element.id_tabela)) ? '' : 'checked';
                 html += `<label style="display: flex; align-items: center; gap: 10px; font-size: 15px; cursor: pointer; background: var(--surface);color: var(--text); padding: 10px 14px; border-radius: 8px;border: 1px solid var(--border);">
-                    <input type="checkbox" oninput="salvarSessionTabelas()" class="cb-tabela" value="`+ element['id_tabela'] +`" `+ check +` style="width: 18px; height: 18px;">
-                    <span><strong>`+ element['nome_tabelaUC'] +`</strong></span>
+                    <input type="checkbox" oninput="salvarSessionTabelas()" class="cb-tabela" value="`+ element['id_tabela'] + `" ` + check + ` style="width: 18px; height: 18px;">
+                    <span><strong>`+ element['nome_tabelaUC'] + `</strong></span>
                 </label>`;
-                
             }
-            
             html += '</div>';
             container.innerHTML = html;
         } catch (e) {
-            container.innerHTML = '<p style="height:4vh;display:flex;align-items:center;background-color: #ff4949;color: #320000;border-color: #140000;border-radius: 8px;border-width:2px;border-style: solid;">Erro ao carregar tabelas Salvas.</p>';
+            mostrarErro("Erro ao carregar as tabelas salvas.");
+            container.innerHTML = "";
         }
     } else {
-        container.innerHTML = '<p style="height:4vh;display:flex;align-items:center;background-color: #e0a800;color: #382a00;border-color: #1d1600;border-radius: 8px;border-width:2px;border-style: solid;">Nenhuma tabela detectada. <a href="?step=configurar">Volte ao Passo 1</a> e selecione o banco de dados.</p>';
+        mostrarErro("Nenhuma tabela detectada. Volte ao Passo 1 e selecione o banco de dados.", "aviso");
+        container.innerHTML = "";
     }
 }
 
@@ -282,6 +417,10 @@ function montarDadosEscolhas() {
     data.append('camadasDesativadas', sessionStorage.getItem("mvc_camadasDisabled") || "");
     data.append('semBancoLocal', obterSemBancoLocal() ? '1' : '0');
     data.append('comentarios', obterComentariosDidaticos() ? '1' : '0');
+    data.append('servidor', sessionStorage.getItem("mvc_servidor") || "localhost");
+    data.append('porta', sessionStorage.getItem("mvc_porta") || "3306");
+    data.append('usuario', sessionStorage.getItem("mvc_usuario") || "root");
+    data.append('senha', sessionStorage.getItem("mvc_senha") || "");
     return data;
 }
 
@@ -347,52 +486,68 @@ function renderizarEstruturaArquivos() {
 }
 
 function executarGeracaoMvc() {
-    let usr = sessionStorage.getItem("mvc_usuario") || "root";
-    let pass = sessionStorage.getItem("mvc_senha") || "";
-    let srv = sessionStorage.getItem("mvc_servidor") || "localhost";
     let nomeProjeto = sessionStorage.getItem("mvc_nomeProjeto") || "meu_projeto";
 
     if (obterTabelasSelecionadas().length === 0) {
-        devstudioAlert("Selecione ao menos uma tabela para gerar o projeto.", "aviso");
+        mostrarErro("Selecione ao menos uma tabela para gerar o projeto.", "aviso");
         return;
     }
 
+    fecharAlerta();
+
     const data = montarDadosEscolhas();
     data.append('nomeProjeto', nomeProjeto);
-    data.append('usuario', usr);
-    data.append('senha', pass);
-    data.append('servidor', srv);
 
     let btn = document.getElementById("btn-gerar-final");
+    const textoPadraoBtn = estaEmModoVisitante() ? "📦 Baixar Projeto (.ZIP)" : "🚀 Gerar Todo o Sistema (.ZIP)";
     if (btn) btn.innerText = "⏳ Gerando projeto...";
 
     let xhr = new XMLHttpRequest();
     xhr.open('POST', URL_BASE + '/projetos/gerarMvc', true);
     xhr.onreadystatechange = function () {
-        if (xhr.readyState == 4 && xhr.status == 200) {
+        if (xhr.readyState === 4 && xhr.status === 200) {
             try {
                 let res = JSON.parse(xhr.responseText);
                 if (res.sucesso) {
-                    // Guarda a lista de arquivos criados para a aba "Saída"
                     sessionStorage.setItem("mvc_ultimaSaida", JSON.stringify({
                         projeto: nomeProjeto,
                         arquivos: res.arquivos || []
                     }));
-                    let aviso = (res.avisos && res.avisos.length) ? "\n\nAtenção:\n- " + res.avisos.join("\n- ") : "";
-                    devstudioAlert(res.mensagem + " (" + res.total + " arquivos)" + aviso, "sucesso");
+                    window.ultimoDownloadUrl = res.downloadUrl || "";
+
+                    const painelConclusao = document.getElementById("mvc-conclusao-geracao");
+                    const resumoConclusao = document.getElementById("mvc-conclusao-resumo");
+                    if (painelConclusao) {
+                        painelConclusao.style.display = "block";
+                    }
+                    if (resumoConclusao) {
+                        resumoConclusao.textContent = `O pacote '${nomeProjeto}.zip' foi preparado com ${res.total} arquivo(s).`;
+                    }
+
+                    let aviso = (res.avisos && res.avisos.length) ? " | Atenção: " + res.avisos.join("; ") : "";
+                    mostrarErro(res.mensagem + " (" + res.total + " arquivos)" + aviso, "sucesso");
                     if (res.downloadUrl) {
                         window.location.href = res.downloadUrl;
                     }
                 } else {
-                    devstudioAlert("Erro ao gerar: " + res.mensagem, "erro");
+                    mostrarErro("Erro ao gerar: " + (res.mensagem || "Falha desconhecida."));
                 }
             } catch (e) {
-                devstudioAlert("Resposta inesperada do servidor ao gerar.", "erro");
-                console.log(e);
-                console.log(xhr.responseText);
+                mostrarErro("Resposta inesperada do servidor ao gerar.");
+                console.error(e);
             }
-            if (btn) btn.innerText = "🚀 Gerar Todo o Sistema (.ZIP)";
+            if (btn) btn.innerText = textoPadraoBtn;
         }
     };
     xhr.send(data);
+}
+
+function baixarNovamenteZip() {
+    // Em modo visitante o arquivo temporário é removido do servidor logo após o primeiro download (RN 01).
+    // Portanto, aciona uma nova compilação efêmera caso o visitante clique em baixar novamente.
+    if (estaEmModoVisitante() || !window.ultimoDownloadUrl) {
+        executarGeracaoMvc();
+        return;
+    }
+    window.location.href = window.ultimoDownloadUrl;
 }

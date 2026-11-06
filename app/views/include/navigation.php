@@ -10,9 +10,13 @@ if (strpos($requestPath, '/perfil') !== false) {
     $paginaAtual = 'usuarios';
 } elseif (strpos($requestPath, '/logs') !== false) {
     $paginaAtual = 'logs';
+} elseif ($paginaAtual === 'explorar') {
+    $paginaAtual = 'guia';
 } elseif ($paginaAtual === '' || $paginaAtual === 'index.php') {
     $paginaAtual = 'projetos'; // rota "/projetos" = home
 }
+
+$urlInicio = isset($_SESSION['usuario_logado']) ? (URL_BASE . '/projetos') : (URL_BASE . '/explorar');
 
 $currentSection = $_GET['section'] ?? '';
 $currentTab = $_GET['tab'] ?? '';
@@ -88,7 +92,7 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
 <header class="topbar">
     <div class="topbar-logo">
         <span class="logo"></span>
-        <h1 class="title"> <a class="title-link" href="<?= URL_BASE ?>/projetos">DevStudio </a></h1>
+        <h1 class="title"> <a class="title-link" href="<?= $urlInicio ?>">DevStudio </a></h1>
     </div>
 
     <button type="button" class="topbar-toggle" id="topbarToggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="topbarNav" onclick="toggleTopbarNav(event)">
@@ -100,7 +104,7 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
     <div class="topbar-nav" id="topbarNav">
         <div class="mobile-nav-group">
             <span class="mobile-section-label">Ferramentas & Páginas</span>
-            <a href="<?= URL_BASE ?>/projetos" class="topbar-item-inicio <?php echo verificarAtivo('projetos', $paginaAtual); ?>">
+            <a href="<?= $urlInicio ?>" class="topbar-item-inicio <?php echo verificarAtivo(isset($_SESSION['usuario_logado']) ? 'projetos' : 'guia', $paginaAtual); ?>">
                 Início
             </a>
 
@@ -118,11 +122,11 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
                 <a href="<?= URL_BASE ?>/projetos/historico" class="topbar-item <?php echo verificarAtivo('historico', $paginaAtual); ?>">
                     Histórico
                 </a>
-            <?php endif; ?>
 
-            <a href="<?= URL_BASE ?>/projetos/phpmeuamigo" class="topbar-item <?php echo verificarAtivo('phpmeuamigo', $paginaAtual); ?>">
-                PHPMeuAmigo
-            </a>
+                <a href="<?= URL_BASE ?>/projetos/phpmeuamigo" class="topbar-item <?php echo verificarAtivo('phpmeuamigo', $paginaAtual); ?>">
+                    PHPMeuAmigo
+                </a>
+            <?php endif; ?>
 
             <?php if (defined('URL_BASE') && usuarioEhAdmin()): ?>
                 <a href="<?= URL_BASE ?>/usuarios" class="topbar-item <?php echo $paginaAtual === 'usuarios' ? 'active' : ''; ?>">
@@ -239,9 +243,11 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
         <div id="sb-principal" class="sb-section">
             <div class="sb-label">Menu Principal</div>
 
-            <a href="<?= URL_BASE ?>/projetos" class="sb-item <?php echo verificarAtivo('projetos', $paginaAtual); ?>">
-                Visão Geral
-            </a>
+            <?php if (isset($_SESSION['usuario_logado'])): ?>
+                <a href="<?= URL_BASE ?>/projetos" class="sb-item <?php echo verificarAtivo('projetos', $paginaAtual); ?>">
+                    Visão Geral
+                </a>
+            <?php endif; ?>
 
             <a href="<?= URL_BASE ?>/projetos/guia" class="sb-item <?php echo verificarAtivo('guia', $paginaAtual); ?>">
                 Guia Rápido

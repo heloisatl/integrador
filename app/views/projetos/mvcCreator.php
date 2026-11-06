@@ -42,15 +42,24 @@ include_once(__DIR__ . "/../include/navigation.php");
     if (!isset($steps[$step])) {
         $step = 'configurar';
     }
+    $modoVisitante = isset($modoVisitante) ? (bool) $modoVisitante : empty($_SESSION['usuario_logado']);
     ?>
 
-    <div class="mvc-etapa-wrapper">
+    <div class="mvc-etapa-wrapper" id="mvcCreatorWrapper" data-visitante="<?= $modoVisitante ? '1' : '0' ?>">
         <div class="mvc-etapa-cabecalho">
             <span class="mvc-etapa-selo"><?= htmlspecialchars($steps[$step]['number']) ?></span>
             <h2><?= htmlspecialchars($steps[$step]['title']) ?></h2>
             <?php if (!empty($steps[$step]['tag'])): ?>
                 <span class="mvc-etapa-selo-novo"><?= htmlspecialchars($steps[$step]['tag']) ?></span>
             <?php endif; ?>
+            <?php if ($modoVisitante): ?>
+                <span class="mvc-etapa-selo-novo" style="margin-left: auto; background: rgba(91, 106, 240, 0.18); color: var(--accent); border: 1px solid rgba(91, 106, 240, 0.35);">MODO VISITANTE</span>
+            <?php endif; ?>
+        </div>
+
+        <div id="alerta-erro" class="alerta alerta-erro oculto" role="alert">
+            <span id="alerta-mensagem"></span>
+            <button type="button" class="alerta-fechar" onclick="fecharAlerta()">&times;</button>
         </div>
 
         <?php require $steps[$step]['file']; ?>
@@ -58,6 +67,9 @@ include_once(__DIR__ . "/../include/navigation.php");
 
     <?php require_once __DIR__ . '/../include/footer.php'; ?>
     </main>
+    <script>
+        window.MODO_VISITANTE = <?= $modoVisitante ? 'true' : 'false' ?>;
+    </script>
     <script src="<?= URL_BASE ?>/assets/js/arvoreArquivos.js"></script>
     <script src="<?= URL_BASE ?>/assets/js/mvcLoad.js"></script>
     <!-- <script src="<?= URL_BASE ?>/assets/js/desabilitado.js"></script> -->

@@ -18,98 +18,354 @@ use app\tools\gerador\OpcoesGeracao;
 use app\services\UsuarioService;
 
 class ProjetoController extends Controller{
-    private ProjetoService $projetoService;
+    private ?ProjetoService $projetoService = null;
 
     public function __construct(){
-        $this->projetoService = new ProjetoService();
+        // Lazy-loading de ProjetoService para garantir que visitantes não instanciem DAOs/Repositories (RN 01 / FA01)
     }
 
+    private function getProjetoService(): ProjetoService {
+        if ($this->projetoService === null) {
+            $this->projetoService = new ProjetoService();
+        }
+        return $this->projetoService;
+    }
+
+    
+    //Verifica se há um usuário autenticado válido na sessão atual.
+     
+    private function usuarioEstaAutenticado(): bool {
+        if (!empty($_SESSION['usuario_logado'])
+            && is_object($_SESSION['usuario_logado'])
+            && method_exists($_SESSION['usuario_logado'], 'getIdUsuario')
+            && (int) $_SESSION['usuario_logado']->getIdUsuario() > 0
+        ) {
+            return true;
+        }
+        return false;
+    }
+
+    
+    //Captura as credenciais de conexão MySQL local (enviadas via POST ou constantes padrão do ambiente).
+     
+    private function obterCredenciaisLocaisRequest(): array {
+        $hostPadrao = defined('DB_HOST') ? DB_HOST : 'localhost';
+        $userPadrao = defined('DB_USER') ? DB_USER : 'root';
+        $passPadrao = defined('DB_PASS') ? DB_PASS : '';
+
+        return [
+            'host'  => trim((string) ($_POST['servidor'] ?? $_POST['host'] ?? '')) ?: $hostPadrao,
+            'porta' => trim((string) ($_POST['porta'] ?? '')) ?: '3306',
+            'user'  => trim((string) ($_POST['usuario'] ?? '')) ?: $userPadrao,
+            'pass'  => (string) ($_POST['senha'] ?? $passPadrao),
+        ];
+    }
 
     public function getDatabases(){
-        if (empty($_SESSION['usuario_logado'])) {
-            echo '<option value="">Sessão expirada. Faça login novamente.</option>';
+        $sel = trim((string) ($_POST['selecionado'] ?? ''));
+
+        if ($this->usuarioEstaAutenticado()) {
+            echo (new BancoService())->getBancoByUsuario(
+                $_SESSION['usuario_logado']->getIdUsuario(),
+                "DB_OPTIONS",
+                $sel
+            );
             return;
         }
-        $sel = trim($_POST['selecionado'] ?? null);
-        echo (new BancoService())->getBancoByUsuario($_SESSION['usuario_logado']->getIdUsuario(),"DB_OPTIONS",$sel);
+
+        // Modo Visitante: reaproveita o leitor de bancos locais do PHPMeuAmigo (SHOW DATABASES via PDO)
+        try {
+            $cred = $this->obterCredenciaisLocaisRequest();
+            $bancos = BancoService::listarBancosMysqlLocal($cred['host'], $cred['porta'], $cred['user'], $cred['pass']);
+            $options = '';
+            foreach ($bancos as $nomeBanco) {
+                $escaped = htmlspecialchars((string) $nomeBanco, ENT_QUOTES, 'UTF-8');
+                $selected = ($nomeBanco === $sel) ? ' selected' : '';
+                $options .= "<option value='{$escaped}'{$selected}>{$escaped}</option>";
+            }
+            echo $options;
+        } catch (\Throwable $e) {
+            echo '';
+        }
     }
 
     public function getTabelas(): void {
-        $this->autenticacaoJsonRequired();
+        header('Content-Type: application/json; charset=utf-8');
+        $banco = trim((string) ($_POST['banco'] ?? ''));
 
-        // $user = trim($_POST['usuario'] ?? '');
-        // $pass = trim($_POST['senha'] ?? '');
-        // $server = trim($_POST['servidor'] ?? 'localhost');
-        $banco = trim($_POST['banco'] ?? '');
-
+        if ($banco === '') {
+            echo json_encode(['sucesso' => false, 'mensagem' => 'Selecione um banco de dados antes de prosseguir.']);
+            return;
+        }
 
         try {
-            $tabelaService = new TabelaService();
-            $tabelas = $tabelaService->getTabelasByFk_banco($banco,'prox_etap');
-            echo json_encode(['sucesso' => true, 'tabelas' => $tabelas]);
-        } catch (\Exception $e) {
+            if ($this->usuarioEstaAutenticado() && ctype_digit($banco)) {
+                $tabelaService = new TabelaService();
+                $tabelas = $tabelaService->getTabelasByFk_banco((int) $banco, 'prox_etap');
+                echo json_encode(['sucesso' => true, 'tabelas' => $tabelas]);
+                return;
+            }
+
+            // Modo Visitante: leitura direta das tabelas do banco local em memória (sem persistência)
+            $cred = $this->obterCredenciaisLocaisRequest();
+            $inspecao = $this->inspecionarBancoLocalEmMemoria(
+                $banco,
+                $cred['host'],
+                $cred['porta'],
+                $cred['user'],
+                $cred['pass'],
+                false
+            );
+
+            echo json_encode(['sucesso' => true, 'tabelas' => $inspecao['tabelas']]);
+        } catch (\Throwable $e) {
             echo json_encode(['sucesso' => false, 'mensagem' => $e->getMessage()]);
         }
     }
 
     
-    //Lê as escolhas do usuário (banco, tabelas e camadas) e devolve os dados prontos para o MotorGeracao.
-    //A leitura do banco e os filtros acontecem aqui; o motor só recebe dados já preparados.
-    
-    private function montarContextoGeracao(): array {
-        $banco = trim($_POST['banco'] ?? '');
-        if (empty($banco)) {
-            throw new \InvalidArgumentException('Selecione um banco de dados antes de gerar o sistema.');
+    //Inspeciona diretamente um banco MySQL local em memória (SHOW TABLES, SHOW COLUMNS e KEY_COLUMN_USAGE)
+    //e monta instâncias temporárias de Tabela e Atributo sem tocar nas tabelas internas do DevStudio.
+     
+    private function inspecionarBancoLocalEmMemoria(string $nomeBanco,string $host = 'localhost',string $porta = '3306',string $user = 'root',string $pass = '',bool $carregarAtributos = true,?FiltroTabelas $filtroTabelas = null): array {
+        if ($nomeBanco === '' || !preg_match('/^[a-zA-Z0-9_]+$/', $nomeBanco)) {
+            throw new \InvalidArgumentException('Selecione um banco de dados local válido antes de gerar o sistema.');
         }
 
-        $bancoSelecionado = (new BancoService())->getBancoById($banco);
-        if (!$bancoSelecionado) {
-            throw new \InvalidArgumentException('Banco de dados não encontrado.');
+        $dsn = "mysql:host={$host};port={$porta};dbname={$nomeBanco}";
+        $schema = new SchemaInspector($dsn, $user, $pass);
+        $tabelasRaw = $schema->getTabelas();
+
+        $tabelas = [];
+        foreach ($tabelasRaw as $idx => $row) {
+            $nomeTabela = $row[0] ?? null;
+            if (!$nomeTabela) {
+                continue;
+            }
+            $idTabela = $idx + 1;
+            $tabelas[] = new Tabela($idTabela, 0, $nomeTabela);
         }
 
-        // Etapa 1: tabelas que o usuário desmarcou em "Tabelas Detectadas"
-        $tabelas = (new TabelaService())->getTabelasByFk_banco($bancoSelecionado['id_banco']);
-        $tabelas = FiltroTabelas::fromRequest($_POST['tabelasDesativadas'] ?? null)->filtrar($tabelas);
-        if (empty($tabelas)) {
-            throw new \InvalidArgumentException('Selecione ao menos uma tabela para gerar o projeto.');
+        if ($filtroTabelas !== null) {
+            $tabelas = $filtroTabelas->filtrar($tabelas);
         }
 
-        // Etapa 2: camadas/artefatos desmarcados em "Opções de Geração" (+ regra RN 06)
-        $opcoes = OpcoesGeracao::fromRequest($_POST, $bancoSelecionado);
-        if (empty($opcoes->camadasAtivas())) {
-            throw new \InvalidArgumentException('Selecione ao menos uma camada ou artefato para gerar.');
+        if (!$carregarAtributos) {
+            return [
+                'tabelas'   => $tabelas,
+                'atributos' => [],
+            ];
         }
 
-        $atributoService = new AtributoService();
-        $atributosPorTabela = [];
+        // Etapa 1: Lê as colunas físicas de cada tabela selecionada em memória
+        $colunasTempPorTabela = [];
+        $mapaIdAtributo = [];
+        $proximoIdAtributo = 1;
+
         foreach ($tabelas as $tabela) {
-            $atributosPorTabela[$tabela->getId_tabela()] = $atributoService->getAtributosByFk_tabela($tabela->getId_tabela());
+            $idTabela = (int) $tabela->getId_tabela();
+            $nomeTabela = $tabela->getNome_tabela();
+            $tabelaKey = strtolower($nomeTabela);
+            $colunasFisicas = $schema->getAtributos($nomeTabela);
+
+            $colunasTempPorTabela[$idTabela] = [];
+            foreach ($colunasFisicas as $col) {
+                $nomeCampo = $col['Field'] ?? '';
+                if ($nomeCampo === '') {
+                    continue;
+                }
+
+                $idAtributo = $proximoIdAtributo++;
+                $tipo = isset($col['Type']) && is_string($col['Type']) ? strtolower(trim($col['Type'])) : 'varchar(60)';
+                $pk = (isset($col['Key']) && $col['Key'] === 'PRI');
+                $nn = (isset($col['Null']) && $col['Null'] === 'NO');
+                $ai = (isset($col['Extra']) && str_contains(strtolower((string) $col['Extra']), 'auto_increment'));
+                $uq = (isset($col['Key']) && $col['Key'] === 'UNI');
+
+                $mapaIdAtributo[$tabelaKey][strtolower($nomeCampo)] = $idAtributo;
+                $colunasTempPorTabela[$idTabela][] = [
+                    'id_atributo'   => $idAtributo,
+                    'fk_tabela'     => $idTabela,
+                    'fk_atributo'   => null,
+                    'nome_atributo' => $nomeCampo,
+                    'tipo'          => $tipo,
+                    'pk'            => $pk,
+                    'nn'            => $nn,
+                    'ai'            => $ai,
+                    'uq'            => $uq,
+                ];
+            }
+        }
+
+        // Etapa 2: Resolve as chaves estrangeiras (Foreign Keys) diretamente em memória
+        foreach ($tabelas as $tabela) {
+            $idTabela = (int) $tabela->getId_tabela();
+            $nomeTabela = $tabela->getNome_tabela();
+            $fks = $schema->getReferenciaFk($nomeTabela);
+            if (empty($fks) || empty($colunasTempPorTabela[$idTabela])) {
+                continue;
+            }
+
+            $mapaFkOrigem = [];
+            foreach ($fks as $fk) {
+                $colOrigem = strtolower((string) ($fk['COLUMN_NAME'] ?? ''));
+                $tabDest   = strtolower((string) ($fk['REFERENCED_TABLE_NAME'] ?? ''));
+                $colDest   = strtolower((string) ($fk['REFERENCED_COLUMN_NAME'] ?? ''));
+                if ($colOrigem !== '' && isset($mapaIdAtributo[$tabDest][$colDest])) {
+                    $mapaFkOrigem[$colOrigem] = $mapaIdAtributo[$tabDest][$colDest];
+                }
+            }
+
+            foreach ($colunasTempPorTabela[$idTabela] as &$colData) {
+                $colKey = strtolower($colData['nome_atributo']);
+                if (isset($mapaFkOrigem[$colKey])) {
+                    $colData['fk_atributo'] = $mapaFkOrigem[$colKey];
+                }
+            }
+            unset($colData);
+        }
+
+        // Etapa 3: Monta os objetos Atributo temporários em memória
+        $atributosPorTabela = [];
+        foreach ($colunasTempPorTabela as $idTabela => $colunas) {
+            $atributosPorTabela[$idTabela] = [];
+            foreach ($colunas as $c) {
+                $atributosPorTabela[$idTabela][] = new Atributo(
+                    $c['id_atributo'],
+                    $c['fk_tabela'],
+                    $c['fk_atributo'],
+                    $c['nome_atributo'],
+                    $c['tipo'],
+                    $c['pk'],
+                    $c['nn'],
+                    $c['ai'],
+                    $c['uq']
+                );
+            }
         }
 
         return [
-            'banco' => $bancoSelecionado,
-            'tabelas' => $tabelas,
+            'tabelas'   => $tabelas,
             'atributos' => $atributosPorTabela,
-            'opcoes' => $opcoes,
         ];
     }
 
     
+    //Monta o contexto de geração para usuários autenticados (lê metadados persistidos no DevStudio).
+     
+    private function montarContextoGeracaoAutenticado(): array {
+        $banco = trim((string) ($_POST['banco'] ?? ''));
+        if ($banco === '') {
+            throw new \InvalidArgumentException('Selecione um banco de dados antes de gerar o sistema.');
+        }
+
+        // Caso o usuário autenticado tenha selecionado um banco salvo pelo ID
+        if (ctype_digit($banco)) {
+            $bancoSelecionado = (new BancoService())->getBancoById($banco);
+            if (!$bancoSelecionado) {
+                throw new \InvalidArgumentException('Banco de dados não encontrado.');
+            }
+
+            // Etapa 1: tabelas que o usuário desmarcou em "Tabelas Detectadas"
+            $tabelas = (new TabelaService())->getTabelasByFk_banco($bancoSelecionado['id_banco']);
+            $tabelas = FiltroTabelas::fromRequest($_POST['tabelasDesativadas'] ?? null)->filtrar($tabelas);
+            if (empty($tabelas)) {
+                throw new \InvalidArgumentException('Selecione ao menos uma tabela para gerar o projeto.');
+            }
+
+            // Etapa 2: camadas/artefatos desmarcados em "Opções de Geração" (+ regra RN 06)
+            $opcoes = OpcoesGeracao::fromRequest($_POST, $bancoSelecionado);
+            if (empty($opcoes->camadasAtivas())) {
+                throw new \InvalidArgumentException('Selecione ao menos uma camada ou artefato para gerar.');
+            }
+
+            $atributoService = new AtributoService();
+            $atributosPorTabela = [];
+            foreach ($tabelas as $tabela) {
+                $atributosPorTabela[$tabela->getId_tabela()] = $atributoService->getAtributosByFk_tabela($tabela->getId_tabela());
+            }
+
+            return [
+                'banco'     => $bancoSelecionado,
+                'tabelas'   => $tabelas,
+                'atributos' => $atributosPorTabela,
+                'opcoes'    => $opcoes,
+            ];
+        }
+
+        return $this->montarContextoGeracaoVisitante();
+    }
+
+    
+    //Monta o contexto de geração em memória para o Modo Visitante (RN 01 / FA01: zero persistência).
+    
+    private function montarContextoGeracaoVisitante(): array {
+        $nomeBanco = trim((string) ($_POST['banco'] ?? ''));
+        if ($nomeBanco === '') {
+            throw new \InvalidArgumentException('Selecione um banco de dados antes de gerar o sistema.');
+        }
+
+        $cred = $this->obterCredenciaisLocaisRequest();
+        $filtro = FiltroTabelas::fromRequest($_POST['tabelasDesativadas'] ?? null);
+
+        $inspecao = $this->inspecionarBancoLocalEmMemoria(
+            $nomeBanco,
+            $cred['host'],
+            $cred['porta'],
+            $cred['user'],
+            $cred['pass'],
+            true,
+            $filtro
+        );
+
+        if (empty($inspecao['tabelas'])) {
+            throw new \InvalidArgumentException('Selecione ao menos uma tabela para gerar o projeto.');
+        }
+
+        $bancoMemoria = [
+            'id_banco'      => null,
+            'nome_banco'    => $nomeBanco,
+            'usuario_banco' => $cred['user'],
+            'senha_banco'   => $cred['pass'],
+            'host'          => $cred['host'],
+            'porta'         => $cred['porta'],
+        ];
+
+        $opcoes = OpcoesGeracao::fromRequest($_POST, $bancoMemoria);
+        if (empty($opcoes->camadasAtivas())) {
+            throw new \InvalidArgumentException('Selecione ao menos uma camada ou artefato para gerar.');
+        }
+
+        return [
+            'banco'     => $bancoMemoria,
+            'tabelas'   => $inspecao['tabelas'],
+            'atributos' => $inspecao['atributos'],
+            'opcoes'    => $opcoes,
+        ];
+    }
+
+    private function montarContextoGeracao(): array {
+        if ($this->usuarioEstaAutenticado()) {
+            return $this->montarContextoGeracaoAutenticado();
+        }
+        return $this->montarContextoGeracaoVisitante();
+    }
+
     //Pré-visualização da etapa "Estrutura de Arquivos": devolve exatamente os caminhos que o
     //MotorGeracao criaria para as tabelas e camadas selecionadas (mesma fonte usada no ZIP).
-    
     public function previewEstrutura(): void {
-        $this->autenticacaoJsonRequired();
+        header('Content-Type: application/json; charset=utf-8');
 
         try {
             $ctx = $this->montarContextoGeracao();
             $caminhos = (new MotorGeracao())->listarCaminhos($ctx['tabelas'], $ctx['atributos'], $ctx['opcoes'], $ctx['banco']);
 
             echo json_encode([
-                'sucesso' => true,
-                'arquivos' => $caminhos,
-                'total' => count($caminhos),
-                'avisos' => $ctx['opcoes']->avisos(),
+                'sucesso'   => true,
+                'visitante' => !$this->usuarioEstaAutenticado(),
+                'arquivos'  => $caminhos,
+                'total'     => count($caminhos),
+                'avisos'    => $ctx['opcoes']->avisos(),
             ]);
         } catch (\Throwable $e) {
             echo json_encode(['sucesso' => false, 'mensagem' => $e->getMessage()]);
@@ -117,9 +373,9 @@ class ProjetoController extends Controller{
     }
 
     public function gerarMvc(): void {
-        $this->autenticacaoJsonRequired();
+        header('Content-Type: application/json; charset=utf-8');
 
-        $nomeProjeto = trim($_POST['nomeProjeto'] ?? '') ?: 'meu_projeto';
+        $nomeProjeto = trim((string) ($_POST['nomeProjeto'] ?? '')) ?: 'meu_projeto';
 
         if (preg_match('/\s/', $nomeProjeto)) {
             echo json_encode(['sucesso' => false, 'mensagem' => 'O nome do projeto não deve conter espaços.']);
@@ -132,80 +388,92 @@ class ProjetoController extends Controller{
             return;
         }
 
-        if (empty($_SESSION['usuario_logado'])) {
-            echo json_encode(['sucesso' => false, 'mensagem' => 'Sessão expirada. Faça login novamente.']);
+        // Desvio de fluxo (RF 06 / RN 01): Usuário Autenticado vs Visitante
+        if ($this->usuarioEstaAutenticado()) {
+            $this->gerarMvcAutenticado($nomeProjeto);
             return;
         }
 
+        $this->gerarMvcVisitante($nomeProjeto);
+    }
+
+    
+    //Rotina de geração para usuários autenticados (persiste no banco, valida cota de 10 projetos e salva histórico).
+     
+    private function gerarMvcAutenticado(string $nomeProjeto): void {
         try {
-            $ctx = $this->montarContextoGeracao();
+            $ctx = $this->montarContextoGeracaoAutenticado();
         } catch (\InvalidArgumentException $e) {
+            echo json_encode(['sucesso' => false, 'mensagem' => $e->getMessage()]);
+            return;
+        } catch (\Throwable $e) {
             echo json_encode(['sucesso' => false, 'mensagem' => $e->getMessage()]);
             return;
         }
 
+        $idUsuario = (int) $_SESSION['usuario_logado']->getIdUsuario();
+        $idBanco = isset($ctx['banco']['id_banco']) && $ctx['banco']['id_banco'] !== null ? (int) $ctx['banco']['id_banco'] : null;
+
         $projeto = new Projeto(
-            $_SESSION['usuario_logado']->getIdUsuario(),
-            (int) $ctx['banco']['id_banco'],
+            $idUsuario,
+            $idBanco ?? 1,
             null,
             $nomeProjeto,
             date('Y-m-d H:i:s'),
             [
                 'comentarios' => $ctx['opcoes']->comentariosAtivos() ? 1 : 0,
-                'views' => $ctx['opcoes']->ativa('views') ? 1 : 0
+                'views'       => $ctx['opcoes']->ativa('views') ? 1 : 0,
             ],
             null
         );
 
-        $resultadoInsert = $this->projetoService->insert($projeto);
+        $resultadoInsert = $this->getProjetoService()->insert($projeto);
         if (!$resultadoInsert) {
             echo json_encode(['sucesso' => false, 'mensagem' => 'Não foi possível salvar o projeto no banco de dados.']);
             return;
         }
 
         $pastaOutput = __DIR__ . '/../projetos/temp/' . $nomeProjeto;
-        $nomeZip = $nomeProjeto .'-' . $resultadoInsert .'.zip';
+        $nomeZip = $nomeProjeto . '-' . $resultadoInsert . '.zip';
         $pastaDownloads = __DIR__ . '/../projetos/downloads/';
-        if(!is_dir($pastaDownloads)){
+        if (!is_dir($pastaDownloads)) {
             mkdir($pastaDownloads, 0755, true);
         }
         $arquivoZip = $pastaDownloads . $nomeZip;
+
         try {
-            // Remove sobras de uma geração anterior interrompida: o ZIP só pode conter o que foi selecionado agora
             $this->excluirDiretorioRecursivo($pastaOutput);
 
-            // O Motor cria somente as pastas/arquivos das camadas ativas e das tabelas selecionadas
             $motor = new MotorGeracao();
             $arquivos = $motor->gerar($ctx['tabelas'], $ctx['atributos'], $ctx['opcoes'], $pastaOutput, $ctx['banco']);
 
-            // Criar arquivo .zip para download
             $geradorZip = new \app\tools\gerador\GeradorZip();
             if (!$geradorZip->compactarPasta($pastaOutput, $arquivoZip)) {
                 throw new \RuntimeException('Não foi possível criar o arquivo .zip do projeto.');
             }
 
-            // Apaga a pasta temporária de compilação após gerar o ZIP
             $this->excluirDiretorioRecursivo($pastaOutput);
 
             $downloadUrl = URL_BASE . '/projetos/downloadZip?file=' . urlencode($nomeZip);
             \app\services\LogService::registrar("Geração de sistema MVC Creator: " . $nomeProjeto);
             $this->registrarProjetoNoHistorico($nomeProjeto, 'MVC Creator', [
-                'nome' => $nomeProjeto,
-                'arquivo' => $nomeZip,
+                'nome'        => $nomeProjeto,
+                'arquivo'     => $nomeZip,
                 'downloadUrl' => $downloadUrl,
-                'banco' => $ctx['banco']['nome_banco'],
-                'banco_id' => $ctx['banco']['id_banco'],
-                'gerado_em' => date('c'),
-                'tipo' => 'MVC Creator',
+                'banco'       => $ctx['banco']['nome_banco'],
+                'banco_id'    => $ctx['banco']['id_banco'],
+                'gerado_em'   => date('c'),
+                'tipo'        => 'MVC Creator',
             ]);
 
             echo json_encode([
-                'sucesso' => true,
-                'mensagem' => 'Sistema MVC gerado com sucesso!',
+                'sucesso'     => true,
+                'visitante'   => false,
+                'mensagem'    => 'Sistema MVC gerado com sucesso!',
                 'downloadUrl' => $downloadUrl,
-                'total' => count($arquivos),
-                'arquivos' => $arquivos,
-                'avisos' => $ctx['opcoes']->avisos()
+                'total'       => count($arquivos),
+                'arquivos'    => $arquivos,
+                'avisos'      => $ctx['opcoes']->avisos(),
             ]);
         } catch (\Throwable $e) {
             $this->excluirDiretorioRecursivo($pastaOutput);
@@ -213,21 +481,123 @@ class ProjetoController extends Controller{
         }
     }
 
+    
+    //Rotina de geração para visitantes (RF 06 / UC 06 / RN 01 / FA01):
+    //Zero persistência nas tabelas internas (`usuario`, `projeto`, `banco`, `tabela`, `atributo`, `log`) ou histórico.
+    //Compila em diretório temporário isolado (`temp/guest_{hash}`) e remove imediatamente após o download.
+     
+    private function gerarMvcVisitante(string $nomeProjeto): void {
+        $this->limparTemporariosVisitanteExpirados();
+
+        try {
+            $ctx = $this->montarContextoGeracaoVisitante();
+        } catch (\Throwable $e) {
+            echo json_encode(['sucesso' => false, 'mensagem' => $e->getMessage()]);
+            return;
+        }
+
+        $guestHash = substr(hash('sha256', session_id() . '_' . uniqid('', true) . '_' . bin2hex(random_bytes(8))), 0, 16);
+        $pastaTempRaiz = __DIR__ . '/../projetos/temp';
+        $pastaGuest = $pastaTempRaiz . '/guest_' . $guestHash;
+        $pastaBuild = $pastaGuest . '/' . $nomeProjeto;
+        $nomeZip = $nomeProjeto . '.zip';
+        $arquivoZip = $pastaGuest . '/' . $nomeZip;
+
+        try {
+            $this->excluirDiretorioRecursivo($pastaGuest);
+            if (!is_dir($pastaBuild) && !mkdir($pastaBuild, 0755, true) && !is_dir($pastaBuild)) {
+                throw new \RuntimeException('Não foi possível criar o diretório temporário para geração.');
+            }
+
+            $motor = new MotorGeracao();
+            $arquivos = $motor->gerar($ctx['tabelas'], $ctx['atributos'], $ctx['opcoes'], $pastaBuild, $ctx['banco']);
+
+            $geradorZip = new \app\tools\gerador\GeradorZip();
+            if (!$geradorZip->compactarPasta($pastaBuild, $arquivoZip)) {
+                throw new \RuntimeException('Não foi possível criar o arquivo .zip temporário do projeto.');
+            }
+
+            // Remove imediatamente os arquivos-fonte descompactados, mantendo apenas o .zip temporário até o envio HTTP
+            $this->excluirDiretorioRecursivo($pastaBuild);
+
+            $_SESSION['guest_downloads'][$guestHash] = [
+                'dir'        => $pastaGuest,
+                'zip'        => $arquivoZip,
+                'filename'   => $nomeZip,
+                'created_at' => time(),
+            ];
+
+            $downloadUrl = URL_BASE . '/projetos/downloadZip?file=' . urlencode($nomeZip) . '&guest=' . urlencode($guestHash);
+
+            echo json_encode([
+                'sucesso'     => true,
+                'visitante'   => true,
+                'mensagem'    => 'Sistema MVC gerado com sucesso!',
+                'avisoSessao' => 'Modo Visitante: os dados desta sessão não serão salvos no servidor.',
+                'downloadUrl' => $downloadUrl,
+                'total'       => count($arquivos),
+                'arquivos'    => $arquivos,
+                'avisos'      => $ctx['opcoes']->avisos(),
+            ]);
+        } catch (\Throwable $e) {
+            $this->excluirDiretorioRecursivo($pastaGuest);
+            echo json_encode(['sucesso' => false, 'mensagem' => $e->getMessage()]);
+        }
+    }
+
+    /**
+     * Remove pastas temporárias de visitantes expiradas (mais de 10 minutos) caso algum download tenha sido cancelado.
+     */
+    private function limparTemporariosVisitanteExpirados(int $ttlSegundos = 600): void {
+        $pastaTempRaiz = __DIR__ . '/../projetos/temp';
+        if (!is_dir($pastaTempRaiz)) {
+            return;
+        }
+
+        $agora = time();
+        $itens = array_diff(scandir($pastaTempRaiz) ?: [], ['.', '..']);
+        foreach ($itens as $item) {
+            if (strpos($item, 'guest_') !== 0) {
+                continue;
+            }
+            $caminho = $pastaTempRaiz . '/' . $item;
+            if (is_dir($caminho) && ($agora - @filemtime($caminho)) > $ttlSegundos) {
+                $this->excluirDiretorioRecursivo($caminho);
+            }
+        }
+    }
+
     private function excluirDiretorioRecursivo(string $dir): void {
         if (!file_exists($dir)) return;
-        $items = array_diff(scandir($dir), ['.', '..']);
+        $items = array_diff(scandir($dir) ?: [], ['.', '..']);
         foreach ($items as $item) {
             $path = $dir . '/' . $item;
-            is_dir($path) ? $this->excluirDiretorioRecursivo($path) : unlink($path);
+            is_dir($path) ? $this->excluirDiretorioRecursivo($path) : @unlink($path);
         }
-        rmdir($dir);
+        @rmdir($dir);
     }
 
     public function downloadZip(): void {
-        $nomeZip = basename($_GET['file'] ?? '');
-        $caminhoZip = __DIR__ . '/../projetos/downloads/' . $nomeZip;   
+        $nomeZip = basename((string) ($_GET['file'] ?? 'projeto.zip'));
+        $guestHash = preg_replace('/[^a-f0-9]/', '', (string) ($_GET['guest'] ?? ''));
+
         $geradorZip = new \app\tools\gerador\GeradorZip();
-        $geradorZip->enviarDownload($caminhoZip, $nomeZip);
+
+        // Fluxo de download temporário para visitante: entrega via HTTP e apaga imediatamente do servidor
+        if ($guestHash !== '' && strlen($guestHash) === 16) {
+            $pastaGuest = __DIR__ . '/../projetos/temp/guest_' . $guestHash;
+            $caminhoZip = $pastaGuest . '/' . $nomeZip;
+
+            if (isset($_SESSION['guest_downloads'][$guestHash])) {
+                unset($_SESSION['guest_downloads'][$guestHash]);
+            }
+
+            $geradorZip->enviarDownload($caminhoZip, $nomeZip, true, $pastaGuest);
+            return;
+        }
+
+        $caminhoZip = __DIR__ . '/../projetos/downloads/' . $nomeZip;
+        $geradorZip->enviarDownload($caminhoZip, $nomeZip, false);
     }
 
     private function getHistoricoUsuarioId(): int {
@@ -593,7 +963,14 @@ class ProjetoController extends Controller{
     
 
     public function mvcCreator(): void {
-        $this->autenticacaoRequired();
+        if (!$this->usuarioEstaAutenticado()) {
+            // RF 06 / UC 06: Modo Visitante / Convidado — abre o MVC Creator sem exigir login nem tocar no banco
+            $this->view('projetos/mvcCreator', [
+                'bancoOpts'     => '',
+                'modoVisitante' => true,
+            ]);
+            return;
+        }
 
         $usuarioLogado = $_SESSION['usuario_logado'] ?? null;
         if (!$usuarioLogado || !method_exists($usuarioLogado, 'getEmail')) {
@@ -611,11 +988,14 @@ class ProjetoController extends Controller{
         $bancos = $bancoService->getBancoByUsuario($usuario->getIdUsuario());
         $bancoOpts = '';
         if (is_array($bancos)) {
-            foreach($bancos as $banco){
+            foreach ($bancos as $banco) {
                 $bancoOpts .= '<option value="' . $banco['id_banco'] . '">' . $banco['nome_banco'] . '</option>';
             }
         }
-        $this->view('projetos/mvcCreator', ['bancoOpts' => $bancoOpts]);
+        $this->view('projetos/mvcCreator', [
+            'bancoOpts'     => $bancoOpts,
+            'modoVisitante' => false,
+        ]);
     }
 
     public function pageMaker(): void {
@@ -636,7 +1016,7 @@ class ProjetoController extends Controller{
         
         $data = [];
         $id_projeto = $_POST['id_projeto'];
-        $proj = $this->projetoService->getById($id_projeto);
+        $proj = $this->getProjetoService()->getById($id_projeto);
         $nome = $proj['nome_projeto'];
 
 
@@ -684,7 +1064,7 @@ class ProjetoController extends Controller{
         $projeto = new Projeto(1,1,null,$nome,date("Y-m-d H:i:s"),$options,null);
 
 
-        $this->projetoService->insert($projeto);
+        $this->getProjetoService()->insert($projeto);
         
         $this->redirect(URL_BASE);
         

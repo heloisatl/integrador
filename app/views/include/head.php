@@ -705,6 +705,8 @@ if (strpos($requestPath, '/perfil') !== false) {
     $bodyId = 'usuarios';
 } elseif (strpos($requestPath, '/logs') !== false) {
     $bodyId = 'logs';
+} elseif ($bodyId === 'explorar') {
+    $bodyId = 'guia';
 } elseif ($bodyId === '' || $bodyId === 'index.php') {
     $bodyId = 'projetos';
 }
