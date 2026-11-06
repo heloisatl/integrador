@@ -134,12 +134,12 @@ $csrfPerfil = $csrfPerfil ?? '';
             const arquivo = inputFoto.files?.[0];
             if (!arquivo) return;
             if (arquivo.size > 2 * 1024 * 1024) {
-                alert('A foto deve ter no máximo 2 MB.');
+                devstudioAlert('A foto deve ter no máximo 2 MB.', 'erro');
                 inputFoto.value = '';
                 return;
             }
             if (!['image/jpeg', 'image/png', 'image/webp'].includes(arquivo.type)) {
-                alert('Selecione uma imagem JPG, PNG ou WEBP.');
+                devstudioAlert('Selecione uma imagem JPG, PNG ou WEBP.', 'erro');
                 inputFoto.value = '';
                 return;
             }
