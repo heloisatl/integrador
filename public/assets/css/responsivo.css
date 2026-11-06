@@ -31,7 +31,7 @@ code,
 .phpma-code,
 .pm-saida textarea {
     max-width: 100%;
-    overflow-wrap: anywhere;
+    /* overflow-wrap normal */
 }
 
 .table-container,
@@ -53,10 +53,18 @@ code,
     flex-wrap: wrap;
 }
 
-.page-actions .btn,
+/* buttons */
+.page-actions .btn {
+    white-space: nowrap;
+    word-break: keep-all;
+    max-width: 100%;
+}
+
 .historico-card-actions .btn {
     max-width: 100%;
-    overflow-wrap: anywhere;
+    white-space: nowrap;
+    max-width: 100%;
+    /* overflow-wrap normal */
 }
 
 @media (min-width: 901px) and (max-width: 1024px) {
@@ -248,6 +256,8 @@ code,
     body .pm-controles-tela .pm-botao,
     body .pm-controles-download .pm-botao,
     body .page-actions .btn {
+    white-space: nowrap;
+    word-break: keep-all;
         flex: 1 1 100%;
         justify-content: center;
         min-height: 44px;
@@ -328,7 +338,7 @@ code,
 
     body .auth-title {
         font-size: clamp(22px, 7vw, 28px);
-        overflow-wrap: anywhere;
+        /* overflow-wrap normal */
     }
 
     body .link-row {

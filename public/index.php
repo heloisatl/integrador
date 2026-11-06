@@ -51,6 +51,13 @@ $router->get('/usuarios/editar', 'UsuarioController@editar');
 $router->post('/usuarios/atualizar', 'UsuarioController@atualizar');
 $router->get('/perfil', 'UsuarioController@perfil');
 $router->get('/perfil/editar', 'UsuarioController@perfil');
+$router->get('/perfil/atualizar', 'UsuarioController@perfil');
+$router->post('/perfil/atualizar', 'UsuarioController@atualizarPerfil');
+$router->get('/perfil/avatar', 'UsuarioController@avatar');
+
+// RF 15 / UC 15: Consultar Logs (Restrito para Administradores)
+$router->get('/logs', 'LogController@index');
+$router->get('/logs/exportar', 'LogController@exportar');
 
 
 
@@ -72,7 +79,9 @@ $router->get("/projetos/guia", "ProjetoController@guia");
 $router->get("/projetos/mvc-creator", "ProjetoController@mvcCreator");
 $router->get("/projetos/pagemaker", "ProjetoController@pageMaker");
 $router->get("/projetos/historico", "ProjetoController@historico");
-$router->get("/projetos/saida", "ProjetoController@saida");
+$router->get("/projetos/historico/baixar", "ProjetoController@baixarProjetoHistorico");
+$router->get("/projetos/historico/apagar", "ProjetoController@apagarProjetoHistorico");
+$router->get("/projetos/historico/limpar", "ProjetoController@limparHistorico");
 $router->get("/projetos/phpmeuamigo", "PhpMeuAmigoController@index");
 
 // Rotas de API AJAX do módulo PHPMeuAmigo
