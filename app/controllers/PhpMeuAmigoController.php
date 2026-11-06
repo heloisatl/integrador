@@ -7,6 +7,7 @@ use app\services\TabelaService;
 use app\services\AtributoService;
 use app\services\SqlImporterService;
 use app\services\SqlExporterService;
+use app\services\LogService;
 use app\database\ConnectionFactory;
 use app\tools\SchemaInspector;
 
@@ -75,11 +76,13 @@ class PhpMeuAmigoController extends Controller{
                 }
                 $this->bancoService->updateConfig($id_banco, $nome_banco, $usuario_banco, $senha_banco, $host, $porta);
                 $mensagem = 'Configuracoes atualizadas com sucesso!';
+                LogService::registrar("Configurações do banco de dados atualizadas: " . $nome_banco);
             } else {
                 $this->bancoService->insert($id_usuario, $nome_banco, $usuario_banco, $senha_banco, $host, $porta);
                 $banco_criado = $this->bancoService->getBancoEspecifico($nome_banco, $usuario_banco, $id_usuario);
                 $id_banco = $banco_criado['id_banco'] ?? null;
                 $mensagem = 'Banco criado com sucesso!';
+                LogService::registrar("Novo banco de dados criado no modelador: " . $nome_banco);
             }
 
             header('Content-Type: application/json; charset=utf-8');
@@ -113,6 +116,7 @@ class PhpMeuAmigoController extends Controller{
 
             // Tabelas e atributos sao excluidos em cascata no mvc_creator
             $this->bancoService->delete($id_banco);
+            \app\services\LogService::registrar("Banco de dados excluído no modelador: " . ($banco['nome_banco'] ?? 'ID #' . $id_banco));
 
             header('Content-Type: application/json; charset=utf-8');
             echo json_encode(['sucesso' => true, 'mensagem' => 'Banco e sua estrutura foram excluidos do DevStudio!']);
@@ -180,6 +184,7 @@ class PhpMeuAmigoController extends Controller{
             if ($id_tabela) {
                 $this->tabelaService->updateNome($id_tabela, $nome_tabela);
                 $mensagem = 'Nome da tabela atualizado!';
+                LogService::registrar("Tabela renomeada no modelador: " . $nome_tabela);
             } else {
                 $this->tabelaService->insert($nome_tabela, $id_banco);
                 $tabela_criada = $this->tabelaService->getTabelaEspecifica($nome_tabela, $id_banco);
@@ -191,6 +196,7 @@ class PhpMeuAmigoController extends Controller{
                 }
 
                 $mensagem = 'Tabela criada com sucesso!';
+                LogService::registrar("Nova tabela criada no modelador: " . $nome_tabela);
             }
 
             header('Content-Type: application/json; charset=utf-8');
@@ -212,7 +218,10 @@ class PhpMeuAmigoController extends Controller{
         }
 
         try {
+            $tabelaInfo = $this->tabelaService->getTabelaById($id_tabela);
+            $nomeTabelaInfo = $tabelaInfo['nome_tabela'] ?? ('ID #' . $id_tabela);
             $this->tabelaService->delete($id_tabela);
+            LogService::registrar("Tabela excluída no modelador: " . $nomeTabelaInfo);
             header('Content-Type: application/json; charset=utf-8');
             echo json_encode(['sucesso' => true, 'mensagem' => 'Tabela excluida com sucesso!']);
         } catch (\Exception $e) {
@@ -342,6 +351,7 @@ class PhpMeuAmigoController extends Controller{
             if ($id_atributo) {
                 $this->atributoService->update($id_atributo, $fk_atributo, $nome_atributo, $tipo, $PK, $NN, $AI, $UQ);
                 $mensagem = 'Atributo atualizado com sucesso!';
+                LogService::registrar("Atributo atualizado no modelador: " . $nome_atributo . " (" . $tipo . ")");
             } else {
                 $inserted = $this->atributoService->insert($id_tabela, $fk_atributo, $nome_atributo, $tipo, $PK, $NN, $AI, $UQ);
                 if (!$inserted) {
@@ -364,6 +374,7 @@ class PhpMeuAmigoController extends Controller{
                     return;
                 }
                 $mensagem = 'Atributo criado com sucesso!';
+                LogService::registrar("Novo atributo adicionado no modelador: " . $nome_atributo . " (" . $tipo . ")");
             }
 
             header('Content-Type: application/json; charset=utf-8');
@@ -385,7 +396,10 @@ class PhpMeuAmigoController extends Controller{
         }
 
         try {
+            $attrInfo = $this->atributoService->getAtributoById($id_atributo);
+            $nomeAttrInfo = $attrInfo['nome_atributo'] ?? ('ID #' . $id_atributo);
             $this->atributoService->delete($id_atributo);
+            LogService::registrar("Atributo excluído no modelador: " . $nomeAttrInfo);
             header('Content-Type: application/json; charset=utf-8');
             echo json_encode(['sucesso' => true, 'mensagem' => 'Atributo excluido com sucesso!']);
         } catch (\Exception $e) {
@@ -396,26 +410,22 @@ class PhpMeuAmigoController extends Controller{
 
     // --- IMPORTACAO DE BANCO LOCAL ---
 
+    /**
+     * Endpoint de leitura de bancos da instância MySQL local (SHOW DATABASES via PDO).
+     * Acessível tanto no módulo PHPMeuAmigo quanto no MVC Creator em Modo Visitante (sem exigir idUsuario).
+     */
     public function conectarMysqlLocal(): void{
-        $this->autenticacaoJsonRequired();
+        $hostPadrao = defined('DB_HOST') ? DB_HOST : 'localhost';
+        $userPadrao = defined('DB_USER') ? DB_USER : 'root';
+        $passPadrao = defined('DB_PASS') ? DB_PASS : '';
 
-        $host  = trim($_POST['host'] ?? 'localhost');
-        $porta = trim($_POST['porta'] ?? '3306');
-        $user  = trim($_POST['usuario'] ?? 'root');
-        $pass  = $_POST['senha'] ?? '';
+        $host  = trim($_POST['host'] ?? $_POST['servidor'] ?? '') ?: $hostPadrao;
+        $porta = trim($_POST['porta'] ?? '') ?: '3306';
+        $user  = trim($_POST['usuario'] ?? '') ?: $userPadrao;
+        $pass  = $_POST['senha'] ?? $passPadrao;
 
         try {
-            $dsn = "mysql:host=$host;port=$porta";
-            $pdo = ConnectionFactory::specialConn($dsn, $user, $pass);
-
-            $stm = $pdo->query("SHOW DATABASES");
-            $databases = $stm->fetchAll(\PDO::FETCH_COLUMN);
-
-            // Filtra os schemas internos do MySQL
-            $esquemas_sistema = ['information_schema', 'performance_schema', 'mysql', 'sys'];
-            $bancos_filtrados = array_values(array_filter($databases, function($db) use ($esquemas_sistema) {
-                return !in_array(strtolower($db), $esquemas_sistema);
-            }));
+            $bancos_filtrados = BancoService::listarBancosMysqlLocal($host, $porta, $user, $pass);
 
             header('Content-Type: application/json; charset=utf-8');
             echo json_encode(['sucesso' => true, 'bancos' => $bancos_filtrados]);
@@ -586,6 +596,8 @@ class PhpMeuAmigoController extends Controller{
                 }
             }
 
+            LogService::registrar("Banco MySQL local importado no modelador: " . $banco_selecionado);
+
             header('Content-Type: application/json; charset=utf-8');
             echo json_encode([
                 'sucesso'  => true,
@@ -634,6 +646,8 @@ class PhpMeuAmigoController extends Controller{
 
             $nomeArquivo = $resultado['nome_arquivo'];
             $conteudoSql = $resultado['conteudo_sql'];
+
+            LogService::registrar("Exportação de script SQL do banco: " . $nomeArquivo);
 
             header('Content-Description: File Transfer');
             header('Content-Type: application/sql; charset=utf-8');

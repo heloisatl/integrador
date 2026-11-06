@@ -4,9 +4,19 @@
 // então PHP_SELF sempre retornaria "index.php" e o menu nunca marcaria página ativa corretamente. A detecção agora usa a rota da URL atual.
 $requestPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
 $paginaAtual = trim(basename(rtrim($requestPath, '/')), '/');
-if ($paginaAtual === '' || $paginaAtual === 'index.php') {
+if (strpos($requestPath, '/perfil') !== false) {
+    $paginaAtual = 'perfil';
+} elseif (strpos($requestPath, '/usuarios') !== false) {
+    $paginaAtual = 'usuarios';
+} elseif (strpos($requestPath, '/logs') !== false) {
+    $paginaAtual = 'logs';
+} elseif ($paginaAtual === 'explorar') {
+    $paginaAtual = 'guia';
+} elseif ($paginaAtual === '' || $paginaAtual === 'index.php') {
     $paginaAtual = 'projetos'; // rota "/projetos" = home
 }
+
+$urlInicio = isset($_SESSION['usuario_logado']) ? (URL_BASE . '/projetos') : (URL_BASE . '/explorar');
 
 $currentSection = $_GET['section'] ?? '';
 $currentTab = $_GET['tab'] ?? '';
@@ -22,7 +32,18 @@ if (isset($_SESSION['usuario_logado']) && method_exists($_SESSION['usuario_logad
 
 function usuarioEhAdmin(): bool
 {
-    return isset($_SESSION['usuario_logado']) && strtolower($_SESSION['usuario_logado']->getTipoPerfil()) === 'admin';
+    if (!isset($_SESSION['usuario_logado'])) {
+        return false;
+    }
+    $usuario = $_SESSION['usuario_logado'];
+    if (method_exists($usuario, 'ehAdmin')) {
+        return $usuario->ehAdmin();
+    }
+    if (method_exists($usuario, 'getTipoPerfil')) {
+        $tipo = strtolower(trim($usuario->getTipoPerfil()));
+        return in_array($tipo, ['admin', 'administrador'], true);
+    }
+    return false;
 }
 
 if ($paginaAtual === 'pagemaker' && $currentSection === '') {
@@ -71,7 +92,7 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
 <header class="topbar">
     <div class="topbar-logo">
         <span class="logo"></span>
-        <h1 class="title"> <a class="title-link" href="<?= URL_BASE ?>/projetos">DevStudio </a></h1>
+        <h1 class="title"> <a class="title-link" href="<?= $urlInicio ?>">DevStudio </a></h1>
     </div>
 
     <button type="button" class="topbar-toggle" id="topbarToggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="topbarNav" onclick="toggleTopbarNav(event)">
@@ -83,7 +104,7 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
     <div class="topbar-nav" id="topbarNav">
         <div class="mobile-nav-group">
             <span class="mobile-section-label">Ferramentas & Páginas</span>
-            <a href="<?= URL_BASE ?>/projetos" class="topbar-item-inicio <?php echo verificarAtivo('projetos', $paginaAtual); ?>">
+            <a href="<?= $urlInicio ?>" class="topbar-item-inicio <?php echo verificarAtivo(isset($_SESSION['usuario_logado']) ? 'projetos' : 'guia', $paginaAtual); ?>">
                 Início
             </a>
 
@@ -101,15 +122,18 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
                 <a href="<?= URL_BASE ?>/projetos/historico" class="topbar-item <?php echo verificarAtivo('historico', $paginaAtual); ?>">
                     Histórico
                 </a>
-            <?php endif; ?>
 
-            <a href="<?= URL_BASE ?>/projetos/phpmeuamigo" class="topbar-item <?php echo verificarAtivo('phpmeuamigo', $paginaAtual); ?>">
-                PHPMeuAmigo
-            </a>
+                <a href="<?= URL_BASE ?>/projetos/phpmeuamigo" class="topbar-item <?php echo verificarAtivo('phpmeuamigo', $paginaAtual); ?>">
+                    PHPMeuAmigo
+                </a>
+            <?php endif; ?>
 
             <?php if (defined('URL_BASE') && usuarioEhAdmin()): ?>
                 <a href="<?= URL_BASE ?>/usuarios" class="topbar-item <?php echo $paginaAtual === 'usuarios' ? 'active' : ''; ?>">
                     Usuários
+                </a>
+                <a href="<?= URL_BASE ?>/logs" class="topbar-item <?php echo $paginaAtual === 'logs' ? 'active' : ''; ?>">
+                    Logs
                 </a>
             <?php endif; ?>
         </div>
@@ -219,9 +243,11 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
         <div id="sb-principal" class="sb-section">
             <div class="sb-label">Menu Principal</div>
 
-            <a href="<?= URL_BASE ?>/projetos" class="sb-item <?php echo verificarAtivo('projetos', $paginaAtual); ?>">
-                Visão Geral
-            </a>
+            <?php if (isset($_SESSION['usuario_logado'])): ?>
+                <a href="<?= URL_BASE ?>/projetos" class="sb-item <?php echo verificarAtivo('projetos', $paginaAtual); ?>">
+                    Visão Geral
+                </a>
+            <?php endif; ?>
 
             <a href="<?= URL_BASE ?>/projetos/guia" class="sb-item <?php echo verificarAtivo('guia', $paginaAtual); ?>">
                 Guia Rápido
@@ -285,6 +311,14 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
                     <span class="sb-icon"></span> Criar Usuário
                 </a>
             </div>
+
+            <!-- Logs (RF 15 / UC 15) -->
+            <div id="sb-titulo-logs" class="sb-section">
+                <div class="sb-label">Auditoria & Logs</div>
+                <a href="<?= URL_BASE ?>/logs" class="sb-item <?php echo $paginaAtual === 'logs' ? 'active' : ''; ?>">
+                    <span class="sb-icon"></span> Consultar Logs
+                </a>
+            </div>
         <?php endif; ?>
 
 
@@ -292,10 +326,8 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
         <!-- Historico -->
         <div id="sb-titulo-historico" class="sb-section">
             <div class="sb-label">Histórico</div>
-            <a href="<?= URL_BASE ?>/projetos/historico?tab=visualizar" class="sb-item <?php echo verificarAtivo('historico', $paginaAtual, 'tab', 'visualizar'); ?>"> <span class="sb-icon"></span> Visualizar Histórico
-            </a>
-
-            <a href="<?= URL_BASE ?>/projetos/historico?tab=exportar" class="sb-item <?php echo verificarAtivo('historico', $paginaAtual, 'tab', 'exportar'); ?>"> <span class="sb-icon"></span> Exportar todos
+            <a href="<?= URL_BASE ?>/projetos/historico" class="sb-item <?php echo ($paginaAtual === 'historico') ? 'active' : ''; ?>">
+                <span class="sb-icon"></span> Visualizar Histórico
             </a>
         </div>
 

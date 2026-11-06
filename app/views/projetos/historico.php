@@ -36,6 +36,26 @@ $historicoPorModulo = [
             flex-wrap: wrap;
         }
 
+        .historico-toolbar .page-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .historico-toolbar .page-actions .btn {
+            white-space: nowrap !important;
+            word-break: keep-all !important;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-height: 40px;
+            padding: 9px 16px;
+            box-sizing: border-box;
+            flex-shrink: 0;
+        }
+
         .historico-panel {
             background: var(--panel);
             border: 1px solid var(--border);
@@ -71,8 +91,9 @@ $historicoPorModulo = [
 
         .historico-cards-grid {
             display: grid;
-            gap: 14px;
-            grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+            gap: 16px;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 380px));
+            justify-content: start;
         }
 
         .historico-card {
@@ -146,16 +167,51 @@ $historicoPorModulo = [
             font-weight: 600;
         }
 
+        .historico-meta {
+            font-size: 13px;
+            color: var(--muted);
+            font-family: 'DM Mono', monospace;
+            font-weight: 500;
+        }
+
         .historico-card-actions,
         .historico-panel-actions {
             display: flex;
             gap: 8px;
             flex-wrap: wrap;
+            align-items: stretch;
+            margin-top: auto;
+        }
+
+        .historico-card-actions .btn {
+            white-space: nowrap !important;
+            word-break: keep-all !important;
+            overflow-wrap: normal !important;
+            font-size: 12px;
+            padding: 8px 12px;
+            min-height: 36px;
+            flex: 1 1 auto;
+            justify-content: center;
+            box-sizing: border-box;
         }
 
         .btn-sm {
             padding: 8px 12px;
             font-size: 12px;
+        }
+
+        .historico-shell .btn-primary,
+        .historico-shell .btn-danger {
+            background-color: var(--accent);
+            color: #ffffff;
+            border: 1px solid var(--accent);
+        }
+
+        .historico-shell .btn-primary:hover,
+        .historico-shell .btn-danger:hover {
+            background-color: var(--accent-h);
+            border-color: var(--accent-h);
+            color: #ffffff;
         }
 
         .historico-empty {
@@ -243,14 +299,14 @@ $historicoPorModulo = [
             <header class="historico-toolbar page-header">
                 <div>
                     <p class="etiqueta-inicial">Projetos gerados</p>
-                    <h2 class="home-h2">Histórico</h2>
+                    <h1 class="page-title">Histórico</h1>
                 </div>
                 <div class="page-actions">
                     <span class="historico-contagem" aria-label="<?= $totalHistorico ?> de <?= $limiteHistorico ?> projetos salvos"><?= $totalHistorico ?> / <?= $limiteHistorico ?> projetos</span>
-                    <a class="btn btn-secondary" href="<?= URL_BASE ?>/projetos/mvc-creator">Novo MVC Creator</a>
-                    <a class="btn btn-secondary" href="<?= URL_BASE ?>/projetos/pagemaker">Novo PageMaker</a>
+                    <a class="btn btn-secondary" href="<?= URL_BASE ?>/projetos/mvc-creator"><i class="bi bi-braces"></i> Novo MVC Creator</a>
+                    <a class="btn btn-secondary" href="<?= URL_BASE ?>/projetos/pagemaker"><i class="bi bi-file-earmark-code"></i> Novo PageMaker</a>
                     <?php if (!empty($historico)): ?>
-                        <button class="btn btn-danger" type="button" onclick="if (confirm('Tem certeza que deseja excluir permanentemente todo o histórico?')) { window.location.href = '<?= URL_BASE ?>/projetos/historico/limpar'; }">Limpar Histórico</button>
+                        <button class="btn btn-primary" type="button" onclick="if (confirm('Tem certeza que deseja excluir permanentemente todo o histórico?')) { window.location.href = '<?= URL_BASE ?>/projetos/historico/limpar'; }"><i class="bi bi-trash"></i> Limpar Histórico</button>
                     <?php endif; ?>
                 </div>
             </header>
@@ -261,11 +317,6 @@ $historicoPorModulo = [
             </div>
 
             <section class="historico-panel">
-                    <div class="historico-title">
-                        <h3>Projetos salvos</h3>
-                        <span class="historico-meta"><?= $totalHistorico ?> de <?= $limiteHistorico ?></span>
-                    </div>
-
                     <?php if (empty($historico)): ?>
                         <div class="historico-empty">Nenhum projeto foi salvo no histórico ativo.</div>
                     <?php else: ?>
@@ -295,14 +346,14 @@ $historicoPorModulo = [
                                             </ul>
                                             <div class="historico-card-actions">
                                                 <?php if ($modulo === 'PageMaker'): ?>
-                                                    <a class="btn btn-secondary btn-sm" href="<?= URL_BASE ?>/projetos/historico/baixar?id=<?= urlencode((string)($item['id'] ?? '')) ?>&arquivo=html">Baixar HTML</a>
+                                                    <a class="btn btn-secondary btn-sm" href="<?= URL_BASE ?>/projetos/historico/baixar?id=<?= urlencode((string)($item['id'] ?? '')) ?>&arquivo=html"><i class="bi bi-download"></i> Baixar HTML</a>
                                                     <?php if (is_string($item['conteudo']['css'] ?? null) && $item['conteudo']['css'] !== ''): ?>
-                                                        <a class="btn btn-secondary btn-sm" href="<?= URL_BASE ?>/projetos/historico/baixar?id=<?= urlencode((string)($item['id'] ?? '')) ?>&arquivo=css">Baixar CSS</a>
+                                                        <a class="btn btn-secondary btn-sm" href="<?= URL_BASE ?>/projetos/historico/baixar?id=<?= urlencode((string)($item['id'] ?? '')) ?>&arquivo=css"><i class="bi bi-file-earmark-code"></i> Baixar CSS</a>
                                                     <?php endif; ?>
                                                 <?php else: ?>
-                                                    <a class="btn btn-secondary btn-sm" href="<?= URL_BASE ?>/projetos/historico/baixar?id=<?= urlencode((string)($item['id'] ?? '')) ?>">Baixar Projeto</a>
+                                                    <a class="btn btn-secondary btn-sm" href="<?= URL_BASE ?>/projetos/historico/baixar?id=<?= urlencode((string)($item['id'] ?? '')) ?>"><i class="bi bi-download"></i> Baixar Projeto</a>
                                                 <?php endif; ?>
-                                                <button class="btn btn-danger btn-sm" type="button" onclick="if (confirm('Tem certeza que deseja excluir permanentemente este projeto do histórico?')) { window.location.href = '<?= URL_BASE ?>/projetos/historico/apagar?id=<?= urlencode((string)($item['id'] ?? '')) ?>'; }">Excluir do Histórico</button>
+                                                <button class="btn btn-primary btn-sm" type="button" onclick="if (confirm('Tem certeza que deseja excluir permanentemente este projeto do histórico?')) { window.location.href = '<?= URL_BASE ?>/projetos/historico/apagar?id=<?= urlencode((string)($item['id'] ?? '')) ?>'; }"><i class="bi bi-trash"></i> Excluir do Histórico</button>
                                             </div>
                                         </article>
                                     <?php endforeach; ?>

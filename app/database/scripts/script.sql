@@ -124,7 +124,7 @@ CREATE TABLE `log` (
 CREATE TABLE `projeto` (
   `id_projeto` INT NOT NULL AUTO_INCREMENT,
   `id_usuario` INT NOT NULL,
-  `fk_banco` INT NOT NULL,
+  `fk_banco` INT NULL,
   `fk_estilo` INT NULL,
   `ultimo_download` INT NULL,
   `nome_projeto` VARCHAR(60) NOT NULL,
@@ -152,8 +152,8 @@ CREATE TABLE `projeto` (
   CONSTRAINT `fk_projeto_banco`
     FOREIGN KEY (`fk_banco`)
     REFERENCES `banco` (`id_banco`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE SET NULL
+    ON UPDATE CASCADE,
 
   CONSTRAINT `fk_projeto_estilo`
     FOREIGN KEY (`fk_estilo`)

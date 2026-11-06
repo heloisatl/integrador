@@ -11,8 +11,7 @@ $tipoMensagemPerfil = $tipoMensagemPerfil ?? 'sucesso';
 $csrfPerfil = $csrfPerfil ?? '';
 ?>
 
-<link rel="stylesheet" href="<?= URL_BASE ?>/assets/css/pagina-mvc.css">
-<link rel="stylesheet" href="<?= URL_BASE ?>/assets/css/perfil.css">
+<link rel="stylesheet" href="<?= URL_BASE ?>/assets/css/perfil.css?v=<?= time() ?>">
 
 <div class="perfil-container">
         <header class="perfil-header">

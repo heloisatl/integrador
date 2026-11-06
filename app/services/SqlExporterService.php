@@ -35,6 +35,9 @@ class SqlExporterService {
             $nomeBanco = 'banco_' . $id_banco;
         }
 
+        // Garante a convenção segura de exportação isolada: nomeBanco_devstudio (evita colisão ou drop de dados do usuário)
+        $nomeBancoDestino = str_ends_with($nomeBanco, '_devstudio') ? $nomeBanco : $nomeBanco . '_devstudio';
+
         $tabelas = $this->tabelaService->getTabelasRawByFk_banco($id_banco);
 
         // Mapeia tabelas e atributos para resolução relacional e Foreign Keys
@@ -65,18 +68,21 @@ class SqlExporterService {
 
         $sql[] = "-- ============================================================================";
         $sql[] = "-- DevStudio - Script SQL Exportado Atualizado";
-        $sql[] = "-- Banco de Dados: `{$nomeBanco}`";
+        $sql[] = "-- Banco de Dados Modelado: `{$nomeBanco}`";
+        $sql[] = "-- Banco de Destino Seguro: `{$nomeBancoDestino}`";
         $sql[] = "-- Data de Exportação: {$dataGeracao}";
         $sql[] = "-- Servidor de Referência: {$banco['host']}:{$banco['porta']}";
         $sql[] = "-- Módulo: PHPMeuAmigo";
+        $sql[] = "-- Observação de Segurança: Este script cria um banco isolado sem executar DROP,";
+        $sql[] = "-- preservando integralmente quaisquer tabelas ou dados já existentes no ambiente.";
         $sql[] = "-- ============================================================================";
         $sql[] = "";
         $sql[] = "SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;";
         $sql[] = "SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;";
         $sql[] = "SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';";
         $sql[] = "";
-        $sql[] = "CREATE SCHEMA IF NOT EXISTS `{$nomeBanco}` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;";
-        $sql[] = "USE `{$nomeBanco}`;";
+        $sql[] = "CREATE SCHEMA IF NOT EXISTS `{$nomeBancoDestino}` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;";
+        $sql[] = "USE `{$nomeBancoDestino}`;";
         $sql[] = "";
 
         if (empty($tabelas)) {
@@ -92,8 +98,7 @@ class SqlExporterService {
             $sql[] = "-- -----------------------------------------------------";
             $sql[] = "-- Estrutura da tabela `{$nomeTabela}`";
             $sql[] = "-- -----------------------------------------------------";
-            $sql[] = "DROP TABLE IF EXISTS `{$nomeTabela}`;";
-            $sql[] = "CREATE TABLE `{$nomeTabela}` (";
+            $sql[] = "CREATE TABLE IF NOT EXISTS `{$nomeTabela}` (";
 
             $corpoTabela = [];
             $primaryKeys = [];
@@ -183,11 +188,11 @@ class SqlExporterService {
         $sql[] = "";
 
         $conteudoSql = implode("\n", $sql);
-        $nomeArquivo = "{$nomeBanco}.sql";
+        $nomeArquivo = "{$nomeBancoDestino}.sql";
 
         return [
             'sucesso'      => true,
-            'nome_banco'   => $nomeBanco,
+            'nome_banco'   => $nomeBancoDestino,
             'nome_arquivo' => $nomeArquivo,
             'conteudo_sql' => $conteudoSql
         ];

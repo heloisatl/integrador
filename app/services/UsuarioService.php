@@ -43,10 +43,10 @@ class UsuarioService {
             return ['sucesso' => false, 'mensagem' => 'Informe um e-mail válido com até 60 caracteres.'];
         }
 
-        // Bloquear SQL Injection em nome e e-mail
+        // Bloquear caracteres especiais e termos não permitidos em nome e e-mail
         $padraoSqlInjection = '/(--|\/\*|\*\/|;|[\'"`=]|#|\b(SELECT|INSERT|UPDATE|DELETE|DROP|UNION|ALTER|CREATE|TRUNCATE|EXEC|BENCHMARK|SLEEP)\b)/i';
         if (preg_match($padraoSqlInjection, $nome) || preg_match($padraoSqlInjection, $email)) {
-            return ['sucesso' => false, 'mensagem' => 'Ação bloqueada: termos suspeitos ou caracteres de SQL Injection não são permitidos.'];
+            return ['sucesso' => false, 'mensagem' => 'Caracteres especiais não são permitidos.'];
         }
 
         // Bloquear caracteres especiais e números no nome
@@ -95,6 +95,9 @@ class UsuarioService {
         $email = strtolower(trim((string) ($dados['email'] ?? '')));
         $senha = (string) ($dados['senha'] ?? '');
         $tipoPerfil = trim((string) ($dados['tipo_perfil'] ?? ''));
+        if (strtolower($tipoPerfil) === 'administrador') {
+            $tipoPerfil = 'admin';
+        }
 
         if ($nome === '' || $email === '' || $senha === '' || $tipoPerfil === '') {
             return false;
@@ -118,6 +121,10 @@ class UsuarioService {
     public function updateUsuario(int $id, array $dados): bool {
         if (empty($dados['nome']) || empty($dados['email'])) {
             return false;
+        }
+
+        if (isset($dados['tipo_perfil']) && strtolower(trim((string)$dados['tipo_perfil'])) === 'administrador') {
+            $dados['tipo_perfil'] = 'admin';
         }
 
         return $this->repository->updateUsuario($id, $dados);

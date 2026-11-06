@@ -274,11 +274,23 @@
             display: inline-block;
         }
 
+        .profile-btn-avatar {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid var(--border);
+            display: inline-block;
+            vertical-align: middle;
+            flex-shrink: 0;
+            box-sizing: border-box;
+        }
+
         .profile-btn-placeholder {
             align-items: center;
             border: 1px solid var(--border);
             border-radius: 50%;
-            display: inline-flex !important;
+            display: inline-flex;
             flex: 0 0 26px;
             height: 26px;
             justify-content: center;
@@ -297,10 +309,10 @@
         }
 
         .profile-btn:hover .profile-btn-placeholder {
-            display: inline-flex !important;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            transform: none !important;
+            transform: none;
             color: var(--accent);
         }
 
@@ -599,11 +611,19 @@
         });
     </script>
     <?php
-    // Incluir link para stylesheet pública da seção `usuarios`
+    // Incluir link para stylesheet pública da seção `usuarios` e `perfil`
     $requestUri = $_SERVER['REQUEST_URI'] ?? '';
     if (strpos($requestUri, '/usuarios') !== false) {
         $href = defined('URL_BASE') ? (URL_BASE . '/assets/css/usuarios.css') : '/assets/css/usuarios.css';
-        echo '<link rel="stylesheet" href="' . $href . '">';
+        echo '<link rel="stylesheet" href="' . $href . '">' . "\n";
+    }
+    if (strpos($requestUri, '/perfil') !== false) {
+        $hrefPerfil = defined('URL_BASE') ? (URL_BASE . '/assets/css/perfil.css?v=' . time()) : ('/assets/css/perfil.css?v=' . time());
+        echo '<link rel="stylesheet" href="' . $hrefPerfil . '">' . "\n";
+    }
+    if (strpos($requestUri, '/logs') !== false) {
+        $hrefLogs = defined('URL_BASE') ? (URL_BASE . '/assets/css/logs.css?v=' . time()) : ('/assets/css/logs.css?v=' . time());
+        echo '<link rel="stylesheet" href="' . $hrefLogs . '">' . "\n";
     }
     ?>
 </head>
@@ -613,7 +633,15 @@
 // #<pageId> #sb-titulo-... funcionarem mesmo quando a view não envolver todo o layout.
 $requestPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
 $bodyId = trim(basename(rtrim($requestPath, '/')), '/');
-if ($bodyId === '' || $bodyId === 'index.php') {
+if (strpos($requestPath, '/perfil') !== false) {
+    $bodyId = 'perfil';
+} elseif (strpos($requestPath, '/usuarios') !== false) {
+    $bodyId = 'usuarios';
+} elseif (strpos($requestPath, '/logs') !== false) {
+    $bodyId = 'logs';
+} elseif ($bodyId === 'explorar') {
+    $bodyId = 'guia';
+} elseif ($bodyId === '' || $bodyId === 'index.php') {
     $bodyId = 'projetos';
 }
 echo '<body id="' . htmlspecialchars($bodyId, ENT_QUOTES) . '">';

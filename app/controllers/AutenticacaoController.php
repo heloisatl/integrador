@@ -40,10 +40,13 @@ class AutenticacaoController extends Controller
         $senha = (string) ($_POST['senha'] ?? '');
 
         $resultado = $this->autenticacaoService->logar($email, $senha);
+        if ($resultado) {
+            \app\services\LogService::registrar('Login efetuado com sucesso.');
+        }
 
         if ($resultado) {
             $perfil = strtolower($_SESSION['usuario_logado']->getTipoPerfil());
-            $destino = $perfil === 'admin' ? '/usuarios' : '/projetos';
+            $destino = in_array($perfil, ['admin', 'administrador'], true) ? '/usuarios' : '/projetos';
             $this->redirect(URL_BASE . $destino);
         }
 
@@ -53,6 +56,7 @@ class AutenticacaoController extends Controller
 
     public function logout(): void
     {
+        \app\services\LogService::registrar('Logout do sistema efetuado.');
         $this->autenticacaoService->logout();
         $_SESSION['flash_sucesso'] = 'Você saiu do sistema.';
         $this->redirect(URL_BASE . '/login');
@@ -207,6 +211,7 @@ class AutenticacaoController extends Controller
         ];
 
         if ($this->usuarioService->createUsuario($dados)) {
+            \app\services\LogService::registrar('Novo cadastro de usuário realizado: ' . $dados['nome']);
             $_SESSION['flash_sucesso'] = 'Cadastro realizado com sucesso. Faça login para entrar.';
             $this->redirect(URL_BASE . '/login');
         }

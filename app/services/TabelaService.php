@@ -4,16 +4,22 @@ namespace app\services;
 use app\repositories\TabelaRepository;
 
 class TabelaService{
-    private TabelaRepository $tabela_repository;
+    private ?TabelaRepository $tabela_repository = null;
 
     public function __construct(){
-        $this->tabela_repository = new TabelaRepository;
+    }
+
+    private function repo(): TabelaRepository {
+        if ($this->tabela_repository === null) {
+            $this->tabela_repository = new TabelaRepository();
+        }
+        return $this->tabela_repository;
     }
 
 
     public function insert($nome,$fk_banco){
         $result = null;
-        $tabelas = $this->tabela_repository->getTabelasByFk_banco($fk_banco);
+        $tabelas = $this->repo()->getTabelasByFk_banco($fk_banco);
         $tabelaJaExiste = false;
         foreach($tabelas as $tabela){
             if($tabela->getNome_tabela() == $nome){
@@ -23,7 +29,7 @@ class TabelaService{
         }
         
         if(!$tabelaJaExiste){
-            $result = $this->tabela_repository->insert($nome,$fk_banco);
+            $result = $this->repo()->insert($nome,$fk_banco);
         }
 
         return $result;
@@ -31,40 +37,40 @@ class TabelaService{
     
 
     public function getTabelasByFk_banco($id_banco,$option = "DEFAULT"){
-        $result = $this->tabela_repository->getTabelasByFk_banco($id_banco,$option);
+        $result = $this->repo()->getTabelasByFk_banco($id_banco,$option);
         return $result;
     }
 
     public function getTabela($value,$param = "tabela.id_tabela"){
-        $result = $this->tabela_repository->getTabela($value,$param);
+        $result = $this->repo()->getTabela($value,$param);
         return $result;
     }
 
     public function getTabelaEspecifica($nome_tabela,$fk_banco){
-        $result = $this->tabela_repository->getTabelaEspecifica($nome_tabela,$fk_banco);
+        $result = $this->repo()->getTabelaEspecifica($nome_tabela,$fk_banco);
         return $result;
     }
 
     public function getAllTabelas(){
-        $result = $this->tabela_repository->getAllTabelas();
+        $result = $this->repo()->getAllTabelas();
 
         return $result;
     }
 
     public function getTabelaById($id){
-        $result = $this->tabela_repository->getTabelaById($id);
+        $result = $this->repo()->getTabelaById($id);
         return $result;
     }
 
     public function getTabelasRawByFk_banco($id_banco){
-        return $this->tabela_repository->getTabelasRawByFk_banco($id_banco);
+        return $this->repo()->getTabelasRawByFk_banco($id_banco);
     }
 
     public function updateNome($id_tabela, $nome_tabela){
-        return $this->tabela_repository->updateNome($id_tabela, $nome_tabela);
+        return $this->repo()->updateNome($id_tabela, $nome_tabela);
     }
 
     public function delete($id_tabela){
-        return $this->tabela_repository->delete($id_tabela);
+        return $this->repo()->delete($id_tabela);
     }
 }

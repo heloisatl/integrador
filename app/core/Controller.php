@@ -43,7 +43,9 @@ class Controller {
     public function adminRequired(): bool {
         $this->autenticacaoRequired();
 
-        if (!isset($_SESSION['usuario_logado']) || strtolower($_SESSION['usuario_logado']->getTipoPerfil()) !== 'admin') {
+        $usuario = $_SESSION['usuario_logado'] ?? null;
+        $tipo = ($usuario && method_exists($usuario, 'getTipoPerfil')) ? strtolower(trim($usuario->getTipoPerfil())) : '';
+        if (!in_array($tipo, ['admin', 'administrador'], true)) {
             $this->redirect(URL_BASE . '/login');
         }
 

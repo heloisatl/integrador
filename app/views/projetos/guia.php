@@ -58,7 +58,12 @@ include_once(__DIR__ . "/../include/navigation.php");
                 <article class="guia-camada"><span class="guia-icone">⌂</span>
                     <div>
                         <h4>Início</h4>
-                        <p>Mostra uma visão geral do DevStudio e oferece acesso rápido ao MVC Creator e Page Maker.</p><a class="guia-link" href="<?= URL_BASE ?>/projetos">Ir para Início →</a>
+                        <p>Mostra uma visão geral do DevStudio e oferece acesso rápido ao MVC Creator e Page Maker.</p>
+                        <?php if (isset($_SESSION['usuario_logado'])): ?>
+                            <a class="guia-link" href="<?= URL_BASE ?>/projetos">Ir para Início →</a>
+                        <?php else: ?>
+                            <a class="guia-link" href="<?= URL_BASE ?>/projetos/mvc-creator">Acessar como Visitante →</a>
+                        <?php endif; ?>
                     </div>
                 </article>
                 <article class="guia-camada"><span class="guia-icone">MVC</span>
@@ -73,6 +78,7 @@ include_once(__DIR__ . "/../include/navigation.php");
                         <p>Cria páginas HTML e CSS com cabeçalho, navegação, imagens, colunas, cards, formulários, botões e prévia responsiva.</p><a class="guia-link" href="<?= URL_BASE ?>/projetos/pagemaker">Abrir Page Maker →</a>
                     </div>
                 </article>
+                <?php if (isset($_SESSION['usuario_logado'])): ?>
                 <article class="guia-camada"><span class="guia-icone">HIS</span>
                     <div>
                         <h4>Histórico</h4>
@@ -85,6 +91,7 @@ include_once(__DIR__ . "/../include/navigation.php");
                         <p>Modelador visual de banco: crie tabelas, configure atributos, tipos, chaves estrangeiras ou importe bancos locais.</p><a class="guia-link" href="<?= URL_BASE ?>/projetos/phpmeuamigo">Abrir PHPMeuAmigo →</a>
                     </div>
                 </article>
+                <?php endif; ?>
                 <article class="guia-camada"><span class="guia-icone">PER</span>
                     <div>
                         <h4>Perfil e tema</h4>
@@ -108,7 +115,7 @@ include_once(__DIR__ . "/../include/navigation.php");
                 <li><strong>Veja a estrutura:</strong> confira as pastas e os arquivos antes de executar a geração.</li>
                 <li><strong>Gere e baixe:</strong> o sistema cria o código, monta o arquivo <code>.zip</code> e disponibiliza o download.</li>
             </ol>
-            <div class="guia-aviso"><strong>MVC + DAO:</strong> o Model representa os dados; o DAO, chamado de Repository neste projeto, concentra o SQL; o Controller coordena as ações; e a View exibe a interface.</div>
+            <a class="guia-botao" href="<?= URL_BASE ?>/projetos/mvc-creator">Experimentar MVC Creator</a>
         </section>
 
         <section class="guia-bloco">
@@ -142,7 +149,6 @@ include_once(__DIR__ . "/../include/navigation.php");
                 <li><strong>Vincule Foreign Keys didáticas:</strong> utilize o seletor visual para apontar uma coluna diretamente para a chave primária de outra tabela do mesmo banco.</li>
                 <li><strong>Integração com o MVC:</strong> o banco modelado fica disponível no MVC Creator para gerar todo o código do sistema.</li>
             </ol>
-            <div class="guia-aviso"><strong>Ambiente Isolado:</strong> toda a modelagem feita no PHPMeuAmigo é gravada exclusivamente no DevStudio e não altera a estrutura dos seus bancos originais do MySQL.</div>
             <a class="guia-botao" href="<?= URL_BASE ?>/projetos/phpmeuamigo">Experimentar PHPMeuAmigo</a>
         </section>
 

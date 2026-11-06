@@ -6,13 +6,9 @@ use app\models\Atributo;
 use PDO;
 
 class SchemaInspector{
-    private PDO $conn;
     private PDO $specialConn;
 
-
-
     public function __construct($dsn,$user,$pass){
-        $this->conn = ConnectionFactory::getConnection();
         $this->specialConn = ConnectionFactory::specialConn($dsn,$user,$pass);
     }
 

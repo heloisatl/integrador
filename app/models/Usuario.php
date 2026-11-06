@@ -57,6 +57,11 @@ class Usuario {
         return $this->tipoPerfil;
     }
 
+    public function ehAdmin(): bool {
+        $tipo = strtolower(trim($this->tipoPerfil));
+        return in_array($tipo, ['admin', 'administrador'], true);
+    }
+
     public static function arrayParaObjeto(array $dados): self {
         return new self(
             (int) ($dados['id_usuario'] ?? 0),

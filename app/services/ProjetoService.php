@@ -30,13 +30,11 @@ class ProjetoService{
     }
 
     public function insert(Projeto $projeto){
-        
-
-    
-        // Service vai depois da Silva
-
-
-        return $this->projetoRepository->insert($projeto);
+        $idInserido = $this->projetoRepository->insert($projeto);
+        if ($idInserido) {
+            $this->projetoRepository->limitarCotaPorUsuario((int) $projeto->getFk_usuario(), 10);
+        }
+        return $idInserido;
     }
 
 
