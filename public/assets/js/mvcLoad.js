@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
     renderizarTabelasSeExistirem();
     renderizarEstruturaArquivos();
     checarCamadas();
-    if(!isVisitante)carregarBanco();
+    if(!isVisitante || sessionStorage.getItem('mvc_senha'))carregarBanco();
     salvarConfiguracoesSession(false);
 
     let banco = document.getElementById("banco");
