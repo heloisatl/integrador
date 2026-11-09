@@ -40,15 +40,15 @@ $hostname = gethostbyaddr($_SERVER['REMOTE_ADDR']);
     
             
             <div class="mvc-campo">
-                <label for="usuario">Usuário (`usuario_banco`)</label>
-                <input type="text" oninput="salvarConfiguracoesSession(false)" name="usuario" id="usuario" placeholder="root">
+                <label for="mvc_usuario">Usuário (`usuario_banco`)</label>
+                <input type="text" oninput="salvarConfiguracoesSession(false)" name="mvc_usuario" id="mvc_usuario" placeholder="root">
             </div>
     
 
             <div class="mvc-campo" >
-                <label for="senha">Senha (`senha_banco`)</label>
+                <label for="mvc_senha">Senha (`senha_banco`)</label>
                 <div style="display:flex;flex-direction:row;">
-                    <input type="password" oninput="salvarConfiguracoesSession(false)"  onblur="carregarBanco()" id="senha" name="senha" placeholder="••••••••">
+                    <input type="password" oninput="salvarConfiguracoesSession(false)"  onblur="carregarBanco()" id="mvc_senha" name="mvc_senha" placeholder="••••••••">
                     <button type="button" id="toggleSenha" class="btn-toggle-password" title="Mostrar/ocultar senha">
                         <i class="bi bi-eye" id="iconeOlho"></i>
                     </button>
@@ -57,14 +57,14 @@ $hostname = gethostbyaddr($_SERVER['REMOTE_ADDR']);
     
 
             <div class="mvc-campo">
-                <label for="servidor">Host (`host`)</label>
-                <input type="text" oninput="salvarConfiguracoesSession(false)" id="servidor" name="servidor" value="<?= $hostname  ?>" placeholder="localhost">
+                <label for="mvc_servidor">Host (`host`)</label>
+                <input type="text" oninput="salvarConfiguracoesSession(false)" id="mvc_servidor" name="mvc_servidor" value="<?= $hostname  ?>" placeholder="localhost">
             </div>
     
 
             <div class="mvc-campo">
-                <label for="porta">Porta (`porta`)</label>
-                <input type="text" oninput="salvarConfiguracoesSession(false)" id="porta" name="porta" value="3306" placeholder="3306">
+                <label for="mvc_porta">Porta (`porta`)</label>
+                <input type="text" oninput="salvarConfiguracoesSession(false)" id="mvc_porta" name="mvc_porta" value="3306" placeholder="3306">
             </div>
 
             <?php endif; ?>
@@ -95,7 +95,7 @@ $hostname = gethostbyaddr($_SERVER['REMOTE_ADDR']);
 </div>
  <script>
             document.getElementById('toggleSenha')?.addEventListener('click', function() {
-                const inputSenha = document.getElementById('senha');
+                const inputSenha = document.getElementById('mvc_senha');
                 const icone = document.getElementById('iconeOlho');
                 
                 if (inputSenha && icone) {
