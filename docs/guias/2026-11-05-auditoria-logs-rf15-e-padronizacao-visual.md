@@ -234,6 +234,38 @@ Foi criado um motor JavaScript e CSS que substitui os alertas nativos por cards 
      - **Perfil**: `<i class="bi bi-person-circle"></i> [Nome do Usuário]`
      - **Guia Rápido**: `<i class="bi bi-compass"></i> Guia Rápido`
 
+### 7.6 Modal de Exclusão de Usuários e Tratamento de Erros (DevStudio Identity)
+O diálogo nativo `confirm()` do navegador foi substituído por um modal exclusivo desenvolvido no padrão visual DevStudio:
+1. **Estrutura do Modal (`#modalExcluirUsuario`)**:
+   - Overlay translúcido com `backdrop-filter: blur(6px)`.
+   - Card em `var(--panel)` com cantos arredondados (16px), sombra profunda e animação suave de abertura.
+   - Cabeçalho com ícone temático de exclusão (`bi-person-x-fill`) em vermelho (`#ef4444`).
+   - Card de identificação resumindo nome, e-mail, ID e perfil (`admin` ou `usuario`) da conta selecionada.
+   - Bloco de aviso de perigo irreversível.
+2. **Proteção Contra Auto-Exclusão**:
+   - Identificação automática do usuário conectado através da sessão (`$usuarioLogadoId`).
+   - Apresentação de badge `"Você"` ao lado do nome do usuário conectado na tabela.
+   - Se o usuário tentar abrir a exclusão da sua própria conta, o modal exibe alerta amarelo bloqueando a ação e desativa o botão de confirmação.
+   - Validação defensiva no backend (`UsuarioController::excluir`): bloqueia a tentativa e redireciona com mensagem de erro.
+3. **Tratamento de Exceções e Integridade Referencial**:
+   - Em caso de restrição de integridade referencial (`SQLSTATE[23000]` / `1451`) por existência de projetos gerados ou logs de auditoria vinculados, o erro SQL é tratado amigavelmente: `"Não é possível excluir o usuário '[Nome]' pois existem dados vinculados a ele no sistema"`.
+   - Limpeza automática de arquivos de foto de perfil antigos através de `removerAvataresAntigos()`.
+   - Registro de auditoria em `log` registrando a exclusão de usuários pelo Administrador.
+   - Feedback visual via banner na página (`alert-danger` ou `alert-sucesso`) e disparo simultâneo de notificação flutuante via `window.devstudioAlert()`.
+
+### 7.7 Modal de Confirmação de Ações Sensíveis no Perfil
+O diálogo nativo `window.confirm()` exibido ao alterar a senha ou remover a foto de perfil foi substituído pelo modal `#modalConfirmarPerfil`:
+1. **Identificação Dinâmica de Ações**:
+   - Se o usuário preencher novos dados de senha: exibe item com ícone `bi-key-fill` alertando sobre a nova credencial.
+   - Se o usuário solicitar remoção de foto: exibe item com ícone `bi-image` alertando sobre a exclusão da foto.
+2. **Design e Acessibilidade**:
+   - Overlay escuro translúcido com `backdrop-filter: blur(6px)`.
+   - Card padronizado em `var(--panel)` com cabeçalho em *Syne* e ícone de aviso âmbar (`bi-shield-exclamation`).
+   - Fechamento com `Esc`, clique no overlay ou no botão **Cancelar**; confirmação fluida com **Sim, Continuar** disparando a submissão do formulário.
+3. **Alternadores de Visibilidade de Senha (`.perfil-btn-toggle-senha`)**:
+   - Os 3 campos da seção de alteração de senha (*Senha atual*, *Nova senha* e *Confirmar nova senha*) receberam botões integrados para alternar a visibilidade entre `password` e `text`.
+   - Utilizam os mesmos ícones (`bi-eye` e `bi-eye-slash`) e padrão de interação já adotados na tela de login e cadastro.
+
 ---
 
 ## 8. Segurança de Dados no PHPMeuAmigo e Preservação de Projetos

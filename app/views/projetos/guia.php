@@ -58,7 +58,7 @@ include_once(__DIR__ . "/../include/navigation.php");
                 </div>
             </div>
             <div class="guia-camadas">
-                <article class="guia-camada"><span class="guia-icone">⌂</span>
+                <article class="guia-camada"><span class="guia-icone"><i class="bi bi-house-door"></i></span>
                     <div>
                         <h4>Início</h4>
                         <p>Mostra uma visão geral do DevStudio e oferece acesso rápido ao MVC Creator e Page Maker.</p>
@@ -69,33 +69,33 @@ include_once(__DIR__ . "/../include/navigation.php");
                         <?php endif; ?>
                     </div>
                 </article>
-                <article class="guia-camada"><span class="guia-icone">MVC</span>
+                <article class="guia-camada"><span class="guia-icone"><i class="bi bi-braces"></i></span>
                     <div>
                         <h4>MVC Creator</h4>
                         <p>Gera Controllers, Models, Repositories/DAO e Views CRUD a partir das tabelas do seu banco de dados.</p><a class="guia-link" href="<?= URL_BASE ?>/projetos/mvc-creator">Abrir MVC Creator →</a>
                     </div>
                 </article>
-                <article class="guia-camada"><span class="guia-icone">HTML</span>
+                <article class="guia-camada"><span class="guia-icone"><i class="bi bi-file-earmark-code"></i></span>
                     <div>
                         <h4>Page Maker</h4>
                         <p>Cria páginas HTML e CSS com cabeçalho, navegação, imagens, colunas, cards, formulários, botões e prévia responsiva.</p><a class="guia-link" href="<?= URL_BASE ?>/projetos/pagemaker">Abrir Page Maker →</a>
                     </div>
                 </article>
                 <?php if (isset($_SESSION['usuario_logado'])): ?>
-                <article class="guia-camada"><span class="guia-icone">HIS</span>
+                <article class="guia-camada"><span class="guia-icone"><i class="bi bi-clock-history"></i></span>
                     <div>
                         <h4>Histórico</h4>
                         <p>Ajuda a acompanhar os projetos e atividades recentes, facilitando a retomada do trabalho.</p><a class="guia-link" href="<?= URL_BASE ?>/projetos/historico">Ver histórico →</a>
                     </div>
                 </article>
-                <article class="guia-camada"><span class="guia-icone">DB</span>
+                <article class="guia-camada"><span class="guia-icone"><i class="bi bi-database"></i></span>
                     <div>
                         <h4>PHPMeuAmigo</h4>
                         <p>Modelador visual de banco: crie tabelas, configure atributos, tipos, chaves estrangeiras ou importe bancos locais.</p><a class="guia-link" href="<?= URL_BASE ?>/projetos/phpmeuamigo">Abrir PHPMeuAmigo →</a>
                     </div>
                 </article>
                 <?php endif; ?>
-                <article class="guia-camada"><span class="guia-icone">PER</span>
+                <article class="guia-camada"><span class="guia-icone"><i class="bi bi-person-circle"></i></span>
                     <div>
                         <h4>Perfil e tema</h4>
                         <p>No menu Perfil, alterne entre tema claro e escuro. Quando estiver autenticado, também poderá sair da conta.</p>

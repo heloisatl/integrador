@@ -16,6 +16,8 @@ class UsuarioController extends Controller {
         $this->adminRequired();
 
         $data['usuarios'] = $this->service->getUsuarios();
+        $data['flash'] = $_SESSION['usuario_flash'] ?? null;
+        unset($_SESSION['usuario_flash']);
 
         $this->view('usuarios/usuario_list', $data);
     }
@@ -23,14 +25,67 @@ class UsuarioController extends Controller {
     public function excluir(): void {
         $this->adminRequired();
 
-        if (!isset($_GET['id'])) {
+        $id = isset($_POST['id']) ? (int) $_POST['id'] : (isset($_GET['id']) ? (int) $_GET['id'] : 0);
+
+        if ($id <= 0) {
+            $_SESSION['usuario_flash'] = [
+                'tipo' => 'erro',
+                'mensagem' => 'Identificador de usuário inválido.'
+            ];
             $this->redirect(URL_BASE . '/usuarios');
         }
 
-        $id = (int) $_GET['id'];
+        $usuarioLogado = $_SESSION['usuario_logado'] ?? null;
+        if ($usuarioLogado && (int) $usuarioLogado->getIdUsuario() === $id) {
+            $_SESSION['usuario_flash'] = [
+                'tipo' => 'erro',
+                'mensagem' => 'Não é permitido excluir o próprio usuário atualmente conectado.'
+            ];
+            $this->redirect(URL_BASE . '/usuarios');
+        }
 
-        $this->service->deleteUsuario($id);
-        \app\services\LogService::registrar("Usuário excluído pelo Administrador (ID: " . $id . ")");
+        $usuarioAlvo = $this->service->getUsuarioById($id);
+        if (!$usuarioAlvo) {
+            $_SESSION['usuario_flash'] = [
+                'tipo' => 'erro',
+                'mensagem' => 'O usuário selecionado não foi encontrado ou já foi excluído.'
+            ];
+            $this->redirect(URL_BASE . '/usuarios');
+        }
+
+        try {
+            $sucesso = $this->service->deleteUsuario($id);
+            if ($sucesso) {
+                $this->removerAvataresAntigos($id);
+                \app\services\LogService::registrar("Usuário '{$usuarioAlvo['nome']}' (ID: {$id}) excluído pelo Administrador.");
+                $_SESSION['usuario_flash'] = [
+                    'tipo' => 'sucesso',
+                    'mensagem' => "Usuário '{$usuarioAlvo['nome']}' excluído com sucesso."
+                ];
+            } else {
+                $_SESSION['usuario_flash'] = [
+                    'tipo' => 'erro',
+                    'mensagem' => "Não foi possível excluir o usuário '{$usuarioAlvo['nome']}'."
+                ];
+            }
+        } catch (\PDOException $e) {
+            if ($e->getCode() == '23000' || str_contains($e->getMessage(), '1451')) {
+                $_SESSION['usuario_flash'] = [
+                    'tipo' => 'erro',
+                    'mensagem' => "Não é possível excluir o usuário '{$usuarioAlvo['nome']}' pois existem dados vinculados a ele no sistema (como projetos gerados ou logs de auditoria)."
+                ];
+            } else {
+                $_SESSION['usuario_flash'] = [
+                    'tipo' => 'erro',
+                    'mensagem' => "Erro no banco de dados ao excluir usuário: " . $e->getMessage()
+                ];
+            }
+        } catch (\Throwable $e) {
+            $_SESSION['usuario_flash'] = [
+                'tipo' => 'erro',
+                'mensagem' => "Ocorreu um erro inesperado ao excluir o usuário: " . $e->getMessage()
+            ];
+        }
 
         $this->redirect(URL_BASE . '/usuarios');
     }

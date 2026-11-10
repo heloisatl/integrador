@@ -44,6 +44,7 @@ $router->get('/explorar', 'AutenticacaoController@explorar');
 
 $router->get('/usuarios', 'UsuarioController@index');
 $router->get('/usuarios/excluir', 'UsuarioController@excluir');
+$router->post('/usuarios/excluir', 'UsuarioController@excluir');
 
 $router->get('/usuarios/cadastrar', 'UsuarioController@cadastrar');
 $router->post('/usuarios/salvar', 'UsuarioController@salvar');

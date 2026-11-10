@@ -499,3 +499,191 @@
         width: 100%;
     }
 }
+
+/* ==========================================================================
+   Modal de Confirmação de Alterações Sensíveis no Perfil (DevStudio Identity)
+   ========================================================================== */
+.perfil-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(5, 7, 15, 0.78);
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.22s ease;
+    padding: 16px;
+    box-sizing: border-box;
+}
+
+.perfil-modal-overlay.open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.perfil-modal-dialog {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    width: 100%;
+    max-width: 480px;
+    padding: 26px;
+    box-shadow: 0 24px 56px rgba(0, 0, 0, 0.45);
+    transform: translateY(-8px) scale(0.97);
+    transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
+
+.perfil-modal-overlay.open .perfil-modal-dialog {
+    transform: translateY(0) scale(1);
+}
+
+.perfil-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 14px;
+}
+
+.perfil-modal-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 18.5px;
+    font-weight: 700;
+    color: var(--text);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.perfil-modal-title i {
+    color: #f59e0b;
+    font-size: 20px;
+}
+
+.perfil-modal-close {
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    font-size: 16px;
+    line-height: 1;
+    padding: 6px;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: color 0.15s ease, background-color 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.perfil-modal-close:hover {
+    color: var(--text);
+    background: rgba(148, 163, 184, 0.12);
+}
+
+.perfil-modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.perfil-modal-lista-acoes {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.perfil-modal-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13.5px;
+    color: var(--text);
+    line-height: 1.45;
+}
+
+.perfil-modal-item i {
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
+.perfil-modal-warning {
+    background: rgba(245, 158, 11, 0.08);
+    border: 1px solid rgba(245, 158, 11, 0.28);
+    border-left: 4px solid #f59e0b;
+    border-radius: 10px;
+    padding: 12px 14px;
+    color: var(--text);
+    font-size: 13.5px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    line-height: 1.45;
+}
+
+.perfil-modal-warning i {
+    color: #f59e0b;
+    font-size: 17px;
+    margin-top: 1px;
+    flex-shrink: 0;
+}
+
+.perfil-modal-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 22px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+}
+
+.perfil-modal-footer .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 16px;
+    border-radius: 8px;
+    font-size: 13.5px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    font-family: 'DM Sans', sans-serif;
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.perfil-modal-footer .btn-secondary {
+    background: var(--surface);
+    color: var(--text);
+    border-color: var(--border);
+}
+
+.perfil-modal-footer .btn-secondary:hover {
+    background: var(--panel);
+    border-color: var(--accent);
+}
+
+.perfil-modal-footer .btn-primary {
+    background: var(--accent);
+    color: #ffffff;
+    border-color: var(--accent);
+}
+
+.perfil-modal-footer .btn-primary:hover {
+    background: var(--accent-h);
+}
