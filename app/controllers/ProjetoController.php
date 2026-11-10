@@ -597,6 +597,12 @@ class ProjetoController extends Controller{
         }
 
         $caminhoZip = __DIR__ . '/../projetos/downloads/' . $nomeZip;
+        if (!file_exists($caminhoZip)) {
+            $caminhoPublic = __DIR__ . '/../../public/downloads/' . $nomeZip;
+            if (file_exists($caminhoPublic)) {
+                $caminhoZip = $caminhoPublic;
+            }
+        }
         $geradorZip->enviarDownload($caminhoZip, $nomeZip, false);
     }
 
@@ -912,12 +918,198 @@ class ProjetoController extends Controller{
             exit();
         }
 
-        $nomeArquivo = preg_replace('/[^a-zA-Z0-9_\-]+/', '_', trim((string)($item['nome'] ?? 'projeto'))) . '.json';
+        // Fluxo de download para MVC Creator e projetos com arquivo ZIP
+        $nomeProjetoLimpo = preg_replace('/[^a-zA-Z0-9_\-]+/', '_', trim((string)($item['nome'] ?? 'projeto')));
+        $nomeDownloadZip = $nomeProjetoLimpo . '.zip';
 
+        $arquivoOriginal = '';
+        if (!empty($payload['arquivo']) && is_string($payload['arquivo'])) {
+            $arquivoOriginal = basename($payload['arquivo']);
+        } elseif (!empty($payload['downloadUrl']) && is_string($payload['downloadUrl'])) {
+            $parsedQuery = parse_url($payload['downloadUrl'], PHP_URL_QUERY);
+            if ($parsedQuery) {
+                parse_str($parsedQuery, $qp);
+                if (!empty($qp['file'])) {
+                    $arquivoOriginal = basename($qp['file']);
+                }
+            }
+        }
+
+        $caminhoZip = $this->localizarZipProjeto($arquivoOriginal, $nomeProjetoLimpo);
+
+        // Se o arquivo .zip físico não existir no servidor, reconstrói o pacote do projeto
+        if ($caminhoZip === null || !file_exists($caminhoZip)) {
+            $caminhoZip = $this->reconstruirZipProjetoHistorico($item, $arquivoOriginal, $nomeProjetoLimpo);
+        }
+
+        if ($caminhoZip !== null && file_exists($caminhoZip)) {
+            $geradorZip = new \app\tools\gerador\GeradorZip();
+            $geradorZip->enviarDownload($caminhoZip, $nomeDownloadZip, false);
+            exit();
+        }
+
+        // Fallback final de segurança caso falhe a reconstrução
+        $nomeArquivo = $nomeProjetoLimpo . '.json';
         header('Content-Type: application/json');
         header('Content-Disposition: attachment; filename="' . $nomeArquivo . '"');
         echo json_encode($payload, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
         exit();
+    }
+
+    private function localizarZipProjeto(string $arquivoOriginal, string $nomeProjetoLimpo): ?string {
+        $diretorios = [
+            __DIR__ . '/../projetos/downloads',
+            __DIR__ . '/../../public/downloads',
+            __DIR__ . '/../projetos/temp',
+            __DIR__ . '/../../public/temp',
+        ];
+
+        $candidatos = [];
+        foreach ($diretorios as $dir) {
+            if (!is_dir($dir)) continue;
+            if ($arquivoOriginal !== '') {
+                $candidatos[] = $dir . '/' . $arquivoOriginal;
+            }
+            $candidatos[] = $dir . '/' . $nomeProjetoLimpo . '.zip';
+            $globs = glob($dir . '/' . $nomeProjetoLimpo . '*.zip');
+            if ($globs) {
+                foreach ($globs as $g) {
+                    $candidatos[] = $g;
+                }
+            }
+        }
+
+        foreach ($candidatos as $cand) {
+            if (is_file($cand) && filesize($cand) > 0) {
+                return $cand;
+            }
+        }
+
+        return null;
+    }
+
+    private function reconstruirZipProjetoHistorico(array $item, string $arquivoOriginal, string $nomeProjetoLimpo): ?string {
+        $pastaDownloads = __DIR__ . '/../projetos/downloads';
+        if (!is_dir($pastaDownloads)) {
+            @mkdir($pastaDownloads, 0755, true);
+        }
+
+        $nomeArquivoZip = ($arquivoOriginal !== '' && str_ends_with(strtolower($arquivoOriginal), '.zip'))
+            ? $arquivoOriginal
+            : ($nomeProjetoLimpo . '.zip');
+        $arquivoZipDestino = $pastaDownloads . '/' . $nomeArquivoZip;
+
+        $pastaTemp = __DIR__ . '/../projetos/temp/rec_' . uniqid($nomeProjetoLimpo . '_', true);
+        $pastaBuild = $pastaTemp . '/' . $nomeProjetoLimpo;
+        if (!is_dir($pastaBuild)) {
+            @mkdir($pastaBuild, 0755, true);
+        }
+
+        $payload = is_array($item['conteudo'] ?? null) ? $item['conteudo'] : [];
+        $bancoNome = trim((string)($payload['banco'] ?? ''));
+        $gerouComMotor = false;
+
+        if ($bancoNome !== '' && $bancoNome !== 'Banco não informado') {
+            try {
+                $conn = \app\database\ConnectionFactory::getConnection();
+                $stmt = $conn->prepare("SHOW DATABASES LIKE ?");
+                $stmt->execute([$bancoNome]);
+                if ($stmt->fetch()) {
+                    $dbConn = new \PDO("mysql:host=localhost;dbname={$bancoNome};charset=utf8mb4", 'root', '', [
+                        \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+                        \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
+                    ]);
+                    $tabelasNomes = $dbConn->query("SHOW TABLES")->fetchAll(\PDO::FETCH_COLUMN);
+                    if (!empty($tabelasNomes)) {
+                        $tabelasObjs = [];
+                        $atributosPorTabela = [];
+                        $tabelaId = 1;
+                        foreach ($tabelasNomes as $tbNome) {
+                            $tabelaObj = new \app\models\Tabela($tabelaId, $tbNome, 1);
+                            $tabelasObjs[] = $tabelaObj;
+                            $cols = $dbConn->query("SHOW COLUMNS FROM `{$tbNome}`")->fetchAll();
+                            $attrs = [];
+                            $attrId = 1;
+                            foreach ($cols as $col) {
+                                $tipo = preg_replace('/\(.*/', '', $col['Type']);
+                                $isPk = (strtoupper($col['Key'] ?? '') === 'PRI');
+                                $attrs[] = new \app\models\Atributo($attrId++, $tabelaId, $col['Field'], $tipo, $isPk);
+                            }
+                            $atributosPorTabela[$tabelaId] = $attrs;
+                            $tabelaId++;
+                        }
+                        $opcoes = new \app\tools\gerador\OpcoesGeracao(true, true, true, true, true, false, true, true);
+                        $bancoData = ['nome_banco' => $bancoNome, 'id_banco' => $payload['banco_id'] ?? null];
+                        $motor = new \app\tools\gerador\MotorGeracao();
+                        $motor->gerar($tabelasObjs, $atributosPorTabela, $opcoes, $pastaBuild, $bancoData);
+                        $gerouComMotor = true;
+                    }
+                }
+            } catch (\Throwable $t) {
+                $gerouComMotor = false;
+            }
+        }
+
+        if (!$gerouComMotor) {
+            $subpastas = [
+                $pastaBuild . '/app/config',
+                $pastaBuild . '/app/controllers',
+                $pastaBuild . '/app/core',
+                $pastaBuild . '/app/database',
+                $pastaBuild . '/app/models',
+                $pastaBuild . '/app/repositories',
+                $pastaBuild . '/app/services',
+                $pastaBuild . '/app/views',
+                $pastaBuild . '/public',
+            ];
+            foreach ($subpastas as $sub) {
+                if (!is_dir($sub)) {
+                    @mkdir($sub, 0755, true);
+                }
+            }
+
+            file_put_contents($pastaBuild . '/app/core/Autoload.php', \app\tools\gerador\GeradorCore::gerarAutoload());
+            file_put_contents($pastaBuild . '/app/core/Controller.php', \app\tools\gerador\GeradorCore::gerarController());
+            file_put_contents($pastaBuild . '/app/core/Router.php', \app\tools\gerador\GeradorCore::gerarRouter());
+            file_put_contents($pastaBuild . '/app/database/ConnectionFactory.php', \app\tools\gerador\GeradorRepositorio::gerarConnectionFactory(false));
+            file_put_contents($pastaBuild . '/app/config/config.php', \app\tools\gerador\GeradorConfig::gerarConfig('localhost', '3306', $bancoNome ?: 'meu_banco', 'root', false));
+            file_put_contents($pastaBuild . '/public/index.php', \app\tools\gerador\geradorIndex::gerarIndex([], true, true, false));
+
+            $nomeExibicao = (string)($item['nome'] ?? $nomeProjetoLimpo);
+            $readme = "# Projeto: {$nomeExibicao}\n\n";
+            $readme .= "Gerado originalmente pelo DevStudio (MVC Creator).\n";
+            if ($bancoNome) {
+                $readme .= "- **Banco de Dados:** {$bancoNome}\n";
+            }
+            if (!empty($item['criado_em'])) {
+                $readme .= "- **Data de Criação:** " . date('d/m/Y H:i:s', strtotime($item['criado_em'])) . "\n";
+            }
+            $readme .= "\n## Estrutura do Sistema MVC\n";
+            $readme .= "- `app/config/`: Configurações de banco e ambiente\n";
+            $readme .= "- `app/controllers/`: Controladores da aplicação\n";
+            $readme .= "- `app/core/`: Roteador, Front Controller e Autoload\n";
+            $readme .= "- `app/database/`: Conexão PDO (ConnectionFactory)\n";
+            $readme .= "- `app/models/`: Entidades de dados\n";
+            $readme .= "- `app/repositories/`: Camada de acesso ao banco (DAO)\n";
+            $readme .= "- `app/services/`: Camada de regras de negócio\n";
+            $readme .= "- `app/views/`: Telas e formulários da aplicação\n";
+            $readme .= "- `public/`: Ponto de entrada web (`index.php`)\n";
+            file_put_contents($pastaBuild . '/README.md', $readme);
+
+            foreach (['controllers', 'models', 'repositories', 'services', 'views'] as $sub) {
+                file_put_contents($pastaBuild . "/app/{$sub}/.gitkeep", "");
+            }
+        }
+
+        $geradorZip = new \app\tools\gerador\GeradorZip();
+        $compactou = $geradorZip->compactarPasta($pastaBuild, $arquivoZipDestino);
+        $this->excluirDiretorioRecursivo($pastaTemp);
+
+        if ($compactou && file_exists($arquivoZipDestino) && filesize($arquivoZipDestino) > 0) {
+            return $arquivoZipDestino;
+        }
+
+        return null;
     }
 
     public function apagarProjetoHistorico(): void {

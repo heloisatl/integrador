@@ -340,7 +340,7 @@ flowchart LR
 | `public/assets/css/responsivo.css` | **Modificado** | Correção de quebra de texto em botões da barra de ações. |
 | `app/controllers/AutenticacaoController.php` | **Modificado** | Acoplamento de logs para login, logout e cadastro de novos usuários. |
 | `app/controllers/UsuarioController.php` | **Modificado** | Acoplamento de logs para criação, atualização e exclusão de contas e perfil. |
-| `app/controllers/ProjetoController.php` | **Modificado** | Acoplamento de logs para geração MVC Creator, PageMaker e operações de histórico. |
+| `app/controllers/ProjetoController.php` | **Modificado** | Acoplamento de logs para geração e histórico, e correção do download de projetos do histórico para entrega do `.zip` completo com fallback de reconstrução automática caso ausente em disco. |
 | `app/controllers/PhpMeuAmigoController.php` | **Modificado** | Acoplamento de logs para criação/edição/exclusão de bancos, tabelas, atributos, importações e exportações SQL. |
 | `app/services/SqlExporterService.php` | **Modificado** | Exportação segura sem DROP, criação com IF NOT EXISTS e schema isolado `nomeBanco_devstudio`. |
 | `app/repositories/BancoRepository.php` | **Modificado** | Desvinculação dos projetos (`fk_banco = NULL`) ao excluir banco, preservando projetos e arquivos para download. |
