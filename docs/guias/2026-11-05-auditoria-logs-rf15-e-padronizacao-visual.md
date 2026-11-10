@@ -346,7 +346,7 @@ flowchart LR
 | `app/repositories/BancoRepository.php` | **Modificado** | Desvinculação dos projetos (`fk_banco = NULL`) ao excluir banco, preservando projetos e arquivos para download. |
 | `app/database/scripts/script.sql` | **Modificado** | Atualização do schema da tabela `projeto` com `fk_banco INT NULL` e `ON DELETE SET NULL`. |
 | `app/services/UsuarioService.php` | **Modificado** | Ajuste da mensagem de validação de caracteres especiais sem termos de SQL Injection. |
-| `app/views/projetos/historico.php` | **Modificado** | Substituição de botões vermelhos por azul DevStudio e remoção de contador duplicado. |
+| `app/views/projetos/historico.php` | **Modificado** | Substituição do `confirm()` nativo do navegador por modais customizados DevStudio para exclusão individual de projeto e limpeza geral do histórico, com botões de perigo vermelhos e suporte a tecla Escape. |
 | `public/assets/js/mvcLoad.js` | **Modificado** | Substituição dos `alert()` nativos por `devstudioAlert(...)`. |
 | `app/views/usuarios/perfil.php` | **Modificado** | Substituição dos `alert()` de imagem por `devstudioAlert(...)`. |
 | `docs/guias/2026-11-05-auditoria-logs-rf15-e-padronizacao-visual.md` | **Criado** | Este guia técnico detalhado da implementação. |

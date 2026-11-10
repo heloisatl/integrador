@@ -34,9 +34,13 @@
 .form-container {
     background-color: var(--panel);
     border: 1px solid var(--border);
-    border-radius: 12px;
+    border-radius: 16px;
     padding: 32px;
-    max-width: 600px;
+    width: 100%;
+    max-width: none;
+    box-shadow: 0 14px 36px rgba(0, 0, 0, 0.16);
+    margin: 0 0 40px 0;
+    box-sizing: border-box;
 }
 
 .form-group {

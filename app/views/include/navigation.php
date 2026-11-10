@@ -22,11 +22,20 @@ $currentSection = $_GET['section'] ?? '';
 $currentTab = $_GET['tab'] ?? '';
 $currentStep = $_GET['step'] ?? '';
 $avatarNavbarUrl = null;
-if (isset($_SESSION['usuario_logado']) && method_exists($_SESSION['usuario_logado'], 'getIdUsuario')) {
-    $idUsuarioNavbar = (int) $_SESSION['usuario_logado']->getIdUsuario();
-    $arquivosAvatarNavbar = glob(dirname(__DIR__, 2) . '/projetos/avatars/' . $idUsuarioNavbar . '_*.*') ?: [];
-    if (!empty($arquivosAvatarNavbar)) {
-        $avatarNavbarUrl = URL_BASE . '/perfil/avatar?v=' . filemtime($arquivosAvatarNavbar[0]);
+$nomeNavbarUsuario = null;
+if (isset($_SESSION['usuario_logado'])) {
+    $usuarioNavbarObj = $_SESSION['usuario_logado'];
+    if (is_object($usuarioNavbarObj) && method_exists($usuarioNavbarObj, 'getNome')) {
+        $nomeNavbarUsuario = $usuarioNavbarObj->getNome();
+    } elseif (is_array($usuarioNavbarObj) && isset($usuarioNavbarObj['nome'])) {
+        $nomeNavbarUsuario = $usuarioNavbarObj['nome'];
+    }
+    if (is_object($usuarioNavbarObj) && method_exists($usuarioNavbarObj, 'getIdUsuario')) {
+        $idUsuarioNavbar = (int) $usuarioNavbarObj->getIdUsuario();
+        $arquivosAvatarNavbar = glob(dirname(__DIR__, 2) . '/projetos/avatars/' . $idUsuarioNavbar . '_*.*') ?: [];
+        if (!empty($arquivosAvatarNavbar)) {
+            $avatarNavbarUrl = URL_BASE . '/perfil/avatar?v=' . filemtime($arquivosAvatarNavbar[0]);
+        }
     }
 }
 
@@ -157,7 +166,7 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
                     <?php else: ?>
                         <i class="bi bi-person-fill profile-btn-placeholder" aria-hidden="true"></i>
                     <?php endif; ?>
-                    Perfil
+                    <span class="profile-btn-name"><?= htmlspecialchars($nomeNavbarUsuario ?? 'Perfil', ENT_QUOTES, 'UTF-8') ?></span>
                 </button>
                 <div class="profile-dropdown-menu" id="profileDropdownMenu">
                     <?php if (isset($_SESSION['usuario_logado'])):
@@ -176,7 +185,9 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
                         <a href="<?= URL_BASE ?>/perfil/editar" class="profile-dropdown-item">
                             <i class="bi bi-pencil-square" aria-hidden="true"></i> Editar Perfil
                         </a>
-                        <a href="<?= URL_BASE ?>/logout" onclick="desfazSessionStorage()" class="profile-dropdown-item profile-dropdown-danger">Sair</a>
+                        <a href="<?= URL_BASE ?>/logout" onclick="desfazSessionStorage()" class="profile-dropdown-item profile-dropdown-danger">
+                            <i class="bi bi-door-open" aria-hidden="true"></i> Sair
+                        </a>
                     <?php else: ?>
                         <a href="<?= URL_BASE ?>/login" class="profile-dropdown-item login-link">
                             <i class="bi bi-door-closed" aria-hidden="true"></i>

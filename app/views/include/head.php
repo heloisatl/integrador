@@ -253,6 +253,15 @@
             transition: all 0.2s ease;
         }
 
+        .profile-btn-name {
+            max-width: 160px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
 
         .login-link .bi-door-closed,
         .register-link .bi-person-plus {
@@ -394,7 +403,9 @@
         }
 
         .profile-dropdown-item {
-            display: block;
+            display: flex;
+            align-items: center;
+            gap: 10px;
             width: 100%;
             padding: 10px 16px;
             background: transparent;
@@ -406,6 +417,12 @@
             cursor: pointer;
             transition: background-color 0.2s ease, color 0.2s ease;
             box-sizing: border-box;
+        }
+
+        .profile-dropdown-item i {
+            font-size: 15px;
+            line-height: 1;
+            flex-shrink: 0;
         }
 
         .profile-dropdown-item:hover {

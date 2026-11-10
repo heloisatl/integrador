@@ -205,17 +205,27 @@ $historicoPorModulo = [
             font-size: 12px;
         }
 
-        .historico-shell .btn-primary,
-        .historico-shell .btn-danger {
+        .historico-shell .btn-primary {
             background-color: var(--accent);
             color: #ffffff;
             border: 1px solid var(--accent);
         }
 
-        .historico-shell .btn-primary:hover,
-        .historico-shell .btn-danger:hover {
+        .historico-shell .btn-primary:hover {
             background-color: var(--accent-h);
             border-color: var(--accent-h);
+            color: #ffffff;
+        }
+
+        .historico-shell .btn-danger {
+            background-color: #ef4444;
+            color: #ffffff;
+            border: 1px solid #ef4444;
+        }
+
+        .historico-shell .btn-danger:hover {
+            background-color: #dc2626;
+            border-color: #dc2626;
             color: #ffffff;
         }
 
@@ -298,6 +308,198 @@ $historicoPorModulo = [
             }
         }
 
+        /* Modais Customizados do Histórico */
+        .historico-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 14, 23, 0.72);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease, visibility 0.2s ease;
+            padding: 16px;
+            box-sizing: border-box;
+        }
+
+        .historico-modal-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .historico-modal-dialog {
+            background: var(--surface-card, #111726);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            width: 100%;
+            max-width: 480px;
+            padding: 24px;
+            box-shadow: 0 24px 56px rgba(0, 0, 0, 0.45);
+            transform: translateY(-8px) scale(0.97);
+            transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .historico-modal-overlay.open .historico-modal-dialog {
+            transform: translateY(0) scale(1);
+        }
+
+        .historico-modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 14px;
+        }
+
+        .historico-modal-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .historico-modal-title i {
+            color: #ef4444;
+            font-size: 20px;
+        }
+
+        .historico-modal-close {
+            background: transparent;
+            border: none;
+            color: var(--muted);
+            font-size: 16px;
+            line-height: 1;
+            padding: 6px;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: color 0.15s ease, background-color 0.15s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .historico-modal-close:hover {
+            color: var(--text);
+            background: rgba(148, 163, 184, 0.12);
+        }
+
+        .historico-modal-body {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .historico-modal-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .historico-modal-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            background: rgba(91, 106, 240, 0.12);
+            border: 1px solid rgba(91, 106, 240, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            color: var(--accent);
+            flex-shrink: 0;
+        }
+
+        .historico-modal-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .historico-modal-nome {
+            font-family: 'Syne', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .historico-modal-meta {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .historico-modal-badge {
+            font-family: 'DM Mono', monospace;
+            font-size: 11px;
+            color: var(--accent);
+            background: rgba(91, 106, 240, 0.1);
+            padding: 2px 7px;
+            border-radius: 4px;
+            border: 1px solid rgba(91, 106, 240, 0.25);
+            font-weight: 600;
+        }
+
+        .historico-modal-warning {
+            background: rgba(239, 68, 68, 0.08);
+            border: 1px solid rgba(239, 68, 68, 0.25);
+            border-left: 4px solid #ef4444;
+            border-radius: 10px;
+            padding: 13px 15px;
+            color: var(--text);
+            font-size: 13.5px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            line-height: 1.5;
+        }
+
+        .historico-modal-warning i {
+            color: #ef4444;
+            font-size: 18px;
+            line-height: 1;
+            margin-top: 1px;
+            flex-shrink: 0;
+        }
+
+        .historico-modal-warning strong {
+            color: #fca5a5;
+        }
+
+        .historico-modal-footer {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 22px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+        }
+
     </style>
 
     <section class="historico-shell">
@@ -312,7 +514,7 @@ $historicoPorModulo = [
                     <a class="btn btn-secondary" href="<?= URL_BASE ?>/projetos/mvc-creator"><i class="bi bi-braces"></i> Novo MVC Creator</a>
                     <a class="btn btn-secondary" href="<?= URL_BASE ?>/projetos/pagemaker"><i class="bi bi-file-earmark-code"></i> Novo PageMaker</a>
                     <?php if (!empty($historico)): ?>
-                        <button class="btn btn-primary" type="button" onclick="if (confirm('Tem certeza que deseja excluir permanentemente todo o histórico?')) { window.location.href = '<?= URL_BASE ?>/projetos/historico/limpar'; }"><i class="bi bi-trash"></i> Limpar Histórico</button>
+                        <button class="btn btn-danger" type="button" id="btnAbrirLimparHistorico"><i class="bi bi-trash"></i> Limpar Histórico</button>
                     <?php endif; ?>
                 </div>
             </header>
@@ -359,7 +561,7 @@ $historicoPorModulo = [
                                                 <?php else: ?>
                                                     <a class="btn btn-secondary btn-sm" href="<?= URL_BASE ?>/projetos/historico/baixar?id=<?= urlencode((string)($item['id'] ?? '')) ?>"><i class="bi bi-download"></i> Baixar Projeto</a>
                                                 <?php endif; ?>
-                                                <button class="btn btn-primary btn-sm" type="button" onclick="if (confirm('Tem certeza que deseja excluir permanentemente este projeto do histórico?')) { window.location.href = '<?= URL_BASE ?>/projetos/historico/apagar?id=<?= urlencode((string)($item['id'] ?? '')) ?>'; }"><i class="bi bi-trash"></i> Excluir do Histórico</button>
+                                                <button class="btn btn-danger btn-sm btn-abrir-modal-excluir" type="button" data-id="<?= htmlspecialchars((string)($item['id'] ?? ''), ENT_QUOTES, 'UTF-8') ?>" data-nome="<?= htmlspecialchars($item['nome'] ?? 'Projeto sem nome', ENT_QUOTES, 'UTF-8') ?>" data-modulo="<?= htmlspecialchars($modulo, ENT_QUOTES, 'UTF-8') ?>" data-detalhe="<?= htmlspecialchars((string)$detalhe, ENT_QUOTES, 'UTF-8') ?>" data-criado="<?= date('d/m/Y H:i', strtotime($criadoEm)) ?>"><i class="bi bi-trash"></i> Excluir do Histórico</button>
                                             </div>
                                         </article>
                                     <?php endforeach; ?>
@@ -370,6 +572,196 @@ $historicoPorModulo = [
                     <?php endif; ?>
             </section>
         </section>
+
+        <!-- Modal de Exclusão Individual do Histórico DevStudio -->
+        <div id="modalExcluirHistoricoItem" class="historico-modal-overlay" aria-hidden="true" role="dialog" aria-labelledby="modalExcluirItemTitulo">
+            <div class="historico-modal-dialog">
+                <div class="historico-modal-header">
+                    <h3 id="modalExcluirItemTitulo" class="historico-modal-title">
+                        <i class="bi bi-trash3-fill"></i> Excluir do Histórico
+                    </h3>
+                    <button type="button" class="historico-modal-close" id="btnFecharModalExcluirItem" aria-label="Fechar modal">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </div>
+
+                <div class="historico-modal-body">
+                    <div class="historico-modal-card">
+                        <div class="historico-modal-avatar">
+                            <i class="bi bi-file-earmark-code" id="modalItemIcone"></i>
+                        </div>
+                        <div class="historico-modal-info">
+                            <div class="historico-modal-nome" id="modalItemNome">--</div>
+                            <div class="historico-modal-meta">
+                                <span class="historico-modal-badge" id="modalItemModulo">--</span>
+                                <span id="modalItemDetalhe">--</span>
+                                <span style="opacity: 0.6;">•</span>
+                                <span id="modalItemCriado">--</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="historico-modal-warning">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        <div>
+                            <strong>Atenção:</strong> Tem certeza que deseja excluir permanentemente este projeto do histórico? Esta ação não pode ser desfeita.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="historico-modal-footer">
+                    <button type="button" class="btn btn-secondary" id="btnCancelarExcluirItem">
+                        Cancelar
+                    </button>
+                    <a href="#" class="btn btn-danger" id="btnConfirmarExcluirItem">
+                        <i class="bi bi-trash3"></i> Sim, Excluir do Histórico
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal de Limpeza Geral do Histórico DevStudio -->
+        <div id="modalLimparHistoricoGeral" class="historico-modal-overlay" aria-hidden="true" role="dialog" aria-labelledby="modalLimparGeralTitulo">
+            <div class="historico-modal-dialog">
+                <div class="historico-modal-header">
+                    <h3 id="modalLimparGeralTitulo" class="historico-modal-title">
+                        <i class="bi bi-trash3-fill"></i> Limpar Todo o Histórico
+                    </h3>
+                    <button type="button" class="historico-modal-close" id="btnFecharModalLimparGeral" aria-label="Fechar modal">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </div>
+
+                <div class="historico-modal-body">
+                    <div class="historico-modal-card">
+                        <div class="historico-modal-avatar" style="background: rgba(239, 68, 68, 0.12); border-color: rgba(239, 68, 68, 0.3); color: #ef4444;">
+                            <i class="bi bi-clock-history"></i>
+                        </div>
+                        <div class="historico-modal-info">
+                            <div class="historico-modal-nome"><?= $totalHistorico ?> <?= $totalHistorico === 1 ? 'projeto registrado' : 'projetos registrados' ?></div>
+                            <div class="historico-modal-meta">
+                                <span>Todos os projetos salvos no histórico serão removidos.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="historico-modal-warning">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        <div>
+                            <strong>Atenção Irreversível:</strong> Tem certeza que deseja limpar permanentemente todo o histórico? Todos os <?= $totalHistorico ?> projetos salvos serão perdidos e não poderão ser recuperados.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="historico-modal-footer">
+                    <button type="button" class="btn btn-secondary" id="btnCancelarLimparGeral">
+                        Cancelar
+                    </button>
+                    <a href="<?= URL_BASE ?>/projetos/historico/limpar" class="btn btn-danger" id="btnConfirmarLimparGeral">
+                        <i class="bi bi-trash3"></i> Sim, Limpar Tudo
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- Modal de Exclusão Individual ---
+            const modalItem = document.getElementById('modalExcluirHistoricoItem');
+            const modalItemNome = document.getElementById('modalItemNome');
+            const modalItemModulo = document.getElementById('modalItemModulo');
+            const modalItemDetalhe = document.getElementById('modalItemDetalhe');
+            const modalItemCriado = document.getElementById('modalItemCriado');
+            const modalItemIcone = document.getElementById('modalItemIcone');
+            const btnConfirmarItem = document.getElementById('btnConfirmarExcluirItem');
+            const btnFecharItem = document.getElementById('btnFecharModalExcluirItem');
+            const btnCancelarItem = document.getElementById('btnCancelarExcluirItem');
+
+            function abrirModalItem(dados) {
+                if (!modalItem) return;
+                if (modalItemNome) modalItemNome.textContent = dados.nome || 'Projeto sem nome';
+                if (modalItemModulo) modalItemModulo.textContent = dados.modulo || '';
+                if (modalItemDetalhe) modalItemDetalhe.textContent = dados.detalhe || '';
+                if (modalItemCriado) modalItemCriado.textContent = dados.criado || '';
+                if (modalItemIcone) {
+                    modalItemIcone.className = dados.modulo === 'PageMaker' ? 'bi bi-file-earmark-code' : 'bi bi-braces';
+                }
+                if (btnConfirmarItem) {
+                    btnConfirmarItem.href = '<?= URL_BASE ?>/projetos/historico/apagar?id=' + encodeURIComponent(dados.id || '');
+                }
+                modalItem.classList.add('open');
+                modalItem.setAttribute('aria-hidden', 'false');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function fecharModalItem() {
+                if (!modalItem) return;
+                modalItem.classList.remove('open');
+                modalItem.setAttribute('aria-hidden', 'true');
+                document.body.style.overflow = '';
+            }
+
+            document.querySelectorAll('.btn-abrir-modal-excluir').forEach(function(btn) {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    abrirModalItem({
+                        id: this.dataset.id,
+                        nome: this.dataset.nome,
+                        modulo: this.dataset.modulo,
+                        detalhe: this.dataset.detalhe,
+                        criado: this.dataset.criado
+                    });
+                });
+            });
+
+            if (btnFecharItem) btnFecharItem.addEventListener('click', fecharModalItem);
+            if (btnCancelarItem) btnCancelarItem.addEventListener('click', fecharModalItem);
+
+            if (modalItem) {
+                modalItem.addEventListener('click', function(e) {
+                    if (e.target === modalItem) fecharModalItem();
+                });
+            }
+
+            // --- Modal de Limpeza Geral ---
+            const modalGeral = document.getElementById('modalLimparHistoricoGeral');
+            const btnAbrirGeral = document.getElementById('btnAbrirLimparHistorico');
+            const btnFecharGeral = document.getElementById('btnFecharModalLimparGeral');
+            const btnCancelarGeral = document.getElementById('btnCancelarLimparGeral');
+
+            function abrirModalGeral() {
+                if (!modalGeral) return;
+                modalGeral.classList.add('open');
+                modalGeral.setAttribute('aria-hidden', 'false');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function fecharModalGeral() {
+                if (!modalGeral) return;
+                modalGeral.classList.remove('open');
+                modalGeral.setAttribute('aria-hidden', 'true');
+                document.body.style.overflow = '';
+            }
+
+            if (btnAbrirGeral) btnAbrirGeral.addEventListener('click', abrirModalGeral);
+            if (btnFecharGeral) btnFecharGeral.addEventListener('click', fecharModalGeral);
+            if (btnCancelarGeral) btnCancelarGeral.addEventListener('click', fecharModalGeral);
+
+            if (modalGeral) {
+                modalGeral.addEventListener('click', function(e) {
+                    if (e.target === modalGeral) fecharModalGeral();
+                });
+            }
+
+            // Fechamento via Tecla Escape
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    if (modalItem && modalItem.classList.contains('open')) fecharModalItem();
+                    if (modalGeral && modalGeral.classList.contains('open')) fecharModalGeral();
+                }
+            });
+        });
+        </script>
 
     <?php require_once __DIR__ . '/../include/footer.php'; ?>
     </main>
