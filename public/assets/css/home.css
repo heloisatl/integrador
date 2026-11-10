@@ -1,7 +1,7 @@
 .pagina-inicial {
-    max-width: 1180px;
-    margin: 0 auto;
-    padding: 24px 0 48px;
+    width: 100%;
+    margin: 0;
+    padding: 0 0 48px;
 }
 
 .cabecalho-inicial {

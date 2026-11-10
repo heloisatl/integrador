@@ -15,8 +15,9 @@ $csrfPerfil = $csrfPerfil ?? '';
 
 <div class="perfil-container">
         <header class="perfil-header">
-            <p class="etiqueta-inicial">Conta e segurança</p>
-            <h1 class="perfil-nome-titulo"><?= htmlspecialchars($nomeExibicao, ENT_QUOTES, 'UTF-8') ?></h1>
+            <h1 class="perfil-nome-titulo">
+                <i class="bi bi-person-circle"></i> <?= htmlspecialchars($nomeExibicao, ENT_QUOTES, 'UTF-8') ?>
+            </h1>
             <p class="perfil-subtitulo">Gerencie seus dados pessoais, sua foto e a segurança da conta.</p>
         </header>
 

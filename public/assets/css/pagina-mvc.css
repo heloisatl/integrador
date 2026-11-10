@@ -69,8 +69,8 @@ body#perfil #sb-titulo-perfil {
 }
 
 .mvc-etapa-wrapper {
-    max-width: 900px;
-    margin: 0 auto;
+    width: 100%;
+    margin: 0;
 }
 
 .mvc-etapa-cabecalho {

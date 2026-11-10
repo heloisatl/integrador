@@ -30,7 +30,9 @@ function obterIconeAcao(string $acao): string {
 <div class="logs-shell">
     <header class="logs-header page-header">
         <div>
-            <h1 class="page-title">Logs do Sistema</h1>
+            <h1 class="page-title">
+                <i class="bi bi-shield-check"></i> Logs do Sistema
+            </h1>
         </div>
         <div class="logs-actions">
             <span class="logs-badge-total" title="Total de registros de auditoria">

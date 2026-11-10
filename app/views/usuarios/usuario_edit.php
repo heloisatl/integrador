@@ -3,7 +3,14 @@
 <?php require_once __DIR__ . '/../include/navigation.php'; ?>
 
 <div class="page-header">
-    <h1 class="page-title">Editar Usuário</h1>
+    <h1 class="page-title">
+        <i class="bi bi-person-gear"></i> Editar Usuário
+    </h1>
+    <div class="page-actions">
+        <a href="<?= URL_BASE ?>/usuarios" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Voltar
+        </a>
+    </div>
 </div>
 
 <?php if (empty($usuario)): ?>

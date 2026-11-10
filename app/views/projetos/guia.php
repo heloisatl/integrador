@@ -6,10 +6,13 @@ include_once(__DIR__ . "/../include/navigation.php");
     <link rel="stylesheet" href="<?= URL_BASE_CSS ?>/guia.css">
 
     <section class="guia-pagina">
-        <header class="guia-cabecalho">
-            <p class="guia-etiqueta">Guia Rápido</p>
-            <h2> Tudo o que o DevStudio oferece</h2>
-            <p>Use as ferramentas do DevStudio para configurar seu projeto, gerar sistemas PHP, criar páginas visuais e organizar os arquivos produzidos.</p>
+        <header class="guia-cabecalho page-header">
+            <div>
+                <h1 class="page-title">
+                    <i class="bi bi-compass"></i> Guia Rápido
+                </h1>
+                <p style="color: var(--muted); margin: 8px 0 0; font-size: 15px;">Tudo o que o DevStudio oferece: configure seu projeto, gere sistemas PHP, crie páginas visuais e organize os arquivos produzidos.</p>
+            </div>
         </header>
 
         <section class="guia-bloco">

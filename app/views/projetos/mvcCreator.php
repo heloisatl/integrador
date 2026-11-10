@@ -46,14 +46,24 @@ include_once(__DIR__ . "/../include/navigation.php");
     ?>
 
     <div class="mvc-etapa-wrapper" id="mvcCreatorWrapper" data-visitante="<?= $modoVisitante ? '1' : '0' ?>">
+        <header class="page-header mvc-page-header">
+            <div>
+                <h1 class="page-title">
+                    <i class="bi bi-braces"></i> MVC Creator
+                </h1>
+            </div>
+            <?php if ($modoVisitante): ?>
+                <div class="page-actions">
+                    <span class="mvc-etapa-selo-novo" style="background: rgba(91, 106, 240, 0.18); color: var(--accent); border: 1px solid rgba(91, 106, 240, 0.35);">MODO VISITANTE</span>
+                </div>
+            <?php endif; ?>
+        </header>
+
         <div class="mvc-etapa-cabecalho">
             <span class="mvc-etapa-selo"><?= htmlspecialchars($steps[$step]['number']) ?></span>
             <h2><?= htmlspecialchars($steps[$step]['title']) ?></h2>
             <?php if (!empty($steps[$step]['tag'])): ?>
                 <span class="mvc-etapa-selo-novo"><?= htmlspecialchars($steps[$step]['tag']) ?></span>
-            <?php endif; ?>
-            <?php if ($modoVisitante): ?>
-                <span class="mvc-etapa-selo-novo" style="margin-left: auto; background: rgba(91, 106, 240, 0.18); color: var(--accent); border: 1px solid rgba(91, 106, 240, 0.35);">MODO VISITANTE</span>
             <?php endif; ?>
         </div>
 

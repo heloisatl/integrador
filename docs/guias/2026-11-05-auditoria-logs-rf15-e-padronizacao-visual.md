@@ -221,6 +221,18 @@ Foi criado um motor JavaScript e CSS que substitui os alertas nativos por cards 
    - Aplicado `white-space: nowrap !important; word-break: keep-all !important;` em `.btn` e na barra de ações, impedindo que textos como *"Novo MVC Creator"* quebrem em duas linhas e desalinhem o cabeçalho.
 4. **Remoção de Redundância no Histórico**:
    - Removida a caixa intermediária repetitiva *"Projetos salvos 2 de 10"*, mantendo exclusivamente o contador oficial da barra superior (`2 / 10 projetos`), preservando o aviso funcional de retenção (`.historico-aviso-limite`).
+5. **Padronização Global de Cabeçalhos de Página (Header com Ícone Temático)**:
+   - Inspirado no cabeçalho do **PHPMeuAmigo** (`<i class="bi bi-database"></i> PHPMeuAmigo`), todas as funções e telas do sistema foram unificadas no mesmo padrão visual (`.page-header` com `.page-title` em `Syne` 32px, negrito 700, borda inferior sutil e ícone em `var(--accent)`):
+     - **MVC Creator**: `<i class="bi bi-braces"></i> MVC Creator`
+     - **PageMaker**: `<i class="bi bi-file-earmark-code"></i> PageMaker`
+     - **Histórico**: `<i class="bi bi-clock-history"></i> Histórico`
+     - **PHPMeuAmigo**: `<i class="bi bi-database"></i> PHPMeuAmigo`
+     - **Logs do Sistema**: `<i class="bi bi-shield-check"></i> Logs do Sistema`
+     - **Usuários**: `<i class="bi bi-people"></i> Usuários`
+     - **Criar Novo Usuário**: `<i class="bi bi-person-plus"></i> Criar Novo Usuário`
+     - **Editar Usuário**: `<i class="bi bi-person-gear"></i> Editar Usuário`
+     - **Perfil**: `<i class="bi bi-person-circle"></i> [Nome do Usuário]`
+     - **Guia Rápido**: `<i class="bi bi-compass"></i> Guia Rápido`
 
 ---
 

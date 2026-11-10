@@ -4,14 +4,34 @@
 
 /*criar usuário*/
 .page-header {
-    margin-bottom: 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 20px;
+    margin-bottom: 28px;
+    gap: 16px;
+    flex-wrap: wrap;
 }
 
 .page-title {
     font-family: 'Syne', sans-serif;
-    font-size: 28px;
+    font-size: 32px;
     font-weight: 700;
     color: var(--text);
+    margin: 0;
+    line-height: 1.1;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.page-title i {
+    color: var(--accent);
+    font-size: 0.95em;
+    display: inline-flex;
+    align-items: center;
+    line-height: 1;
 }
 
 .form-container {

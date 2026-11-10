@@ -25,13 +25,18 @@ $historicoPorModulo = [
             display: flex;
             flex-direction: column;
             gap: 20px;
-            padding: 28px 0 36px;
+            padding: 0 0 36px;
+            width: 100%;
+            margin: 0;
         }
 
         .historico-toolbar {
             display: flex;
-            align-items: center;
+            align-items: flex-end;
             justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 20px;
+            margin-bottom: 24px;
             gap: 16px;
             flex-wrap: wrap;
         }
@@ -298,8 +303,9 @@ $historicoPorModulo = [
     <section class="historico-shell">
             <header class="historico-toolbar page-header">
                 <div>
-                    <p class="etiqueta-inicial">Projetos gerados</p>
-                    <h1 class="page-title">Histórico</h1>
+                    <h1 class="page-title">
+                        <i class="bi bi-clock-history"></i> Histórico
+                    </h1>
                 </div>
                 <div class="page-actions">
                     <span class="historico-contagem" aria-label="<?= $totalHistorico ?> de <?= $limiteHistorico ?> projetos salvos"><?= $totalHistorico ?> / <?= $limiteHistorico ?> projetos</span>

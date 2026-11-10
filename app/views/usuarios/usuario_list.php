@@ -3,10 +3,12 @@
 <?php require_once __DIR__ . '/../include/navigation.php'; ?>
 
 <div class="page-header">
-    <h1 class="page-title">Usuários</h1>
+    <h1 class="page-title">
+        <i class="bi bi-people"></i> Usuários
+    </h1>
     <div class="page-actions">
         <a href="<?= URL_BASE ?>/usuarios/cadastrar" class="btn btn-primary">
-            Novo Usuário
+            <i class="bi bi-plus-lg"></i> Novo Usuário
         </a>
     </div>
 </div>
