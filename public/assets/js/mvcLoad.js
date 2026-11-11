@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", function () {
             let porta = document.getElementById("mvc_porta") ? document.getElementById("mvc_porta").value : "3306";
             let usr = document.getElementById("mvc_usuario") ? document.getElementById("mvc_usuario").value : "root";
             let pass = document.getElementById("mvc_senha") ? document.getElementById("mvc_senha").value : "";
-            let bancoVal = document.getElementById("mvc_banco") ? document.getElementById("mvc_banco").value : "";
+            let bancoVal = document.getElementById("banco") ? document.getElementById("banco").value : "";
 
             if (nomeProjeto) sessionStorage.setItem("mvc_nomeProjeto", nomeProjeto);
             if (srv) sessionStorage.setItem("mvc_servidor", srv);
@@ -88,7 +88,7 @@ function salvarConfiguracoesSession(dispararTabelas = false) {
     let porta = document.getElementById("mvc_porta") ? document.getElementById("mvc_porta").value : (sessionStorage.getItem("mvc_porta"));
     let usr = document.getElementById("mvc_usuario") ? document.getElementById("mvc_usuario").value : (sessionStorage.getItem("mvc_usuario"));
     let pass = document.getElementById("mvc_senha") ? document.getElementById("mvc_senha").value : (sessionStorage.getItem("mvc_senha"));
-    let banco = document.getElementById("mvc_banco") ? document.getElementById("mvc_banco").value : "";
+    let banco = document.getElementById("banco") ? document.getElementById("banco").value : "";
     
     if (nomeProjeto !== undefined) sessionStorage.setItem("mvc_nomeProjeto", nomeProjeto);
     if (srv !== undefined) sessionStorage.setItem("mvc_servidor", srv);
