@@ -35,6 +35,7 @@ class UsuarioController extends Controller {
     }
 
     public function cadastrar(): void {
+        $this->adminRequired();
         $this->view('usuarios/usuario_create');
     }
 

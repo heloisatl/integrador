@@ -479,11 +479,38 @@
             color: var(--accent);
         }
 
+        .sb-item:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+        }
+
         /* Estado ativo gerenciado dinamicamente pelo PHP */
         .sb-item.active {
             background-color: var(--accent);
             color: #ffffff;
             font-weight: 500;
+        }
+
+        .sb-item.active:hover {
+            background-color: var(--accent-h);
+            color: #ffffff;
+        }
+
+        .layout-wrapper .sidebar .sb-section a.sb-item:not(.active):hover,
+        .layout-wrapper .sidebar .sb-section a.sb-item:not(.active):focus-visible {
+            background-color: var(--panel) !important;
+            color: var(--accent) !important;
+        }
+
+        .layout-wrapper .sidebar .sb-section a.sb-item.active,
+        .layout-wrapper .sidebar .sb-section a.sb-item.active:hover,
+        .layout-wrapper .sidebar .sb-section a.sb-item.active:focus-visible {
+            background-color: var(--accent) !important;
+            color: #ffffff !important;
+        }
+
+        .layout-wrapper .sidebar .sb-section a.sb-item.active:hover {
+            background-color: var(--accent-h) !important;
         }
 
         .sb-icon {

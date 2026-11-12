@@ -126,7 +126,7 @@
     }
     ?>
 
-    <div class="mvc-etapa-wrapper">
+    <div class="mvc-etapa-wrapper" data-autenticado="<?= isset($_SESSION['usuario_logado']) ? '1' : '0' ?>">
         <div class="mvc-etapa-cabecalho">
             <span class="mvc-etapa-selo"><?= htmlspecialchars($steps[$step]['number']) ?></span>
             <h2><?= htmlspecialchars($steps[$step]['title']) ?></h2>

@@ -45,6 +45,19 @@
     display: block;
 }
 
+body#mvc-creator .sidebar .sb-item:hover:not(.active),
+body#mvc-creator .sidebar .sb-item:focus-visible:not(.active) {
+    background-color: var(--panel);
+    color: var(--accent);
+}
+
+body#mvc-creator .sidebar .sb-item.active,
+body#mvc-creator .sidebar .sb-item.active:hover,
+body#mvc-creator .sidebar .sb-item.active:focus-visible {
+    background-color: var(--accent-h);
+    color: #fff;
+}
+
 .mvc-etapa-wrapper {
     max-width: 900px;
     margin: 0 auto;

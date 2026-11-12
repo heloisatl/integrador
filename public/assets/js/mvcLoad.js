@@ -35,6 +35,13 @@ function restaurarValoresFormulario() {
 }
 
 function carregarBanco() {
+    const etapa = document.querySelector(".mvc-etapa-wrapper");
+    if (etapa?.dataset.autenticado !== "1") {
+        const elBanco = document.getElementById("banco");
+        if (elBanco) elBanco.innerHTML = "<option value=''>Selecione um banco</option>";
+        return;
+    }
+
     salvarConfiguracoesSession();
 
     let usr = sessionStorage.getItem("mvc_usuario") || "root";
@@ -65,9 +72,61 @@ function carregarBanco() {
 function carregarTabelas() {
     salvarConfiguracoesSession();
 
+<<<<<<< Updated upstream
     let usr = sessionStorage.getItem("mvc_usuario") || "root";
     let pass = sessionStorage.getItem("mvc_senha") || "";
     let srv = sessionStorage.getItem("mvc_servidor") || "localhost";
+=======
+    const Tabelas = document.getElementsByClassName('cb-tabela');
+    var tabelasDesativadas = [];
+    for(const element of Tabelas){ 
+        !element.checked ? tabelasDesativadas.push({"id_tabela": element.value,"checked":element.checked}) : null;   
+    }
+    
+
+    sessionStorage.setItem("mvc_tabelasDisabled",JSON.stringify(tabelasDesativadas));
+
+}
+
+// Retorna os IDs (string) das tabelas desmarcadas, tolerando valor ausente/vazio/inválido no sessionStorage.
+function obterIdsTabelasDesativadas() {
+    try {
+        const bruto = sessionStorage.getItem("mvc_tabelasDisabled");
+        const lista = bruto ? JSON.parse(bruto) : [];
+        return Array.isArray(lista) ? lista.map(t => String(t.id_tabela)) : [];
+    } catch (e) {
+        return [];
+    }
+}
+
+// Retorna somente as tabelas detectadas que continuam selecionadas pelo usuário.
+function obterTabelasSelecionadas() {
+    try {
+        const tabelas = JSON.parse(sessionStorage.getItem("mvc_tabelas")) || [];
+        const desativadas = obterIdsTabelasDesativadas();
+        return tabelas.filter(t => !desativadas.includes(String(t.id_tabela)));
+    } catch (e) {
+        return [];
+    }
+}
+function salvarSessionCamadas(){
+    const camadas = document.getElementsByClassName('mvc-option');
+    var camadasDesativadas = [];
+    for(const element of camadas){
+        !element.checked ? camadasDesativadas.push({"gerador": element.value,"checked":element.checked}) : null;
+    }
+    // console.log(camadas);
+    // console.log(camadasDesativadas);
+    sessionStorage.setItem("mvc_camadasDisabled",JSON.stringify(camadasDesativadas));
+}
+
+function carregarTabelas(salvarConfig = true) {
+    const etapa = document.querySelector(".mvc-etapa-wrapper");
+    if (etapa?.dataset.autenticado !== "1") return;
+
+    salvarConfig ? salvarConfiguracoesSession() : null;
+    sessionStorage.getItem('mvc_tabelasDisabled')==null ? sessionStorage.setItem('mvc_tabelasDisabled',[]) :  null ;
+>>>>>>> Stashed changes
     let banco = sessionStorage.getItem("mvc_banco") || (document.getElementById("banco") ? document.getElementById("banco").value : "");
 
     if (!banco) {
@@ -132,7 +191,12 @@ function renderizarTabelasSeExistirem() {
 }
 
 function executarGeracaoMvc() {
+<<<<<<< Updated upstream
     const URL_BASE = "http://localhost:8081";
+=======
+    const etapa = document.querySelector(".mvc-etapa-wrapper");
+    if (etapa?.dataset.autenticado !== "1") return;
+>>>>>>> Stashed changes
 
     let usr = sessionStorage.getItem("mvc_usuario") || "root";
     let pass = sessionStorage.getItem("mvc_senha") || "";

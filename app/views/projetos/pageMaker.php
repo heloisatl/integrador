@@ -116,8 +116,48 @@
 
         <div class="pm-cartao">
             <h3>Prévia e Exportar</h3>
+<<<<<<< Updated upstream
             <button class="pm-botao">Visualizar prévia</button>
             <button class="pm-botao pm-botao-secundario">Gerar HTML + CSS</button>
+=======
+            <label>ORDEM DOS ELEMENTOS</label>
+            <select id="ordemElementos">
+                <option value="texto-imagem-lista-tabela">Texto, imagem, lista, tabela</option>
+                <option value="imagem-texto-lista-tabela">Imagem, texto, lista, tabela</option>
+                <option value="texto-lista-imagem-tabela">Texto, lista, imagem, tabela</option>
+            </select>
+            <div class="pm-controles-tela" aria-label="Tamanho da prévia">
+                <button type="button" class="pm-botao pm-tela-ativa" data-largura="100%" aria-pressed="true">Desktop</button>
+                <button type="button" class="pm-botao" data-largura="768px" aria-pressed="false">Tablet</button>
+                <button type="button" class="pm-botao" data-largura="320px" aria-pressed="false">Celular</button>
+            </div>
+            <div class="pm-grade-formulario">
+                <div class="pm-campo">
+                    <label for="maxWidthDesktop">LARGURA MÁXIMA NO DESKTOP (px)</label>
+                    <input type="number" id="maxWidthDesktop" min="320" max="2400" step="10" value="1200">
+                </div>
+                <div class="pm-campo">
+                    <label for="maxWidthTablet">LARGURA MÁXIMA NO TABLET (px)</label>
+                    <input type="number" id="maxWidthTablet" min="320" max="1024" step="10" value="768">
+                </div>
+                <div class="pm-campo">
+                    <label for="maxWidthCelular">LARGURA MÁXIMA NO CELULAR (px)</label>
+                    <input type="number" id="maxWidthCelular" min="240" max="600" step="10" value="480">
+                </div>
+            </div>
+            <button type="button" class="pm-botao" id="visualizarPrevia">Visualizar prévia</button>
+            <div class="pm-controles-download" aria-label="Exportar a página">
+                <button type="button" class="pm-botao pm-botao-secundario" id="gerarZip">Gerar ZIP (.zip)</button>
+            </div>
+            <p id="pmStatus" class="pm-status-historico" role="status" aria-live="polite"></p>
+            <div class="pm-saida">
+                <label for="codeHTML">HTML gerado</label>
+                <textarea id="codeHTML" readonly></textarea>
+                <label for="codeCSS">CSS gerado</label>
+                <textarea id="codeCSS" readonly></textarea>
+                <iframe id="pagina" title="Prévia da página gerada"></iframe>
+            </div>
+>>>>>>> Stashed changes
         </div>
     </div>
 

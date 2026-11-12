@@ -99,7 +99,39 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
             <a href="<?= URL_BASE ?>/usuarios" class="topbar-item <?php echo $paginaAtual === 'usuarios' ? 'active' : ''; ?>">
                 Usuários
             </a>
+<<<<<<< Updated upstream
         <?php endif; ?>
+=======
+
+            <a href="<?= URL_BASE ?>/projetos/mvc-creator" class="topbar-item <?php echo verificarAtivo('mvc-creator', $paginaAtual); ?>">
+                MVC Creator
+            </a>
+
+            <a href="<?= URL_BASE ?>/projetos/pagemaker" class="topbar-item <?php echo verificarAtivo('pagemaker', $paginaAtual); ?>">
+                Page Maker
+            </a>
+
+            <?php if (isset($_SESSION['usuario_logado'])):
+                $usuarioLogado = $_SESSION['usuario_logado'];
+            ?>
+                <a href="<?= URL_BASE ?>/projetos/historico" class="topbar-item <?php echo verificarAtivo('historico', $paginaAtual); ?>">
+                    Histórico
+                </a>
+            <?php endif; ?>
+
+            <?php if (isset($_SESSION['usuario_logado'])): ?>
+                <a href="<?= URL_BASE ?>/projetos/phpmeuamigo" class="topbar-item <?php echo verificarAtivo('phpmeuamigo', $paginaAtual); ?>">
+                    PHPMeuAmigo
+                </a>
+            <?php endif; ?>
+
+            <?php if (defined('URL_BASE') && usuarioEhAdmin()): ?>
+                <a href="<?= URL_BASE ?>/usuarios" class="topbar-item <?php echo $paginaAtual === 'usuarios' ? 'active' : ''; ?>">
+                    Usuários
+                </a>
+            <?php endif; ?>
+        </div>
+>>>>>>> Stashed changes
 
         <div class="topbar-actions">
 
@@ -259,9 +291,21 @@ function verificarAtivo($slug, $paginaAtual, $queryKey = null, $queryValue = nul
         </div>
 
 
+<<<<<<< Updated upstream
         <!-- Saida -->
         <div id="sb-titulo-saida" class="sb-section">
             <div class="sb-label">Saida</div>
+=======
+        <!-- PHPMeuAmigo -->
+        <?php if (isset($_SESSION['usuario_logado'])): ?>
+            <div id="sb-titulo-PHPMeuAmigo" class="sb-section">
+                <div class="sb-label">PHPMeuAmigo</div>
+                <a href="<?= URL_BASE ?>/projetos/phpmeuamigo" class="sb-item <?php echo verificarAtivo('phpmeuamigo', $paginaAtual); ?>">
+                    <span class="sb-icon"></span> Modelador de Banco
+                </a>
+            </div>
+        <?php endif; ?>
+>>>>>>> Stashed changes
 
             <a href="<?= URL_BASE ?>/projetos/saida?tab=todos" class="sb-item <?php echo verificarAtivo('saida', $paginaAtual, 'tab', 'todos'); ?>"> <span class="sb-icon"></span> Todos os arquivos
             </a>

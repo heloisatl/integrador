@@ -42,7 +42,13 @@ $router->post("/projetos/editar/opcoes","ProjetoController@editBools");
 $router->post("/projetos/getDatabases","ProjetoController@getDatabases");
 $router->post("/projetos/getTabelas","ProjetoController@getTabelas");
 $router->post("/projetos/gerarMvc","ProjetoController@gerarMvc");
+<<<<<<< Updated upstream
 $router->get("/projetos/downloadZip","ProjetoController@downloadZip");
+=======
+$router->post("/projetos/previewEstrutura","ProjetoController@previewEstrutura");
+$router->post("/projetos/pagemaker/baixar-zip","ProjetoController@baixarPageMakerZip");
+
+>>>>>>> Stashed changes
 
 // Páginas do "menu principal" (topbar/sidebar) que já tinham view pronta
 // mas nunca tiveram rota registrada -> por isso davam 404 / não abriam.

@@ -146,7 +146,67 @@ h3 {
     background: transparent;
 }
 
+<<<<<<< Updated upstream
 /* Small responsive tweak */
+=======
+.pm-saida {
+    display: grid;
+    gap: 8px;
+    grid-column: 1 / -1;
+    margin-top: 18px;
+}
+
+.pm-saida textarea {
+    min-height: 150px;
+}
+
+.pm-saida iframe {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    box-sizing: border-box;
+    height: 300px;
+    justify-self: start;
+    max-width: 100%;
+    min-width: 0;
+    width: 100%;
+}
+
+.pm-controles-tela {
+    align-items: center;
+    display: flex;
+    gap: 8px;
+    margin: 14px 0 4px;
+}
+
+.pm-controles-tela .pm-botao {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    margin-top: 0;
+}
+
+.pm-controles-tela .pm-botao.pm-tela-ativa,
+.pm-controles-tela .pm-botao:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+}
+
+body#pagemaker .sidebar .sb-item:hover:not(.active),
+body#pagemaker .sidebar .sb-item:focus-visible:not(.active) {
+    background-color: var(--panel);
+    color: var(--accent);
+}
+
+body#pagemaker .sidebar .sb-item.active,
+body#pagemaker .sidebar .sb-item.active:hover,
+body#pagemaker .sidebar .sb-item.active:focus-visible {
+    background-color: var(--accent-h);
+    color: #fff;
+}
+
+>>>>>>> Stashed changes
 @media (max-width: 720px) {
     .pm-grade-formulario {
         grid-template-columns: 1fr;
