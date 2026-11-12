@@ -290,21 +290,65 @@ $historicoPorModulo = [
 
             .historico-toolbar {
                 align-items: flex-start;
+                flex-direction: column;
+                gap: 12px;
             }
 
             .historico-toolbar .page-actions {
                 width: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 8px;
             }
 
-            .historico-toolbar .page-actions .btn {
-                flex: 1 1 auto;
+            .historico-toolbar .page-actions .btn,
+            .historico-toolbar .page-actions .historico-contagem {
+                width: 100%;
                 justify-content: center;
+                text-align: center;
+                min-height: 44px;
             }
 
             .historico-meta-list li {
                 align-items: flex-start;
                 flex-direction: column;
                 gap: 4px;
+            }
+
+            .historico-cards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .historico-card-actions {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 8px;
+            }
+
+            .historico-card-actions .btn {
+                width: 100%;
+                justify-content: center;
+                min-height: 42px;
+            }
+
+            .historico-modal-dialog {
+                max-width: calc(100vw - 24px);
+                max-height: calc(100dvh - 32px);
+                overflow-y: auto;
+                padding: 20px 16px;
+            }
+
+            .historico-modal-footer {
+                flex-direction: column-reverse;
+                gap: 10px;
+                width: 100%;
+            }
+
+            .historico-modal-footer .btn {
+                width: 100%;
+                justify-content: center;
+                min-height: 44px;
             }
         }
 
@@ -640,7 +684,7 @@ $historicoPorModulo = [
                         <div class="historico-modal-info">
                             <div class="historico-modal-nome"><?= $totalHistorico ?> <?= $totalHistorico === 1 ? 'projeto registrado' : 'projetos registrados' ?></div>
                             <div class="historico-modal-meta">
-                                <span>Todos os projetos salvos no histórico serão removidos.</span>
+                                <span><?= $totalHistorico === 1 ? 'O projeto salvo no histórico será removido.' : 'Todos os projetos salvos no histórico serão removidos.' ?></span>
                             </div>
                         </div>
                     </div>
@@ -648,7 +692,7 @@ $historicoPorModulo = [
                     <div class="historico-modal-warning">
                         <i class="bi bi-exclamation-triangle-fill"></i>
                         <div>
-                            <strong>Atenção Irreversível:</strong> Tem certeza que deseja limpar permanentemente todo o histórico? Todos os <?= $totalHistorico ?> projetos salvos serão perdidos e não poderão ser recuperados.
+                            <strong>Atenção Irreversível:</strong> Tem certeza que deseja limpar permanentemente todo o histórico? <?= $totalHistorico === 1 ? 'O único projeto salvo será perdido e não poderá ser recuperado.' : ('Todos os ' . $totalHistorico . ' projetos salvos serão perdidos e não poderão ser recuperados.') ?>
                         </div>
                     </div>
                 </div>

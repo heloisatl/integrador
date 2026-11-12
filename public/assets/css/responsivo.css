@@ -374,6 +374,10 @@ code,
 }
 
 @media (max-width: 768px), (pointer: coarse) {
+    * {
+        -webkit-tap-highlight-color: transparent;
+    }
+
     body input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='color']),
     body select,
     body textarea {
@@ -393,5 +397,122 @@ code,
     body .btn-mobile-login,
     body .btn-mobile-register {
         min-height: 44px;
+    }
+
+    body button:active,
+    body .btn:active,
+    body .pm-botao:active,
+    body .mvc-etapa-botao:active {
+        transform: scale(0.98);
+    }
+
+    body .site-footer {
+        padding-bottom: max(16px, env(safe-area-inset-bottom));
+    }
+
+    body .topbar-nav {
+        padding-bottom: max(36px, calc(16px + env(safe-area-inset-bottom)));
+    }
+}
+
+/* ==========================================================================
+   Refinamentos Universais de Experiência Mobile Agradável
+   ========================================================================== */
+
+@media (max-width: 768px) {
+    /* Ações de formulários com foco prioritário no botão principal */
+    body .form-actions,
+    body .btn-row,
+    body .perfil-acoes {
+        flex-direction: column-reverse !important;
+        gap: 10px !important;
+        width: 100% !important;
+    }
+
+    body .form-actions .btn,
+    body .btn-row .btn,
+    body .perfil-btn-salvar,
+    body .perfil-btn-voltar {
+        width: 100% !important;
+        justify-content: center !important;
+        min-height: 44px !important;
+    }
+
+    /* Tabelas com rolagem suave em dispositivos móveis */
+    body .table-container,
+    body .logs-table-wrapper,
+    body .phpma-table-responsive {
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        border-radius: 12px !important;
+    }
+
+    body .table-container table,
+    body .logs-table {
+        min-width: 580px;
+    }
+}
+
+@media (max-width: 640px) {
+    /* Modais elegantes e responsivos para telas de celulares */
+    body .usuario-modal-overlay,
+    body .historico-modal-overlay {
+        padding: 12px !important;
+    }
+
+    body .usuario-modal-dialog,
+    body .historico-modal-dialog {
+        max-width: calc(100vw - 24px) !important;
+        max-height: calc(100dvh - 24px) !important;
+        overflow-y: auto !important;
+        padding: 20px 16px !important;
+        border-radius: 14px !important;
+        margin: auto !important;
+    }
+
+    body .usuario-modal-footer,
+    body .historico-modal-footer {
+        flex-direction: column-reverse !important;
+        gap: 10px !important;
+        width: 100% !important;
+    }
+
+    body .usuario-modal-footer .btn,
+    body .historico-modal-footer .btn,
+    body .usuario-modal-footer form {
+        width: 100% !important;
+        display: flex !important;
+        justify-content: center !important;
+        min-height: 44px !important;
+    }
+
+    body .usuario-modal-card,
+    body .historico-modal-card {
+        padding: 12px 14px !important;
+        gap: 12px !important;
+    }
+}
+
+@media (max-width: 600px) {
+    /* Histórico de Projetos em celulares */
+    body .historico-cards-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    body .historico-card {
+        padding: 18px 16px !important;
+        border-radius: 14px !important;
+    }
+
+    body .historico-card-actions {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 8px !important;
+    }
+
+    body .historico-card-actions .btn {
+        width: 100% !important;
+        justify-content: center !important;
+        min-height: 42px !important;
     }
 }
