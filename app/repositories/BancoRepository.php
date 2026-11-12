@@ -23,7 +23,11 @@ class BancoRepository{
         $stm->bindValue(':senha_banco',$senha_banco);
         $stm->bindValue(':host',$host);
         $stm->bindValue(':porta',$porta);
-        return $stm->execute();
+        $ok = $stm->execute();
+        if ($ok) {
+            return $this->conn->lastInsertId() ?: true;
+        }
+        return false;
     }
 
     public function getBancoById($value){
@@ -59,10 +63,30 @@ class BancoRepository{
         }
     }
 
-    public function getBancoEspecifico($nome_banco,$usuario_banco,$fk_usuario){
-        $sql = "SELECT * FROM banco WHERE ? = banco.nome_banco AND ? = banco.usuario_banco AND ? = banco.fk_usuario;";
+    public function getBancoEspecifico($nome_banco, $usuario_banco = null, $fk_usuario = null){
+        if ($fk_usuario !== null && $usuario_banco !== null && $usuario_banco !== '') {
+            $sql = "SELECT * FROM banco WHERE banco.nome_banco = ? AND banco.fk_usuario = ? AND banco.usuario_banco = ? LIMIT 1;";
+            $stm = $this->conn->prepare($sql);
+            $stm->execute([$nome_banco, $fk_usuario, $usuario_banco]);
+            $res = $stm->fetch();
+            if ($res) {
+                return $res;
+            }
+        }
+
+        if ($fk_usuario !== null) {
+            $sql = "SELECT * FROM banco WHERE banco.nome_banco = ? AND banco.fk_usuario = ? LIMIT 1;";
+            $stm = $this->conn->prepare($sql);
+            $stm->execute([$nome_banco, $fk_usuario]);
+            $res = $stm->fetch();
+            if ($res) {
+                return $res;
+            }
+        }
+
+        $sql = "SELECT * FROM banco WHERE banco.nome_banco = ? LIMIT 1;";
         $stm = $this->conn->prepare($sql);
-        $stm->execute([$nome_banco,$usuario_banco,$fk_usuario]);
+        $stm->execute([$nome_banco]);
         return $stm->fetch();
     }
 

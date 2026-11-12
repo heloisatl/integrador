@@ -46,18 +46,14 @@ class BancoService{
 
 
 
-    public function insert($fk_usuario,$nome_banco,$usuario_banco,$senha_banco,$host,$porta){
-        $result = null;
-        if($this->getBanco($nome_banco,'nome_banco')){
-            if(!$this->getBanco($usuario_banco,'usuario_banco')){
-                $result = $this->repo()->insert($fk_usuario,$nome_banco,$usuario_banco,$senha_banco,$host,$porta);
-            }
-        }else{
-            $result = $this->repo()->insert($fk_usuario,$nome_banco,$usuario_banco,$senha_banco,$host,$porta);
+    public function insert($fk_usuario, $nome_banco, $usuario_banco, $senha_banco, $host, $porta){
+        // Se este usuário específico já possui este banco cadastrado, recupera o registro existente
+        $bancoExistente = $this->getBancoEspecifico($nome_banco, $usuario_banco, $fk_usuario);
+        if ($bancoExistente) {
+            return $bancoExistente['id_banco'] ?? true;
         }
-        
 
-        return $result;
+        return $this->repo()->insert($fk_usuario, $nome_banco, $usuario_banco, $senha_banco, $host, $porta);
     }
 
     public function getBancoById($value){

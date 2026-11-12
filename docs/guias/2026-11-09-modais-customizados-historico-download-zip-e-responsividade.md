@@ -157,6 +157,9 @@ O arquivo `public/assets/css/responsivo.css` atua como a folha de estilo mestre 
 | `public/assets/css/usuarios.css` | **Modificado** | Estilos dos modais de usuário e regras de responsividade para formulários e tabelas. |
 | `public/assets/css/logs.css` | **Modificado** | Responsividade para cabeçalho, filtros, KPIs e tabela de auditoria. |
 | `public/assets/css/form-styles.css` | **Modificado** | Largura e alinhamento de formulários no padrão do sistema. |
+| `app/controllers/PhpMeuAmigoController.php` | **Modificado** | Correção da importação de banco local para resolução correta de ID inserido e prevenção de falha ao registrar banco. |
+| `app/services/BancoService.php` | **Modificado** | Correção de regra que bloqueava inserção de bancos caso outro usuário já tivesse banco com mesmo nome ou usuário root. |
+| `app/repositories/BancoRepository.php` | **Modificado** | Retorno de `lastInsertId` na inserção de bancos e consulta flexível com fallback em `getBancoEspecifico`. |
 | `docs/guias/2026-11-09-modais-customizados-historico-download-zip-e-responsividade.md` | **Criado** | Este documento técnico detalhado. |
 
 ---

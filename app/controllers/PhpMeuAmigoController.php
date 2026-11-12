@@ -458,8 +458,12 @@ class PhpMeuAmigoController extends Controller{
             // Registra o banco no mvc_creator se ainda nao existir
             $banco_existente = $this->bancoService->getBancoEspecifico($banco_selecionado, $user, $id_usuario);
             if (!$banco_existente) {
-                $this->bancoService->insert($id_usuario, $banco_selecionado, $user, $pass, $host, $porta);
-                $banco_criado = $this->bancoService->getBancoEspecifico($banco_selecionado, $user, $id_usuario);
+                $resInsert = $this->bancoService->insert($id_usuario, $banco_selecionado, $user, $pass, $host, $porta);
+                if (is_numeric($resInsert) && (int)$resInsert > 0) {
+                    $banco_criado = $this->bancoService->getBancoById((int)$resInsert);
+                } else {
+                    $banco_criado = $this->bancoService->getBancoEspecifico($banco_selecionado, $user, $id_usuario);
+                }
             } else {
                 $banco_criado = $banco_existente;
             }
