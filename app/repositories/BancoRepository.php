@@ -82,6 +82,7 @@ class BancoRepository{
             if ($res) {
                 return $res;
             }
+            return false;
         }
 
         $sql = "SELECT * FROM banco WHERE banco.nome_banco = ? LIMIT 1;";

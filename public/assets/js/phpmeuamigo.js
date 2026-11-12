@@ -358,7 +358,7 @@ function bindEvents() {
 // --- RENDERIZACAO ---
 
 function getActiveTabela() {
-    return state.tabelas.find(t => t.id_tabela === state.activeTabelaId);
+    return state.tabelas.find(t => t.id_tabela == state.activeTabelaId);
 }
 
 function renderBancoSelect() {
@@ -371,8 +371,12 @@ function renderBancoSelect() {
     }
 
     selectBanco.innerHTML = state.bancos.map(b =>
-        `<option value="${b.id_banco}" ${b.id_banco === state.activeBancoId ? 'selected' : ''}>${escapeHtml(b.nome_banco)} (${escapeHtml(b.host)}:${escapeHtml(b.porta)})</option>`
+        `<option value="${b.id_banco}" ${b.id_banco == state.activeBancoId ? 'selected' : ''}>${escapeHtml(b.nome_banco)} (${escapeHtml(b.host)}:${escapeHtml(b.porta)})</option>`
     ).join('');
+
+    if (state.activeBancoId) {
+        selectBanco.value = String(state.activeBancoId);
+    }
 }
 
 function renderTabelasSidebar() {
@@ -385,7 +389,7 @@ function renderTabelasSidebar() {
     }
 
     container.innerHTML = state.tabelas.map(t => {
-        const isActive = t.id_tabela === state.activeTabelaId;
+        const isActive = t.id_tabela == state.activeTabelaId;
         return `
             <div class="phpma-tabela-btn ${isActive ? 'active' : ''}" data-id="${t.id_tabela}" data-nome="${escapeHtml(t.nome_tabela)}" onclick="window.phpmaSelectTabela(${t.id_tabela})">
                 <span class="tabela-nome"><i class="bi bi-table"></i> ${escapeHtml(t.nome_tabela)}</span>
@@ -436,10 +440,10 @@ function renderAtributosGrid() {
 
         (state.atributosBanco || []).forEach(item => {
             // Não permite que o atributo aponte para si mesmo
-            if (item.id_atributo === attr.id_atributo) return;
+            if (item.id_atributo == attr.id_atributo) return;
 
-            const isSelected = parseInt(attr.fk_atributo) === item.id_atributo;
-            const pkTag = item.PK === 1 ? ' [PK]' : '';
+            const isSelected = parseInt(attr.fk_atributo) == parseInt(item.id_atributo);
+            const pkTag = parseInt(item.PK) === 1 ? ' [PK]' : '';
             fkOptions.push(
                 `<option value="${item.id_atributo}" ${isSelected ? 'selected' : ''}>${escapeHtml(item.nome_tabela)} &rarr; ${escapeHtml(item.nome_atributo)}${pkTag}</option>`
             );
@@ -499,7 +503,7 @@ function renderAtributosGrid() {
 
 window.phpmaSelectTabela = async function (idTabela) {
     window.phpmaDismissAlert();
-    state.activeTabelaId = idTabela;
+    state.activeTabelaId = parseInt(idTabela);
     renderTabelasSidebar();
     await carregarAtributosBackend();
 };
@@ -514,7 +518,7 @@ window.phpmaDeleteTabela = async function (idTabela) {
         const resp = await fetch(apiEndpoint('/phpmeuamigo/tabelas/excluir'), { method: 'POST', body: formData });
         const res = await resp.json();
         if (res.sucesso) {
-            if (state.activeTabelaId === idTabela) state.activeTabelaId = null;
+            if (state.activeTabelaId == idTabela) state.activeTabelaId = null;
             await carregarTabelasBackend();
         } else {
             phpmaToast(res.mensagem || "Erro ao excluir tabela.", "error");
@@ -770,8 +774,8 @@ window.phpmaExecutarImportacaoLocal = async function () {
         console.log("[Backend -> Frontend] Resposta importar-banco-local:", res);
 
         if (res.sucesso) {
-            phpmaToast(res.mensagem, "success");
             window.phpmaCloseImportModal();
+            phpmaToast(res.mensagem, "success");
             await carregarBancosBackend(res.id_banco);
         } else {
             phpmaToast("Erro ao importar banco: " + res.mensagem, "error");
